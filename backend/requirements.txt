@@ -1,0 +1,24 @@
+# Core Framework
+fastapi
+uvicorn
+
+# Database
+sqlmodel
+mysql-connector-python
+pymysql
+
+# Firebase & JWT
+firebase-admin
+python-jose[cryptography]
+
+# Utilities
+python-dotenv
+python-multipart
+pydantic[email]
+pydantic-settings
+phonenumbers
+requests
+httpx==0.27.2
+
+# Timezone Support
+pytz

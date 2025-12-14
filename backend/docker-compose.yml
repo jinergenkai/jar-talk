@@ -1,0 +1,73 @@
+version: '3.8'
+
+services:
+  # MySQL Database
+  db:
+    image: mysql:8.0
+    container_name: jar_talk_db
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: jar_talk
+      MYSQL_USER: jar_user
+      MYSQL_PASSWORD: jar_password
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - jar_talk_network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-prootpassword"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # FastAPI Backend
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jar_talk_api
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    environment:
+      # App
+      APP_NAME: "Jar Talk API"
+      DEBUG: "True"
+
+      # Database
+      DB_HOST: db
+      DB_PORT: 3306
+      DB_USER: jar_user
+      DB_PASSWORD: jar_password
+      DB_NAME: jar_talk
+
+      # JWT
+      SECRET_KEY: "dev-secret-key-change-in-production"
+      ALGORITHM: "HS256"
+      ACCESS_TOKEN_EXPIRE_MINUTES: 10080
+
+      # CORS
+      ALLOWED_ORIGINS: '["*"]'
+
+      # Firebase
+      FIREBASE_CREDENTIALS_PATH: /app/firebase-credentials.json
+    volumes:
+      - ./:/app
+      - ./firebase-credentials.json:/app/firebase-credentials.json
+    networks:
+      - jar_talk_network
+    depends_on:
+      db:
+        condition: service_healthy
+    command: uvicorn app:app --host 0.0.0.0 --port 8000 --reload
+
+networks:
+  jar_talk_network:
+    driver: bridge
+
+volumes:
+  mysql_data:
