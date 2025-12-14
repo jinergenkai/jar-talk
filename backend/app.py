@@ -6,6 +6,8 @@ from src.cores.config import settings
 from src.cores.database import create_db_and_tables
 from src.cores.firebase_config import initialize_firebase
 from src.controllers.auth_controller import router as auth_router
+from src.controllers.container_controller import router as container_router
+from src.controllers.slip_controller import router as slip_router
 
 
 @asynccontextmanager
@@ -46,6 +48,8 @@ app.add_middleware(
 
 # Include routers
 app.include_router(auth_router)
+app.include_router(container_router)
+app.include_router(slip_router)
 
 
 @app.get("/")

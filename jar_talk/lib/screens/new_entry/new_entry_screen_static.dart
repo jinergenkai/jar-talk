@@ -1,23 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'package:jar_talk/controllers/slip_controller.dart';
 
-class NewEntryScreen extends StatefulWidget {
-  final int jarId;
-  final String controllerTag;
-
-  const NewEntryScreen({
-    super.key,
-    required this.jarId,
-    required this.controllerTag,
-  });
-
-  @override
-  State<NewEntryScreen> createState() => _NewEntryScreenState();
-}
-
-class _NewEntryScreenState extends State<NewEntryScreen> {
-  final TextEditingController _textController = TextEditingController();
+class NewEntryScreen extends StatelessWidget {
+  const NewEntryScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -162,7 +146,7 @@ class _NewEntryScreenState extends State<NewEntryScreen> {
                             borderRadius: BorderRadius.circular(8),
                           ),
                           child: Text(
-                            'TODAY', // Dynamic date
+                            'OCT 24 • 10:42 AM', // Dynamic date here
                             style: TextStyle(
                               color: theme.colorScheme.primary,
                               fontWeight: FontWeight.bold,
@@ -201,7 +185,6 @@ class _NewEntryScreenState extends State<NewEntryScreen> {
                             lineHeight: 32.0,
                           ),
                           child: TextField(
-                            controller: _textController,
                             maxLines: null,
                             style: TextStyle(
                               fontFamily: 'Noto Sans',
@@ -254,7 +237,7 @@ class _NewEntryScreenState extends State<NewEntryScreen> {
                               const BoxShadow(
                                 color: Colors.black12,
                                 blurRadius: 2,
-                              ),
+                              ), // inset not supported directly in Flutter simple shadows, mimicking with color
                           ],
                         ),
                         child: Row(
@@ -273,6 +256,7 @@ class _NewEntryScreenState extends State<NewEntryScreen> {
                           ],
                         ),
                       ),
+
                       // Paperclip Icon
                       Positioned(
                         top: -12,
@@ -387,19 +371,8 @@ class _NewEntryScreenState extends State<NewEntryScreen> {
         color: Colors.transparent,
         child: InkWell(
           borderRadius: BorderRadius.circular(30),
-          onTap: () async {
-            if (_textController.text.isEmpty) return;
-
-            final controller = Get.find<SlipController>(
-              tag: widget.controllerTag,
-            );
-            final success = await controller.createSlip(_textController.text);
-
-            if (success) {
-              if (context.mounted) Navigator.pop(context);
-            } else {
-              Get.snackbar("Error", "Failed to create slip");
-            }
+          onTap: () {
+            // Drop Slip action
           },
           child: Padding(
             padding: const EdgeInsets.fromLTRB(24, 16, 32, 16),
@@ -419,7 +392,7 @@ class _NewEntryScreenState extends State<NewEntryScreen> {
                   ),
                 ),
                 const SizedBox(width: 12),
-                const Text(
+                Text(
                   'Drop Slip',
                   style: TextStyle(
                     fontFamily: 'Noto Serif',

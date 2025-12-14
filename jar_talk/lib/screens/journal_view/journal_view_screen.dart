@@ -2,21 +2,74 @@ import 'package:flutter/material.dart';
 import 'package:jar_talk/screens/journal_view/widgets/journal_entry_card.dart';
 import 'package:jar_talk/screens/journal_view/widgets/timeline_entry.dart';
 import 'package:jar_talk/screens/new_entry/new_entry_screen.dart';
-import 'package:get/get.dart'; // Re-adding Get for state management if needed elsewhere, but using Navigator for nav
+import 'package:get/get.dart';
+import 'package:jar_talk/controllers/slip_controller.dart';
 
-class JournalViewScreen extends StatelessWidget {
-  const JournalViewScreen({super.key});
+class JournalViewScreen extends StatefulWidget {
+  final int jarId;
+  final String jarName;
+
+  const JournalViewScreen({
+    super.key,
+    required this.jarId,
+    required this.jarName,
+  });
+
+  @override
+  State<JournalViewScreen> createState() => _JournalViewScreenState();
+}
+
+class _JournalViewScreenState extends State<JournalViewScreen> {
+  late SlipController controller;
+
+  @override
+  void initState() {
+    super.initState();
+    controller = Get.put(SlipController(), tag: 'jar_${widget.jarId}');
+    controller.fetchSlips(widget.jarId);
+  }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+
+    // Format date helper
+    String _formatDate(DateTime date) {
+      // Simple formatter, can be improved with intl package
+      final months = [
+        'JAN',
+        'FEB',
+        'MAR',
+        'APR',
+        'MAY',
+        'JUN',
+        'JUL',
+        'AUG',
+        'SEP',
+        'OCT',
+        'NOV',
+        'DEC',
+      ];
+      final month = months[date.month - 1];
+      final hour = date.hour > 12
+          ? date.hour - 12
+          : (date.hour == 0 ? 12 : date.hour);
+      final ampm = date.hour >= 12 ? 'PM' : 'AM';
+      final minute = date.minute.toString().padLeft(2, '0');
+      return '$month ${date.day} • $hour:$minute $ampm';
+    }
 
     return Scaffold(
       backgroundColor: theme.scaffoldBackgroundColor,
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.of(context, rootNavigator: true).push(
-            MaterialPageRoute(builder: (context) => const NewEntryScreen()),
+            MaterialPageRoute(
+              builder: (context) => NewEntryScreen(
+                jarId: widget.jarId,
+                controllerTag: 'jar_${widget.jarId}',
+              ),
+            ),
           );
         },
         backgroundColor: theme.colorScheme.primary,
@@ -38,6 +91,11 @@ class JournalViewScreen extends StatelessWidget {
             ),
             actions: [
               IconButton(
+                icon: const Icon(Icons.refresh),
+                color: const Color(0xFFC9AD92),
+                onPressed: () => controller.fetchSlips(widget.jarId),
+              ),
+              IconButton(
                 icon: const Icon(Icons.settings),
                 color: const Color(0xFFC9AD92),
                 onPressed: () {},
@@ -45,19 +103,14 @@ class JournalViewScreen extends StatelessWidget {
             ],
             flexibleSpace: FlexibleSpaceBar(
               titlePadding: const EdgeInsets.only(left: 24, bottom: 16),
-              // We'll put the details in the background so they scroll nicely
               background: Padding(
-                padding: const EdgeInsets.only(
-                  top: 80,
-                  left: 24,
-                  right: 24,
-                ), // Avoid overlap with leading/actions
+                padding: const EdgeInsets.only(top: 80, left: 24, right: 24),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
-                      'Trip to Japan 2023',
-                      style: TextStyle(
+                    Text(
+                      widget.jarName,
+                      style: const TextStyle(
                         fontFamily: 'Manrope',
                         fontSize: 28,
                         fontWeight: FontWeight.w800,
@@ -66,13 +119,13 @@ class JournalViewScreen extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(height: 12),
-                    // Avatar Row
+                    // Avatar Row (Static for now, user logic complex)
                     Row(
                       children: [
                         _buildAvatarStack(),
                         const SizedBox(width: 12),
                         const Text(
-                          'Shared with 5 friends',
+                          'Shared Journal',
                           style: TextStyle(
                             color: Color(0xFFC9AD92),
                             fontSize: 14,
@@ -90,289 +143,58 @@ class JournalViewScreen extends StatelessWidget {
           // Timeline List
           SliverPadding(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
-            sliver: SliverList(
-              delegate: SliverChildListDelegate([
-                // ENTRY 1: Ramen Shop (Photo)
-                TimelineEntry(
-                  child: JournalEntryCard(
-                    date: 'OCT 24 • 10:30 AM',
-                    rotation: 1,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        _buildAuthorRow(
-                          'Sarah Jenkins',
-                          'https://i.pravatar.cc/100?img=5',
-                        ),
-                        const SizedBox(height: 12),
-                        const Text(
-                          'Found this amazing ramen shop in Shinjuku!',
-                          style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.w800,
-                            height: 1.1,
-                          ),
-                        ),
-                        const SizedBox(height: 12),
-                        Container(
-                          height: 200,
-                          width: double.infinity,
-                          decoration: BoxDecoration(
-                            color: Colors.grey[300],
-                            borderRadius: BorderRadius.circular(8),
-                            image: const DecorationImage(
-                              image: NetworkImage(
-                                'https://images.unsplash.com/photo-1569937745357-da811b87c5ed?auto=format&fit=crop&q=80&w=600',
-                              ),
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                          alignment: Alignment.bottomRight,
-                          child: Container(
-                            margin: const EdgeInsets.all(8),
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 8,
-                              vertical: 4,
-                            ),
-                            decoration: BoxDecoration(
-                              color: Colors.black.withOpacity(0.6),
-                              borderRadius: BorderRadius.circular(4),
-                            ),
-                            child: const Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Icon(
-                                  Icons.location_on,
-                                  color: Colors.white,
-                                  size: 12,
-                                ),
-                                SizedBox(width: 4),
-                                Text(
-                                  'Shinjuku',
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 10,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                        const SizedBox(height: 12),
-                        const Text(
-                          "Best broth I've ever had. The chashu simply melts in your mouth. We definitely need to come back here before we leave.",
-                          style: TextStyle(fontSize: 14, height: 1.5),
-                        ),
-                        const SizedBox(height: 16),
-                        _buildFooter(),
-                      ],
-                    ),
-                  ),
-                ),
+            sliver: Obx(() {
+              if (controller.isLoading.value && controller.slips.isEmpty) {
+                return const SliverFillRemaining(
+                  child: Center(child: CircularProgressIndicator()),
+                );
+              }
 
-                // ENTRY 2: Train Ticket
-                TimelineEntry(
-                  child: JournalEntryCard(
-                    date: 'OCT 24 • 2:15 PM',
-                    rotation: -1,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            _buildAuthorRow(
-                              'Mike Ross',
-                              'https://i.pravatar.cc/100?img=11',
-                            ),
-                            Container(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 8,
-                                vertical: 2,
-                              ),
-                              decoration: BoxDecoration(
-                                color: theme.colorScheme.primary.withOpacity(
-                                  0.1,
-                                ),
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                              child: Text(
-                                'LOGISTICS',
-                                style: TextStyle(
-                                  color: theme.colorScheme.primary,
-                                  fontSize: 10,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 12),
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Transform.rotate(
-                              angle: -2 * 3.14 / 180,
-                              child: Container(
-                                padding: const EdgeInsets.all(8),
-                                decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.circular(8),
-                                  border: Border.all(color: Colors.grey[300]!),
-                                ),
-                                child: const Icon(
-                                  Icons.train,
-                                  size: 32,
-                                  color: Colors.black54,
-                                ),
-                              ),
-                            ),
-                            const SizedBox(width: 16),
-                            const Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    'Shinkansen Tickets',
-                                    style: TextStyle(
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  SizedBox(height: 4),
-                                  Text(
-                                    "Booked for tomorrow morning. 9:00 AM from Tokyo Station. Don't be late!",
-                                    style: TextStyle(
-                                      fontSize: 13,
-                                      color: Colors.black54,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
+              if (controller.slips.isEmpty) {
+                return const SliverFillRemaining(
+                  child: Center(child: Text("No slips yet. Add one!")),
+                );
+              }
 
-                // ENTRY 3: Quote
-                TimelineEntry(
-                  child: JournalEntryCard(
-                    date: 'OCT 25 • 9:00 AM',
-                    rotation: 2,
-                    child: Container(
-                      width: double.infinity,
-                      padding: const EdgeInsets.symmetric(vertical: 8),
+              return SliverList(
+                delegate: SliverChildBuilderDelegate((context, index) {
+                  final slip = controller.slips[index];
+                  // Cycle rotations for visual variety: 1, -1, 2, 0
+                  final rotations = [1, -1, 2, 0];
+                  final rotation = rotations[index % rotations.length];
+
+                  return TimelineEntry(
+                    isLast: index == controller.slips.length - 1,
+                    child: JournalEntryCard(
+                      date: _formatDate(slip.createdAt),
+                      rotation: rotation.toDouble(),
                       child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Icon(
-                            Icons.format_quote,
-                            size: 40,
-                            color: theme.colorScheme.primary.withOpacity(0.4),
+                          _buildAuthorRow(
+                            slip.authorUsername ?? 'Unknown',
+                            slip.authorEmail != null
+                                ? 'https://ui-avatars.com/api/?name=${slip.authorUsername}&background=random' // Fallback avatar
+                                : 'https://i.pravatar.cc/100?img=${(slip.authorId % 70) + 1}',
                           ),
-                          const Text(
-                            '"Travel is the only thing you buy that makes you richer."',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              fontFamily: 'Noto Serif',
-                              fontStyle: FontStyle.italic,
-                              fontSize: 20,
+                          const SizedBox(height: 12),
+                          Text(
+                            slip.textContent,
+                            style: const TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.normal,
+                              height: 1.5,
                             ),
                           ),
                           const SizedBox(height: 16),
-                          Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              const CircleAvatar(
-                                radius: 10,
-                                backgroundImage: NetworkImage(
-                                  'https://i.pravatar.cc/100?img=3',
-                                ),
-                                backgroundColor: Colors.grey,
-                              ),
-                              const SizedBox(width: 8),
-                              Text(
-                                '— DAVID',
-                                style: TextStyle(
-                                  color: Colors.grey[600],
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 12,
-                                  letterSpacing: 1.2,
-                                ),
-                              ),
-                            ],
-                          ),
+                          _buildFooter(),
                         ],
                       ),
                     ),
-                  ),
-                ),
-
-                // ENTRY 4: Map
-                TimelineEntry(
-                  isLast: true,
-                  child: JournalEntryCard(
-                    date: 'OCT 25 • 11:30 AM',
-                    rotation: 0,
-                    showPin: false,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              'Next Stop: Kyoto',
-                              style: TextStyle(fontWeight: FontWeight.bold),
-                            ),
-                            Icon(Icons.near_me, size: 16, color: Colors.grey),
-                          ],
-                        ),
-                        const SizedBox(height: 8),
-                        Container(
-                          height: 120,
-                          width: double.infinity,
-                          decoration: BoxDecoration(
-                            image: const DecorationImage(
-                              image: NetworkImage(
-                                'https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?auto=format&fit=crop&q=80&w=600',
-                              ),
-                              fit: BoxFit.cover,
-                            ),
-                            borderRadius: BorderRadius.circular(4),
-                          ),
-                          child: Stack(
-                            children: [
-                              Container(
-                                color: const Color(0xFFEADDCF).withOpacity(0.2),
-                              ),
-                              Center(
-                                child: Container(
-                                  padding: const EdgeInsets.all(8),
-                                  decoration: const BoxDecoration(
-                                    color: Colors.white,
-                                    shape: BoxShape.circle,
-                                  ),
-                                  child: Icon(
-                                    Icons.location_on,
-                                    color: theme.colorScheme.primary,
-                                    size: 20,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-
-                const SizedBox(height: 80),
-              ]),
-            ),
+                  );
+                }, childCount: controller.slips.length),
+              );
+            }),
           ),
         ],
       ),

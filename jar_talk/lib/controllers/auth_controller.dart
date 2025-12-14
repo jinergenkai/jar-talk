@@ -3,6 +3,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
 import 'package:jar_talk/router/app_router.dart';
 import 'package:google_sign_in/google_sign_in.dart' as g_sign_in;
+import 'package:jar_talk/services/dio_client.dart';
+import 'package:jar_talk/models/backend_auth_models.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthController extends GetxController {
   static AuthController get instance => Get.find();
@@ -25,11 +28,54 @@ class AuthController extends GetxController {
 
   void _authChanged(User? user) async {
     if (user == null) {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.clear(); // Clear tokens on logout
       AppRouter.router.go('/login');
     } else {
-      final token = await user.getIdToken();
-      print("JWT Token: $token");
-      AppRouter.router.go('/shelf');
+      try {
+        final firebaseToken = await user.getIdToken();
+        print("Firebase JWT: $firebaseToken");
+
+        if (firebaseToken != null) {
+          await _authenticateWithBackend(firebaseToken);
+        }
+
+        AppRouter.router.go('/shelf');
+      } catch (e) {
+        print("Backend Auth Error: $e");
+        // Still navigate to shelf or handle error appropriately?
+        // Maybe stay on login if backend auth is strict requirement?
+        // For now, let's allow access but log error (or maybe show snackbar)
+        Get.snackbar(
+          "Connection Error",
+          "Could not connect to backend server. Some features may be unavailable.",
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.orangeAccent.withOpacity(0.8),
+          colorText: Colors.white,
+        );
+        AppRouter.router.go('/shelf');
+      }
+    }
+  }
+
+  Future<void> _authenticateWithBackend(String firebaseToken) async {
+    try {
+      final dio = DioClient.instance.dio;
+      final response = await dio.post(
+        '/auth/firebase',
+        data: FirebaseAuthRequest(firebaseToken: firebaseToken).toJson(),
+      );
+
+      final authResponse = AuthResponse.fromJson(response.data);
+
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString('jwtFirebase', firebaseToken);
+      await prefs.setString('jwtBackend', authResponse.accessToken);
+
+      print("Backend Authenticated! User ID: ${authResponse.user.id}");
+    } catch (e) {
+      print("Failed to authenticate with backend: $e");
+      rethrow;
     }
   }
 

@@ -1,42 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:jar_talk/controllers/shelf_controller.dart';
 import 'package:jar_talk/screens/shelf/widgets/jar_card.dart';
 import 'package:jar_talk/utils/app_theme.dart';
 import 'package:jar_talk/screens/journal_view/journal_view_screen.dart';
-
-class ShelfController extends GetxController {
-  final RxList<Map<String, dynamic>> activeJars = <Map<String, dynamic>>[
-    {
-      'label': 'Family Notes',
-      'subLabel': 'Glowing • Updated 2m ago',
-      'count': 3,
-      'color': const Color(0xFFD47311),
-    },
-    {
-      'label': 'Partner',
-      'subLabel': 'Obverflowing',
-      'count': 5,
-      'color': const Color(0xFFD47311),
-    },
-    {
-      'label': 'Travel Plans',
-      'subLabel': '1 new slip',
-      'count': 1,
-      'color': const Color(0xFFD47311),
-    },
-  ].obs;
-
-  final RxList<Map<String, dynamic>> archivedJars = <Map<String, dynamic>>[
-    {'label': '2023 Memories', 'subLabel': 'Sealed • Dec 31', 'count': 0},
-    {'label': 'Old Friends', 'subLabel': 'Sealed • Nov 20', 'count': 0},
-  ].obs;
-}
 
 class ShelfScreen extends StatelessWidget {
   const ShelfScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    // Inject the real controller
     final controller = Get.put(ShelfController());
     final theme = Theme.of(context);
     final appTheme = theme.extension<AppThemeExtension>()!;
@@ -82,7 +56,8 @@ class ShelfScreen extends StatelessWidget {
                   child: IconButton(
                     icon: Icon(Icons.add, color: theme.colorScheme.primary),
                     onPressed: () {
-                      // Navigate to create jar
+                      // Simple dialog to create Jar for now
+                      _showCreateJarDialog(context, controller);
                     },
                   ),
                 ),
@@ -92,28 +67,37 @@ class ShelfScreen extends StatelessWidget {
 
           // content
           SliverToBoxAdapter(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const SizedBox(height: 24),
-                // Recent Jars Header
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 24.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        'Recent Jars',
-                        style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                          color: theme.brightness == Brightness.dark
-                              ? Colors.white.withOpacity(0.9)
-                              : appTheme.woodLight,
+            child: Obx(() {
+              if (controller.isLoading.value && controller.activeJars.isEmpty) {
+                return const Center(
+                  child: Padding(
+                    padding: EdgeInsets.all(32.0),
+                    child: CircularProgressIndicator(),
+                  ),
+                );
+              }
+
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const SizedBox(height: 24),
+                  // Recent Jars Header
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          'Recent Jars',
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            color: theme.brightness == Brightness.dark
+                                ? Colors.white.withOpacity(0.9)
+                                : appTheme.woodLight,
+                          ),
                         ),
-                      ),
-                      Obx(
-                        () => Text(
+                        Text(
                           '${controller.activeJars.length} ACTIVE',
                           style: TextStyle(
                             fontSize: 12,
@@ -122,193 +106,181 @@ class ShelfScreen extends StatelessWidget {
                             color: theme.colorScheme.primary,
                           ),
                         ),
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 4),
-
-                // Recent Jars Grid Section
-                Container(
-                  width: double.infinity,
-                  padding: const EdgeInsets.symmetric(vertical: 8),
-                  decoration: BoxDecoration(
-                    color: appTheme.woodDark.withOpacity(0.3),
-                    border: Border.symmetric(
-                      horizontal: BorderSide(
-                        color: Colors.white.withOpacity(0.05),
-                      ),
+                      ],
                     ),
                   ),
-                  child: Stack(
-                    children: [
-                      Positioned(
-                        bottom: 0,
-                        left: 0,
-                        right: 0,
-                        height: 16,
-                        child: DecoratedBox(
-                          decoration: BoxDecoration(
-                            gradient: LinearGradient(
-                              begin: Alignment.bottomCenter,
-                              end: Alignment.topCenter,
-                              colors: [
-                                Colors.black.withOpacity(0.4),
-                                Colors.transparent,
-                              ],
+                  const SizedBox(height: 4),
+
+                  // Recent Jars Grid Section
+                  Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.symmetric(vertical: 8),
+                    decoration: BoxDecoration(
+                      color: appTheme.woodDark.withOpacity(0.3),
+                      border: Border.symmetric(
+                        horizontal: BorderSide(
+                          color: Colors.white.withOpacity(0.05),
+                        ),
+                      ),
+                    ),
+                    child: Stack(
+                      children: [
+                        Positioned(
+                          bottom: 0,
+                          left: 0,
+                          right: 0,
+                          height: 16,
+                          child: DecoratedBox(
+                            decoration: BoxDecoration(
+                              gradient: LinearGradient(
+                                begin: Alignment.bottomCenter,
+                                end: Alignment.topCenter,
+                                colors: [
+                                  Colors.black.withOpacity(0.4),
+                                  Colors.transparent,
+                                ],
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 16),
-                        child: Obx(() {
-                          final width = MediaQuery.of(context).size.width;
-                          final int crossAxisCount = width < 600 ? 2 : 3;
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 16),
+                          child: Builder(
+                            builder: (context) {
+                              final width = MediaQuery.of(context).size.width;
+                              final int crossAxisCount = width < 600 ? 2 : 3;
 
-                          return GridView.builder(
-                            shrinkWrap: true,
-                            physics: const NeverScrollableScrollPhysics(),
-                            gridDelegate:
-                                SliverGridDelegateWithFixedCrossAxisCount(
-                                  crossAxisCount: crossAxisCount,
-                                  crossAxisSpacing: 16,
-                                  mainAxisSpacing: 32,
-                                  childAspectRatio:
-                                      0.5, // Even taller for jars to fix overflow
-                                ),
-                            itemCount: controller.activeJars.length,
-                            itemBuilder: (context, index) {
-                              final jar = controller.activeJars[index];
-                              return JarCard(
-                                label: jar['label'],
-                                subLabel: jar['subLabel'],
-                                count: jar['count'],
-                                jarColor: jar['color'],
-                                isLocked: false,
-                                onTap: () {
-                                  Navigator.of(
-                                    context,
-                                    rootNavigator: true,
-                                  ).push(
-                                    MaterialPageRoute(
-                                      builder: (context) =>
-                                          const JournalViewScreen(),
+                              if (controller.activeJars.isEmpty) {
+                                return const Padding(
+                                  padding: EdgeInsets.all(32.0),
+                                  child: Center(
+                                    child: Text("No Jars found. Create one!"),
+                                  ),
+                                );
+                              }
+
+                              return GridView.builder(
+                                shrinkWrap: true,
+                                physics: const NeverScrollableScrollPhysics(),
+                                gridDelegate:
+                                    SliverGridDelegateWithFixedCrossAxisCount(
+                                      crossAxisCount: crossAxisCount,
+                                      crossAxisSpacing: 16,
+                                      mainAxisSpacing: 32,
+                                      childAspectRatio:
+                                          0.5, // Even taller for jars to fix overflow
                                     ),
+                                itemCount: controller.activeJars.length,
+                                itemBuilder: (context, index) {
+                                  final jar = controller.activeJars[index];
+                                  return JarCard(
+                                    label: jar.name,
+                                    subLabel:
+                                        'Member Count: ${jar.memberCount ?? 1}', // Fallback
+                                    count:
+                                        0, // Backend doesn't support slip count yet
+                                    jarColor: const Color(
+                                      0xFFD47311,
+                                    ), // Default or parse from styleSettings
+                                    isLocked: false,
+                                    onTap: () {
+                                      Navigator.of(
+                                        context,
+                                        rootNavigator: true,
+                                      ).push(
+                                        MaterialPageRoute(
+                                          builder: (context) =>
+                                              JournalViewScreen(
+                                                jarId: jar.id,
+                                                jarName: jar.name,
+                                              ),
+                                        ),
+                                      );
+                                    },
                                   );
                                 },
                               );
                             },
-                          );
-                        }),
-                      ),
-                    ],
-                  ),
-                ),
-
-                const SizedBox(height: 32),
-
-                // Archived Jars Header
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 24.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        'Archived Jars',
-                        style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                          color: theme.brightness == Brightness.dark
-                              ? Colors.white.withOpacity(0.9)
-                              : appTheme.woodLight,
-                        ),
-                      ),
-                      Text(
-                        'SEALED',
-                        style: TextStyle(
-                          fontSize: 12,
-                          fontWeight: FontWeight.w600,
-                          letterSpacing: 1.0,
-                          color: Colors.white.withOpacity(0.4),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 4),
-
-                // Archived Jars Grid Section
-                Container(
-                  width: double.infinity,
-                  padding: const EdgeInsets.symmetric(vertical: 8),
-                  decoration: BoxDecoration(
-                    color: appTheme.woodDark.withOpacity(0.3),
-                    border: Border.symmetric(
-                      horizontal: BorderSide(
-                        color: Colors.white.withOpacity(0.05),
-                      ),
-                    ),
-                  ),
-                  child: Stack(
-                    children: [
-                      Positioned(
-                        bottom: 0,
-                        left: 0,
-                        right: 0,
-                        height: 16,
-                        child: DecoratedBox(
-                          decoration: BoxDecoration(
-                            gradient: LinearGradient(
-                              begin: Alignment.bottomCenter,
-                              end: Alignment.topCenter,
-                              colors: [
-                                Colors.black.withOpacity(0.4),
-                                Colors.transparent,
-                              ],
-                            ),
                           ),
                         ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 16),
-                        child: Obx(() {
-                          final width = MediaQuery.of(context).size.width;
-                          final int crossAxisCount = width < 600 ? 2 : 3;
-
-                          return GridView.builder(
-                            shrinkWrap: true,
-                            physics: const NeverScrollableScrollPhysics(),
-                            gridDelegate:
-                                SliverGridDelegateWithFixedCrossAxisCount(
-                                  crossAxisCount: crossAxisCount,
-                                  crossAxisSpacing: 16,
-                                  mainAxisSpacing: 32,
-                                  childAspectRatio: 0.5,
-                                ),
-                            itemCount: controller.archivedJars.length,
-                            itemBuilder: (context, index) {
-                              final jar = controller.archivedJars[index];
-                              return Opacity(
-                                opacity: 0.6,
-                                child: JarCard(
-                                  label: jar['label'],
-                                  subLabel: jar['subLabel'],
-                                  count: jar['count'],
-                                  isLocked: true,
-                                  onTap: () {},
-                                ),
-                              );
-                            },
-                          );
-                        }),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
-                ),
-                const SizedBox(height: 100), // Bottom padding
-              ],
-            ),
+
+                  const SizedBox(height: 32),
+
+                  // Archived Jars Header (Placeholder for now)
+                  if (controller.archivedJars.isNotEmpty) ...[
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            'Archived Jars',
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                              color: theme.brightness == Brightness.dark
+                                  ? Colors.white.withOpacity(0.9)
+                                  : appTheme.woodLight,
+                            ),
+                          ),
+                          Text(
+                            'SEALED',
+                            style: TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.w600,
+                              letterSpacing: 1.0,
+                              color: Colors.white.withOpacity(0.4),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+
+                    // Archived Jars Grid Section
+                    Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.symmetric(vertical: 8),
+                      // ... decoration similar to above ...
+                      child: const SizedBox(height: 100), // Placeholder
+                    ),
+                  ],
+                  const SizedBox(height: 100), // Bottom padding
+                ],
+              );
+            }),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showCreateJarDialog(BuildContext context, ShelfController controller) {
+    final textController = TextEditingController();
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text("Create New Jar"),
+        content: TextField(
+          controller: textController,
+          decoration: const InputDecoration(hintText: "Jar Name"),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text("Cancel"),
+          ),
+          TextButton(
+            onPressed: () {
+              if (textController.text.isNotEmpty) {
+                controller.createJar(textController.text);
+                Navigator.pop(context);
+              }
+            },
+            child: const Text("Create"),
           ),
         ],
       ),
