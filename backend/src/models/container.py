@@ -33,6 +33,16 @@ class ContainerUpdate(SQLModel):
     jar_style_settings: Optional[str] = None
 
 
+class MemberInfo(SQLModel):
+    """Member info for container response"""
+    user_id: int
+    username: str
+    email: str
+    profile_picture_url: Optional[str] = None
+    role: str  # 'admin' or 'member'
+    joined_at: datetime
+
+
 class ContainerResponse(SQLModel):
     """Schema for container response"""
     container_id: int
@@ -40,11 +50,12 @@ class ContainerResponse(SQLModel):
     owner_id: int
     jar_style_settings: Optional[str] = None
     created_at: datetime
-    # Optional: Include membership info
-    user_role: Optional[str] = None  # Role of current user in this container
+    # Current user's role in this container
+    user_role: Optional[str] = None
+    # Member count
     member_count: Optional[int] = None
 
 
-class ContainerWithMembers(ContainerResponse):
-    """Schema for container with member details"""
-    members: List[dict] = []  # List of members with their roles
+class ContainerDetailResponse(ContainerResponse):
+    """Schema for container detail with members"""
+    members: List[MemberInfo] = []  # List of members with their details

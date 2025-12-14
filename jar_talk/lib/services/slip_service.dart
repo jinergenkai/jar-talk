@@ -29,6 +29,8 @@ class SlipService {
   Future<Slip> createSlip(
     int containerId,
     String textContent, {
+    String? title,
+    String? emotion,
     String? locationData,
   }) async {
     try {
@@ -37,6 +39,8 @@ class SlipService {
         data: {
           'container_id': containerId,
           'text_content': textContent,
+          if (title != null) 'title': title,
+          if (emotion != null) 'emotion': emotion,
           if (locationData != null) 'location_data': locationData,
         },
       );

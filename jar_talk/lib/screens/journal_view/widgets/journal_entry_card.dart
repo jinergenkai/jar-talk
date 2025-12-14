@@ -73,7 +73,7 @@ class JournalEntryCard extends StatelessWidget {
                           color: math.Random().nextBool()
                               ? Colors.red
                               : Colors.orange,
-                          size: 32,
+                          size: 24,
                         ),
                       ),
                     ),

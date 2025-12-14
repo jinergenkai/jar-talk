@@ -8,6 +8,7 @@ from src.cores.firebase_config import initialize_firebase
 from src.controllers.auth_controller import router as auth_router
 from src.controllers.container_controller import router as container_router
 from src.controllers.slip_controller import router as slip_router
+from src.controllers.media_controller import router as media_router
 
 
 @asynccontextmanager
@@ -50,6 +51,7 @@ app.add_middleware(
 app.include_router(auth_router)
 app.include_router(container_router)
 app.include_router(slip_router)
+app.include_router(media_router)
 
 
 @app.get("/")

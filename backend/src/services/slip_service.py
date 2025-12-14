@@ -2,10 +2,12 @@ from sqlmodel import Session
 from fastapi import HTTPException, status
 from typing import List
 
-from ..models.slip import Slip, SlipCreate, SlipUpdate, SlipResponse
+from ..models.slip import Slip, SlipCreate, SlipUpdate, SlipResponse, MediaInfo, EmotionInfo
 from ..repos.slip_repo import SlipRepository
 from ..repos.membership_repo import MembershipRepository
 from ..repos.user_repo import UserRepository
+from ..repos.media_repo import MediaRepository
+from ..cores.storage import storage_service
 
 
 class SlipService:
@@ -16,6 +18,46 @@ class SlipService:
         self.slip_repo = SlipRepository(session)
         self.membership_repo = MembershipRepository(session)
         self.user_repo = UserRepository(session)
+        self.media_repo = MediaRepository(session)
+
+    def _build_slip_response(self, slip: Slip) -> SlipResponse:
+        """Build enriched slip response with media and emotions"""
+        # Get author info
+        author = self.user_repo.get_by_id(slip.author_id)
+
+        # Get media
+        media_list = self.media_repo.get_by_slip(slip.slip_id)
+        media_info = []
+        for media in media_list:
+            download_url = storage_service.generate_download_url(media.storage_url)
+            media_info.append(
+                MediaInfo(
+                    media_id=media.media_id,
+                    media_type=media.media_type,
+                    storage_url=media.storage_url,
+                    caption=media.caption,
+                    download_url=download_url
+                )
+            )
+
+        # TODO: Get emotion log when EmotionLog is implemented
+        # For now, set to None
+        emotion = None
+
+        return SlipResponse(
+            slip_id=slip.slip_id,
+            container_id=slip.container_id,
+            author_id=slip.author_id,
+            title=slip.title,
+            text_content=slip.text_content,
+            created_at=slip.created_at,
+            location_data=slip.location_data,
+            author_username=author.username if author else None,
+            author_email=author.email if author else None,
+            author_profile_picture=author.profile_picture_url if author else None,
+            media=media_info,
+            emotion=emotion
+        )
 
     def create_slip(self, slip_data: SlipCreate, author_id: int) -> SlipResponse:
         """
@@ -32,19 +74,7 @@ class SlipService:
         # Create slip
         slip = self.slip_repo.create(slip_data, author_id)
 
-        # Get author info
-        author = self.user_repo.get_by_id(author_id)
-
-        return SlipResponse(
-            slip_id=slip.slip_id,
-            container_id=slip.container_id,
-            author_id=slip.author_id,
-            text_content=slip.text_content,
-            created_at=slip.created_at,
-            location_data=slip.location_data,
-            author_username=author.username if author else None,
-            author_email=author.email if author else None
-        )
+        return self._build_slip_response(slip)
 
     def get_slip(self, slip_id: int, user_id: int) -> SlipResponse:
         """
@@ -65,19 +95,7 @@ class SlipService:
                 detail="You don't have access to this slip"
             )
 
-        # Get author info
-        author = self.user_repo.get_by_id(slip.author_id)
-
-        return SlipResponse(
-            slip_id=slip.slip_id,
-            container_id=slip.container_id,
-            author_id=slip.author_id,
-            text_content=slip.text_content,
-            created_at=slip.created_at,
-            location_data=slip.location_data,
-            author_username=author.username if author else None,
-            author_email=author.email if author else None
-        )
+        return self._build_slip_response(slip)
 
     def get_container_slips(
         self,
@@ -100,24 +118,8 @@ class SlipService:
         # Get slips
         slips = self.slip_repo.get_by_container(container_id, skip, limit)
 
-        # Build responses with author info
-        responses = []
-        for slip in slips:
-            author = self.user_repo.get_by_id(slip.author_id)
-            responses.append(
-                SlipResponse(
-                    slip_id=slip.slip_id,
-                    container_id=slip.container_id,
-                    author_id=slip.author_id,
-                    text_content=slip.text_content,
-                    created_at=slip.created_at,
-                    location_data=slip.location_data,
-                    author_username=author.username if author else None,
-                    author_email=author.email if author else None
-                )
-            )
-
-        return responses
+        # Build enriched responses
+        return [self._build_slip_response(slip) for slip in slips]
 
     def get_user_slips(
         self,
@@ -133,25 +135,12 @@ class SlipService:
         # Get all slips by author
         slips = self.slip_repo.get_by_author(author_id, skip, limit)
 
-        # Filter by access and build responses
+        # Filter by access and build enriched responses
         responses = []
-        author = self.user_repo.get_by_id(author_id)
-
         for slip in slips:
             # Check if current user has access to this slip's container
             if self.membership_repo.is_member(current_user_id, slip.container_id):
-                responses.append(
-                    SlipResponse(
-                        slip_id=slip.slip_id,
-                        container_id=slip.container_id,
-                        author_id=slip.author_id,
-                        text_content=slip.text_content,
-                        created_at=slip.created_at,
-                        location_data=slip.location_data,
-                        author_username=author.username if author else None,
-                        author_email=author.email if author else None
-                    )
-                )
+                responses.append(self._build_slip_response(slip))
 
         return responses
 
@@ -187,19 +176,7 @@ class SlipService:
                 detail="Failed to update slip"
             )
 
-        # Get author info
-        author = self.user_repo.get_by_id(updated_slip.author_id)
-
-        return SlipResponse(
-            slip_id=updated_slip.slip_id,
-            container_id=updated_slip.container_id,
-            author_id=updated_slip.author_id,
-            text_content=updated_slip.text_content,
-            created_at=updated_slip.created_at,
-            location_data=updated_slip.location_data,
-            author_username=author.username if author else None,
-            author_email=author.email if author else None
-        )
+        return self._build_slip_response(updated_slip)
 
     def delete_slip(self, slip_id: int, user_id: int) -> dict:
         """

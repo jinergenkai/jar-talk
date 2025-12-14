@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Profile &amp; Settings</title>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#d47311",
+                        "background-light": "#f8f7f6",
+                        "background-dark": "#221910",
+                        "surface-light": "#ffffff",
+                        "surface-dark": "#2C241B", // Slightly lighter than background-dark for cards
+                    },
+                    fontFamily: {
+                        "display": ["Manrope", "sans-serif"]
+                    },
+                    borderRadius: { "DEFAULT": "0.5rem", "lg": "1rem", "xl": "1.5rem", "2xl": "2rem", "full": "9999px" },
+                },
+            },
+        }
+    </script>
+    <style>
+        /* Custom Toggle Switch Style */
+        .toggle-checkbox:checked {
+            right: 0;
+            border-color: #d47311;
+        }
+
+        .toggle-checkbox:checked+.toggle-label {
+            background-color: #d47311;
+        }
+
+        /* Hide scrollbar for clean mobile look */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+    <style>
+        body {
+            min-height: max(884px, 100dvh);
+        }
+    </style>
+</head>
+
+<body class="bg-background-light dark:bg-background-dark font-display antialiased transition-colors duration-200">
+    <div
+        class="relative flex min-h-screen w-full flex-col max-w-md mx-auto shadow-2xl overflow-hidden bg-background-light dark:bg-background-dark">
+        <!-- TopAppBar -->
+        <header
+            class="sticky top-0 z-50 flex items-center justify-between px-4 py-3 bg-background-light/90 dark:bg-background-dark/90 backdrop-blur-md border-b border-gray-200 dark:border-white/5">
+            <button
+                class="flex size-10 items-center justify-center rounded-full hover:bg-black/5 dark:hover:bg-white/10 transition-colors text-gray-900 dark:text-white">
+                <span class="material-symbols-outlined text-[24px]">arrow_back</span>
+            </button>
+            <h2 class="text-lg font-bold leading-tight tracking-tight text-gray-900 dark:text-white">Settings</h2>
+            <div class="size-10"></div> <!-- Spacer for alignment -->
+        </header>
+        <main class="flex-1 overflow-y-auto no-scrollbar pb-8">
+            <!-- ProfileHeader -->
+            <div class="px-4 py-6">
+                <div class="flex flex-col items-center gap-4">
+                    <div class="relative group cursor-pointer">
+                        <div class="h-24 w-24 rounded-full p-1 border-2 border-primary/30">
+                            <img alt="User Profile" class="h-full w-full rounded-full object-cover"
+                                data-alt="Portrait of a young woman smiling slightly"
+                                src="https://lh3.googleusercontent.com/aida-public/AB6AXuARfl0pZwW98V3ogUPVyBl-cs7m0rkkC10B99OlOG4NwgmWucFQzPbTMvlJAFovDN5t0aLwolkbA1QKuWBUxPCOXmgLWo65rS4ezzeaJb5Z3kN0AdFqpjZMlx6xzuDXGSumVCZmBBKARh_-LpWeu2yO5axv_7bHTLhpzJZDvV3O1SJrIAINCtmrawPkCQWlN9XL2dmy9-XlhrY1GnXfgToOBjAZ8wiv9M0SK4U1OPeJErepQS0AnrRTwlsWK-iWH8fP50eGCalfhadQ" />
+                        </div>
+                        <div
+                            class="absolute bottom-0 right-0 bg-primary text-white rounded-full p-1.5 border-4 border-background-light dark:border-background-dark flex items-center justify-center shadow-sm">
+                            <span class="material-symbols-outlined text-[16px]">edit</span>
+                        </div>
+                    </div>
+                    <div class="text-center">
+                        <h3 class="text-xl font-bold text-gray-900 dark:text-white">Sarah Jenkins</h3>
+                        <p class="text-sm font-medium text-gray-500 dark:text-[#c9ad92]">sarah.j@glassjar.app</p>
+                    </div>
+                </div>
+            </div>
+            <!-- Section: Account & Security -->
+            <div class="px-4 mb-6">
+                <h3 class="text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-[#8a7a6b] mb-2 px-2">
+                    Account &amp; Security</h3>
+                <div
+                    class="flex flex-col bg-surface-light dark:bg-surface-dark rounded-xl overflow-hidden shadow-sm border border-gray-100 dark:border-white/5">
+                    <!-- Change Password -->
+                    <button
+                        class="flex items-center justify-between p-4 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors group">
+                        <div class="flex items-center gap-3">
+                            <div
+                                class="flex items-center justify-center size-8 rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400">
+                                <span class="material-symbols-outlined text-[20px]">lock</span>
+                            </div>
+                            <span class="text-base font-medium text-gray-900 dark:text-white">Change Password</span>
+                        </div>
+                        <span class="material-symbols-outlined text-gray-400">chevron_right</span>
+                    </button>
+                    <div class="h-px w-full bg-gray-100 dark:bg-white/5 ml-14"></div>
+                    <!-- Email Preferences -->
+                    <button
+                        class="flex items-center justify-between p-4 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors group">
+                        <div class="flex items-center gap-3">
+                            <div
+                                class="flex items-center justify-center size-8 rounded-full bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400">
+                                <span class="material-symbols-outlined text-[20px]">mail</span>
+                            </div>
+                            <span class="text-base font-medium text-gray-900 dark:text-white">Email Preferences</span>
+                        </div>
+                        <span class="material-symbols-outlined text-gray-400">chevron_right</span>
+                    </button>
+                    <div class="h-px w-full bg-gray-100 dark:bg-white/5 ml-14"></div>
+                    <!-- Delete Account -->
+                    <button
+                        class="flex items-center justify-between p-4 hover:bg-red-50 dark:hover:bg-red-900/10 transition-colors group">
+                        <div class="flex items-center gap-3">
+                            <div
+                                class="flex items-center justify-center size-8 rounded-full bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400">
+                                <span class="material-symbols-outlined text-[20px]">delete_forever</span>
+                            </div>
+                            <span class="text-base font-medium text-red-600 dark:text-red-400">Delete Account</span>
+                        </div>
+                    </button>
+                </div>
+            </div>
+            <!-- Section: Application Preferences -->
+            <div class="px-4 mb-6">
+                <h3 class="text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-[#8a7a6b] mb-2 px-2">App
+                    Preferences</h3>
+                <div
+                    class="flex flex-col bg-surface-light dark:bg-surface-dark rounded-xl overflow-hidden shadow-sm border border-gray-100 dark:border-white/5">
+                    <!-- Theme/Appearance -->
+                    <div class="flex items-center justify-between p-4">
+                        <div class="flex items-center gap-3">
+                            <div
+                                class="flex items-center justify-center size-8 rounded-full bg-orange-100 dark:bg-orange-900/30 text-orange-600 dark:text-primary">
+                                <span class="material-symbols-outlined text-[20px]">dark_mode</span>
+                            </div>
+                            <span class="text-base font-medium text-gray-900 dark:text-white">Dark Mode</span>
+                        </div>
+                        <div
+                            class="relative inline-block w-11 h-6 align-middle select-none transition duration-200 ease-in">
+                            <input checked=""
+                                class="toggle-checkbox absolute block w-5 h-5 rounded-full bg-white border-4 appearance-none cursor-pointer border-gray-300 dark:border-gray-600 checked:right-0 checked:border-primary transition-all duration-300 top-0.5 left-0.5 checked:translate-x-[100%]"
+                                id="dark-mode-toggle" name="toggle" type="checkbox" />
+                            <label
+                                class="toggle-label block overflow-hidden h-6 rounded-full bg-gray-200 dark:bg-gray-700 cursor-pointer peer-checked:bg-primary transition-colors duration-300"
+                                for="dark-mode-toggle"></label>
+                        </div>
+                    </div>
+                    <div class="h-px w-full bg-gray-100 dark:bg-white/5 ml-14"></div>
+                    <!-- Notification Settings -->
+                    <button
+                        class="flex items-center justify-between p-4 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors group">
+                        <div class="flex items-center gap-3">
+                            <div
+                                class="flex items-center justify-center size-8 rounded-full bg-pink-100 dark:bg-pink-900/30 text-pink-600 dark:text-pink-400">
+                                <span class="material-symbols-outlined text-[20px]">notifications</span>
+                            </div>
+                            <span class="text-base font-medium text-gray-900 dark:text-white">Notifications</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="text-sm text-gray-500 dark:text-gray-400">On</span>
+                            <span class="material-symbols-outlined text-gray-400">chevron_right</span>
+                        </div>
+                    </button>
+                    <div class="h-px w-full bg-gray-100 dark:bg-white/5 ml-14"></div>
+                    <!-- Default Jar View -->
+                    <button
+                        class="flex items-center justify-between p-4 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors group">
+                        <div class="flex items-center gap-3">
+                            <div
+                                class="flex items-center justify-center size-8 rounded-full bg-teal-100 dark:bg-teal-900/30 text-teal-600 dark:text-teal-400">
+                                <span class="material-symbols-outlined text-[20px]">grid_view</span>
+                            </div>
+                            <span class="text-base font-medium text-gray-900 dark:text-white">Default Jar View</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="text-sm text-gray-500 dark:text-gray-400">Grid</span>
+                            <span class="material-symbols-outlined text-gray-400">unfold_more</span>
+                        </div>
+                    </button>
+                    <div class="h-px w-full bg-gray-100 dark:bg-white/5 ml-14"></div>
+                    <!-- Language Selection -->
+                    <button
+                        class="flex items-center justify-between p-4 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors group">
+                        <div class="flex items-center gap-3">
+                            <div
+                                class="flex items-center justify-center size-8 rounded-full bg-indigo-100 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400">
+                                <span class="material-symbols-outlined text-[20px]">language</span>
+                            </div>
+                            <span class="text-base font-medium text-gray-900 dark:text-white">Language</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="text-sm text-gray-500 dark:text-gray-400">English</span>
+                            <span class="material-symbols-outlined text-gray-400">chevron_right</span>
+                        </div>
+                    </button>
+                </div>
+            </div>
+            <!-- Section: Data & Privacy -->
+            <div class="px-4 mb-6">
+                <h3 class="text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-[#8a7a6b] mb-2 px-2">Data
+                    &amp; Privacy</h3>
+                <div
+                    class="flex flex-col bg-surface-light dark:bg-surface-dark rounded-xl overflow-hidden shadow-sm border border-gray-100 dark:border-white/5">
+                    <!-- Download Data -->
+                    <button
+                        class="flex items-center justify-between p-4 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors group">
+                        <div class="flex items-center gap-3">
+                            <div
+                                class="flex items-center justify-center size-8 rounded-full bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400">
+                                <span class="material-symbols-outlined text-[20px]">download</span>
+                            </div>
+                            <span class="text-base font-medium text-gray-900 dark:text-white">Download All Data</span>
+                        </div>
+                        <span class="material-symbols-outlined text-gray-400">chevron_right</span>
+                    </button>
+                    <div class="h-px w-full bg-gray-100 dark:bg-white/5 ml-14"></div>
+                    <!-- Privacy & Terms -->
+                    <button
+                        class="flex items-center justify-between p-4 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors group">
+                        <div class="flex items-center gap-3">
+                            <div
+                                class="flex items-center justify-center size-8 rounded-full bg-gray-100 dark:bg-gray-700/50 text-gray-600 dark:text-gray-400">
+                                <span class="material-symbols-outlined text-[20px]">policy</span>
+                            </div>
+                            <span class="text-base font-medium text-gray-900 dark:text-white">Privacy Policy &amp;
+                                Terms</span>
+                        </div>
+                        <span class="material-symbols-outlined text-gray-400">open_in_new</span>
+                    </button>
+                    <div class="h-px w-full bg-gray-100 dark:bg-white/5 ml-14"></div>
+                    <!-- Data Usage Consent -->
+                    <div class="flex items-center justify-between p-4">
+                        <div class="flex items-center gap-3">
+                            <div
+                                class="flex items-center justify-center size-8 rounded-full bg-yellow-100 dark:bg-yellow-900/30 text-yellow-600 dark:text-yellow-500">
+                                <span class="material-symbols-outlined text-[20px]">dataset</span>
+                            </div>
+                            <span class="text-base font-medium text-gray-900 dark:text-white">Data Usage Consent</span>
+                        </div>
+                        <div
+                            class="relative inline-block w-11 h-6 align-middle select-none transition duration-200 ease-in">
+                            <input
+                                class="toggle-checkbox absolute block w-5 h-5 rounded-full bg-white border-4 appearance-none cursor-pointer border-gray-300 dark:border-gray-600 checked:right-0 checked:border-primary transition-all duration-300 top-0.5 left-0.5 checked:translate-x-[100%]"
+                                id="consent-toggle" name="toggle" type="checkbox" />
+                            <label
+                                class="toggle-label block overflow-hidden h-6 rounded-full bg-gray-200 dark:bg-gray-700 cursor-pointer peer-checked:bg-primary transition-colors duration-300"
+                                for="consent-toggle"></label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Section: Support & About -->
+            <div class="px-4 mb-8">
+                <h3 class="text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-[#8a7a6b] mb-2 px-2">
+                    Support</h3>
+                <div
+                    class="flex flex-col bg-surface-light dark:bg-surface-dark rounded-xl overflow-hidden shadow-sm border border-gray-100 dark:border-white/5">
+                    <!-- Help Center -->
+                    <button
+                        class="flex items-center justify-between p-4 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors group">
+                        <div class="flex items-center gap-3">
+                            <div
+                                class="flex items-center justify-center size-8 rounded-full bg-cyan-100 dark:bg-cyan-900/30 text-cyan-600 dark:text-cyan-400">
+                                <span class="material-symbols-outlined text-[20px]">help</span>
+                            </div>
+                            <span class="text-base font-medium text-gray-900 dark:text-white">Help Center / FAQ</span>
+                        </div>
+                        <span class="material-symbols-outlined text-gray-400">chevron_right</span>
+                    </button>
+                    <div class="h-px w-full bg-gray-100 dark:bg-white/5 ml-14"></div>
+                    <!-- Contact Support -->
+                    <button
+                        class="flex items-center justify-between p-4 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors group">
+                        <div class="flex items-center gap-3">
+                            <div
+                                class="flex items-center justify-center size-8 rounded-full bg-rose-100 dark:bg-rose-900/30 text-rose-600 dark:text-rose-400">
+                                <span class="material-symbols-outlined text-[20px]">support_agent</span>
+                            </div>
+                            <span class="text-base font-medium text-gray-900 dark:text-white">Contact Support</span>
+                        </div>
+                        <span class="material-symbols-outlined text-gray-400">chevron_right</span>
+                    </button>
+                    <div class="h-px w-full bg-gray-100 dark:bg-white/5 ml-14"></div>
+                    <!-- Version -->
+                    <div class="flex items-center justify-between p-4">
+                        <div class="flex items-center gap-3">
+                            <div
+                                class="flex items-center justify-center size-8 rounded-full bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400">
+                                <span class="material-symbols-outlined text-[20px]">info</span>
+                            </div>
+                            <span class="text-base font-medium text-gray-900 dark:text-white">App Version</span>
+                        </div>
+                        <span class="text-sm text-gray-500 dark:text-gray-400">v1.0.2</span>
+                    </div>
+                </div>
+            </div>
+            <!-- Footer Action -->
+            <div class="px-4 pb-8">
+                <button
+                    class="w-full py-3.5 rounded-lg border border-red-200 dark:border-red-900/50 text-red-600 dark:text-red-400 font-bold bg-surface-light dark:bg-surface-dark hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors flex items-center justify-center gap-2">
+                    <span class="material-symbols-outlined text-[20px]">logout</span>
+                    Log Out
+                </button>
+            </div>
+        </main>
+    </div>
+    <!-- Toggle Script for Checkboxes (Simulated logic visually handled by CSS peer-checked) -->
+    <script>
+        // No JS needed for visual toggle state as CSS peer-checked is used.
+    </script>
+</body>
+
+</html>

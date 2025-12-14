@@ -15,6 +15,15 @@ class JarService {
     }
   }
 
+  Future<Jar> getJarDetails(int jarId) async {
+    try {
+      final response = await _dio.get('/containers/$jarId');
+      return Jar.fromJson(response.data);
+    } catch (e) {
+      throw Exception('Failed to load jar details: $e');
+    }
+  }
+
   Future<Jar> createJar(String name, {String? styleSettings}) async {
     try {
       final response = await _dio.post(

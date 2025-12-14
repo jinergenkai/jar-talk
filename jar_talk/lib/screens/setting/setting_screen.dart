@@ -9,11 +9,19 @@ import 'package:jar_talk/screens/setting/widgets/permissions_section.dart';
 import 'package:jar_talk/screens/setting/widgets/profile_header.dart';
 
 class SettingScreen extends StatelessWidget {
-  const SettingScreen({super.key});
+  final int jarId;
+  final String jarName;
+
+  const SettingScreen({super.key, required this.jarId, required this.jarName});
 
   @override
   Widget build(BuildContext context) {
-    final controller = Get.put(ProfileController());
+    // Initializing controller with specific tag to separate different jars if needed
+    // For now we can just put it. If we want unique controllers per jar settings, we use tag.
+    final controller = Get.put(ProfileController(), tag: 'settings_$jarId');
+
+    // Initialize with passed data
+    controller.jarName.value = jarName;
 
     const bgLight = Color(0xFFF8F7F6);
 

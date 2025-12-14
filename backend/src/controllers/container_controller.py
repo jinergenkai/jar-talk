@@ -4,7 +4,7 @@ from typing import List
 
 from ..cores.database import get_session
 from ..cores.security import get_current_user_id
-from ..models.container import ContainerCreate, ContainerUpdate, ContainerResponse
+from ..models.container import ContainerCreate, ContainerUpdate, ContainerResponse, ContainerDetailResponse
 from ..services.container_service import ContainerService
 
 
@@ -41,7 +41,7 @@ async def get_user_containers(
     return service.get_user_containers(user_id)
 
 
-@router.get("/{container_id}", response_model=ContainerResponse)
+@router.get("/{container_id}", response_model=ContainerDetailResponse)
 async def get_container(
     container_id: int,
     user_id: int = Depends(get_current_user_id),

@@ -11,6 +11,10 @@ pymysql
 firebase-admin
 python-jose[cryptography]
 
+# Storage (S3/MinIO)
+boto3
+minio
+
 # Utilities
 python-dotenv
 python-multipart

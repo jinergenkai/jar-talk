@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Notifications Center</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#d47311",
+                        "background-light": "#f8f7f6",
+                        "background-dark": "#221910",
+                        "paper-dark": "#2f251a", // Slightly lighter than bg-dark for cards
+                        "paper-text-secondary": "#c9ad92",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: { "DEFAULT": "0.5rem", "lg": "1rem", "xl": "1.5rem", "2xl": "2rem", "full": "9999px" },
+                    boxShadow: {
+                        'slip': '0 2px 8px rgba(0, 0, 0, 0.2)',
+                    }
+                },
+            },
+        }
+    </script>
+    <style>
+        body {
+            min-height: max(884px, 100dvh);
+        }
+    </style>
+</head>
+
+<body
+    class="font-display bg-background-light dark:bg-background-dark min-h-screen text-slate-900 dark:text-white transition-colors duration-200">
+    <div class="relative flex h-full w-full max-w-md mx-auto flex-col pb-20">
+        <!-- Header -->
+        <header
+            class="sticky top-0 z-20 bg-background-light/95 dark:bg-background-dark/95 backdrop-blur-md border-b border-black/5 dark:border-white/5 px-4 pt-12 pb-3 flex items-center justify-between">
+            <h2 class="text-2xl font-bold tracking-tight">Activity</h2>
+            <button class="text-primary text-sm font-semibold hover:opacity-80 transition-opacity">Mark all
+                read</button>
+        </header>
+        <!-- Segmented Control -->
+        <div class="px-4 py-4 sticky top-[72px] z-10 bg-background-light dark:bg-background-dark">
+            <div class="flex p-1 rounded-xl bg-gray-200 dark:bg-[#3a2d20]">
+                <label class="flex-1 cursor-pointer">
+                    <input class="peer sr-only" name="filter" type="radio" value="all" />
+                    <div
+                        class="py-2 px-3 text-center text-sm font-medium rounded-lg text-gray-500 dark:text-paper-text-secondary transition-all peer-checked:bg-white dark:peer-checked:bg-primary peer-checked:text-black dark:peer-checked:text-white peer-checked:shadow-sm">
+                        All Activity
+                    </div>
+                </label>
+                <label class="flex-1 cursor-pointer">
+                    <input checked="" class="peer sr-only" name="filter" type="radio" value="unread" />
+                    <div
+                        class="py-2 px-3 text-center text-sm font-medium rounded-lg text-gray-500 dark:text-paper-text-secondary transition-all peer-checked:bg-white dark:peer-checked:bg-primary peer-checked:text-black dark:peer-checked:text-white peer-checked:shadow-sm">
+                        Unread
+                    </div>
+                </label>
+                <label class="flex-1 cursor-pointer">
+                    <input class="peer sr-only" name="filter" type="radio" value="invites" />
+                    <div
+                        class="py-2 px-3 text-center text-sm font-medium rounded-lg text-gray-500 dark:text-paper-text-secondary transition-all peer-checked:bg-white dark:peer-checked:bg-primary peer-checked:text-black dark:peer-checked:text-white peer-checked:shadow-sm">
+                        Invites
+                    </div>
+                </label>
+            </div>
+        </div>
+        <!-- Content List -->
+        <div class="flex flex-col gap-6 px-4">
+            <!-- Today Section -->
+            <div>
+                <h3
+                    class="text-sm font-semibold text-gray-500 dark:text-paper-text-secondary uppercase tracking-wider mb-3 ml-1">
+                    Today</h3>
+                <div class="flex flex-col gap-3">
+                    <!-- Card 1: Invite (Unread) -->
+                    <div
+                        class="group relative flex flex-col gap-3 bg-white dark:bg-paper-dark p-4 rounded-xl shadow-slip border-l-4 border-primary">
+                        <div class="flex gap-3">
+                            <div class="relative shrink-0">
+                                <div class="h-10 w-10 rounded-full bg-cover bg-center ring-2 ring-white dark:ring-[#3a2d20]"
+                                    data-alt="Profile picture of Group Admin, a smiling person with glasses"
+                                    style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuAOZx-QIWmb-QrENqbb7fBNOnYxMYQke8w-pOp3nhWLvdck2Pu2Hdnl1SWY7B8WKBgwAi5MldRGnkHrBuIY3bG3IWZyPsVmPb5mh6KICIXCce2Ws-f8huwNj2EjgxtlxejWFwrQsU1GSTJhjoUfeafVVq3fjVizN1NtEd1UGWGsdunWH2qias0zGt48glZkOB9KZJAJhsoAXZnnLvZ9UjAubhrk_MOOHKAfbit5jW5RczzGepHAEvPYsPAj-hPsHHozr8wctBb4wcyf");'>
+                                </div>
+                                <div
+                                    class="absolute -bottom-1 -right-1 bg-blue-500 rounded-full p-0.5 border border-white dark:border-paper-dark flex items-center justify-center">
+                                    <span class="material-symbols-outlined text-[10px] text-white">mail</span>
+                                </div>
+                            </div>
+                            <div class="flex flex-col flex-1 gap-1">
+                                <div class="flex justify-between items-start">
+                                    <p class="text-sm text-slate-900 dark:text-gray-100 leading-snug">
+                                        <span class="font-bold">Group Admin</span> invited you to the <span
+                                            class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-md bg-orange-100 dark:bg-primary/20 text-orange-800 dark:text-orange-200 text-xs font-medium"><span
+                                                class="material-symbols-outlined text-[12px]">eco</span> Phan Thiết
+                                            Jar</span>
+                                    </p>
+                                    <span class="text-xs text-primary font-medium shrink-0 ml-2">2m ago</span>
+                                </div>
+                                <p class="text-xs text-gray-500 dark:text-paper-text-secondary">
+                                    "Hey! I created a new jar for our upcoming trip. Join us to collect memories!"
+                                </p>
+                            </div>
+                        </div>
+                        <!-- Action Buttons for Invite -->
+                        <div class="flex gap-2 pl-[52px]">
+                            <button
+                                class="flex-1 bg-primary hover:bg-orange-700 text-white text-xs font-semibold py-2 px-4 rounded-lg transition-colors">
+                                Accept
+                            </button>
+                            <button
+                                class="flex-1 bg-transparent border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/5 text-xs font-semibold py-2 px-4 rounded-lg transition-colors">
+                                Decline
+                            </button>
+                        </div>
+                    </div>
+                    <!-- Card 2: Reaction (Unread) -->
+                    <div
+                        class="group relative flex gap-3 bg-white dark:bg-paper-dark p-4 rounded-xl shadow-slip border-l-4 border-primary">
+                        <div class="relative shrink-0">
+                            <div class="h-10 w-10 rounded-full bg-cover bg-center"
+                                data-alt="Profile picture of Nam, a young man looking at the camera"
+                                style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuD-2mwC-nkBaKo0fPFCocGu-mox8dHsxxQ-r-LAf8X5Su_yjmeXPs4GYdooQOd9mwCo4n0Tp0sLLxbBZcMYs6SvfQHMpinti9SABijlFCtvZpuahZL2tCAoeIIdSjvExe2OHRUQviItGRQ9PqLVfONhyx_SU_1L5vOg1muWNvjjYIs5b_zjUvTmP3xTIsQrv0CTEFn9x4bircuzuYwM2gj7PuUPnL0O0Jw_a9eNMK3r6i6YvD0zWzhHRT1zlVlozDetMKlQ7m5CwXgK");'>
+                            </div>
+                            <div
+                                class="absolute -bottom-1 -right-1 bg-rose-500 rounded-full p-0.5 border border-white dark:border-paper-dark flex items-center justify-center">
+                                <span class="material-symbols-outlined text-[10px] text-white filled">favorite</span>
+                            </div>
+                        </div>
+                        <div class="flex flex-col flex-1 justify-center gap-0.5">
+                            <div class="flex justify-between items-start">
+                                <p class="text-sm text-slate-900 dark:text-gray-100 leading-snug">
+                                    <span class="font-bold">Nam</span> reacted with ❤️ to your Slip
+                                </p>
+                                <span class="text-xs text-primary font-medium shrink-0 ml-2">15m ago</span>
+                            </div>
+                            <div class="flex items-center gap-2 mt-1">
+                                <span
+                                    class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-md bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-300 text-xs font-medium">
+                                    <span class="material-symbols-outlined text-[12px]">history_edu</span> Family Jar
+                                </span>
+                                <span class="text-xs text-gray-400 dark:text-gray-500 truncate max-w-[120px]">"The best
+                                    coffee in..."</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Yesterday Section -->
+            <div>
+                <h3
+                    class="text-sm font-semibold text-gray-500 dark:text-paper-text-secondary uppercase tracking-wider mb-3 ml-1">
+                    Yesterday</h3>
+                <div class="flex flex-col gap-3">
+                    <!-- Card 3: Comment (Read) -->
+                    <div
+                        class="group relative flex gap-3 bg-white dark:bg-paper-dark p-4 rounded-xl shadow-slip opacity-80 hover:opacity-100 transition-opacity">
+                        <!-- Read status: No colored border, maybe slightly more muted -->
+                        <div class="relative shrink-0">
+                            <div class="h-10 w-10 rounded-full bg-cover bg-center grayscale-[20%]"
+                                data-alt="Profile picture of Ngoc, a woman smiling in a park"
+                                style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBu9xVi01Ho2_VQU3TeD0zmp2sIZbFo1qUh1dWBZBmxsOQA0CCvCqgLyO4p6e7dhI0frHdzq_SJc-AeXX3B6E22DdPo9MEHhPNUmX2pLGlw9MAQZKDU5cwFvpsSHf63RE9FGCBK4cV_RORCh2M33HIwqxKUtEtC2rI4ajD7gwTd7G3SerjvKe7tOWMoolbIchtGIkkv87QaS0STICq8qAs452_2O6Iz7lNzTiqJeVxBOZSj6qbTYpu4Y-h7-U7rQpdhDCZwv8HXaxLX");'>
+                            </div>
+                            <div
+                                class="absolute -bottom-1 -right-1 bg-indigo-500 rounded-full p-0.5 border border-white dark:border-paper-dark flex items-center justify-center">
+                                <span class="material-symbols-outlined text-[10px] text-white">chat_bubble</span>
+                            </div>
+                        </div>
+                        <div class="flex flex-col flex-1 gap-1">
+                            <div class="flex justify-between items-start">
+                                <p class="text-sm text-slate-700 dark:text-gray-300 leading-snug">
+                                    <span class="font-semibold text-slate-900 dark:text-white">Ngọc</span> commented on
+                                    your Slip
+                                </p>
+                                <span class="text-xs text-gray-400 font-medium shrink-0 ml-2">1d ago</span>
+                            </div>
+                            <div
+                                class="bg-gray-50 dark:bg-black/20 rounded-lg p-2 mt-1 border border-gray-100 dark:border-white/5 flex gap-3 items-center">
+                                <div class="h-10 w-10 rounded bg-cover bg-center shrink-0"
+                                    data-alt="Thumbnail of a sunny beach landscape"
+                                    style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBeKEX5S-No4enoa6KJM4bUfTWugLQoCzrvHCi_yVfellZak2TIbP5v-QE3wP3ZiIQbMA8CLrIk3hoaQlK8Ua5Lher7OHvpGcmBpnivLFgy-oHSR9A9nnn_ZXoMPNE4w7lrjM57pOjwPFckJ9PG6Tuv83P7K2_SxdQ7ZeHRG6-RaY7-R2V_Xba3iDcjIfZ4FURuCy8uqkHuUO_pBTWUItFZF9J-bpR1yNoLfd_Ob8bDv9tLJH3vCFecsB4WQv7oFGU_Xf_SaQ03bgM0");'>
+                                </div>
+                                <div class="flex flex-col min-w-0">
+                                    <p class="text-xs text-gray-500 dark:text-gray-400 italic truncate">"This reminds me
+                                        of when we went to the beach last summer!"</p>
+                                </div>
+                            </div>
+                            <div class="mt-1">
+                                <span
+                                    class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-md bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-300 text-xs font-medium">
+                                    <span class="material-symbols-outlined text-[12px]">beach_access</span> Beach Trip
+                                    '23
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Card 4: Multiple Reactions (Read) -->
+                    <div
+                        class="group relative flex gap-3 bg-white dark:bg-paper-dark p-4 rounded-xl shadow-slip opacity-80 hover:opacity-100 transition-opacity">
+                        <div class="relative shrink-0">
+                            <!-- Stacked Avatars effect -->
+                            <div class="flex -space-x-3 overflow-hidden">
+                                <div class="h-10 w-10 rounded-full bg-cover bg-center ring-2 ring-white dark:ring-paper-dark relative z-20"
+                                    data-alt="Profile picture of Mike"
+                                    style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDfi2MnCEdYBz4LDboshrUrDRZrjOAznGuhyxCQmtGtaL9hUcBYqFdp-QuRyDq8RSHUb-8jxAJYbrjNfMXqB0pHgc6kHsIbwfi-4ZdptHUBynoEV5QlDrfrMuPYqAcedhMzo4URyntc6xTEg8MZCUP4PMcnnSy7tFVK6j0qpyWHSk4_qOKOXPzvsBwWWOY2YX1OBMJ8mannc7h0uP32c8raovEAXTL0iSqIWN8moTa54up026zOBo8oFpxheflsUIfZqYetY_H1zt5B");'>
+                                </div>
+                                <div class="h-10 w-10 rounded-full bg-cover bg-center ring-2 ring-white dark:ring-paper-dark relative z-10"
+                                    data-alt="Profile picture of Sarah"
+                                    style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCAfAFmGWLEA0G9fFH3y6QXJgujjjQkEURUyZ5Xe1vfPfBTMNsPMYBfQ5JbBoPwbf8l5iKQpZnL7Bb_JqlCYjr3BLFoW-1JRR100bwqrcZ2EWR2HZfOH-dR7FvWvg6hJ985wVFdWWjW32iAq1e1AxqnNk-xQXum6JQVd8D-yyjSxhssrA7Ag28v5vdrIySXLiVSvh_5NUMl3FPNqkg7111HpOnMhlLjFOdY6yRBRUEhBdPuOrM0O-5DSPXtqFX0pmiEaQEV2_9FXVdJ");'>
+                                </div>
+                            </div>
+                            <div
+                                class="absolute -bottom-1 -right-1 z-30 bg-orange-500 rounded-full p-0.5 border border-white dark:border-paper-dark flex items-center justify-center">
+                                <span class="material-symbols-outlined text-[10px] text-white">thumb_up</span>
+                            </div>
+                        </div>
+                        <div class="flex flex-col flex-1 justify-center gap-0.5">
+                            <div class="flex justify-between items-start">
+                                <p class="text-sm text-slate-700 dark:text-gray-300 leading-snug">
+                                    <span class="font-semibold text-slate-900 dark:text-white">Mike and 3 others</span>
+                                    liked your Slip
+                                </p>
+                                <span class="text-xs text-gray-400 font-medium shrink-0 ml-2">1d ago</span>
+                            </div>
+                            <div class="flex items-center gap-2 mt-1">
+                                <span
+                                    class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-md bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-300 text-xs font-medium">
+                                    <span class="material-symbols-outlined text-[12px]">local_cafe</span> Coffee Lovers
+                                </span>
+                                <span class="text-xs text-gray-400 dark:text-gray-500 truncate max-w-[120px]">"Morning
+                                    brew ritual..."</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- End of list spacer -->
+            <div class="h-10 flex items-center justify-center text-gray-400 dark:text-gray-600 text-xs">
+                <p>You're all caught up!</p>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

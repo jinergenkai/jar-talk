@@ -6,6 +6,7 @@ import 'package:google_sign_in/google_sign_in.dart' as g_sign_in;
 import 'package:jar_talk/services/dio_client.dart';
 import 'package:jar_talk/models/backend_auth_models.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:jar_talk/controllers/app_controller.dart';
 
 class AuthController extends GetxController {
   static AuthController get instance => Get.find();
@@ -30,6 +31,14 @@ class AuthController extends GetxController {
     if (user == null) {
       final prefs = await SharedPreferences.getInstance();
       await prefs.clear(); // Clear tokens on logout
+
+      // Sync with AppController
+      try {
+        Get.find<AppController>().logout();
+      } catch (e) {
+        print("Error syncing logout with AppController: $e");
+      }
+
       AppRouter.router.go('/login');
     } else {
       try {
@@ -73,6 +82,22 @@ class AuthController extends GetxController {
       await prefs.setString('jwtBackend', authResponse.accessToken);
 
       print("Backend Authenticated! User ID: ${authResponse.user.id}");
+      print("Backend Authenticated! Token: ${authResponse.accessToken}");
+
+      // Sync with AppController
+      // Map UseResponse to AppController's userInfo map structure
+      final userInfo = {
+        'id': authResponse.user.id,
+        'email': authResponse.user.email,
+        'name': authResponse.user.username ?? 'User', // Map username to name
+        'avatarUrl': authResponse.user.avatarUrl,
+      };
+
+      try {
+        Get.find<AppController>().login(userInfo);
+      } catch (e) {
+        print("Error syncing login with AppController: $e");
+      }
     } catch (e) {
       print("Failed to authenticate with backend: $e");
       rethrow;

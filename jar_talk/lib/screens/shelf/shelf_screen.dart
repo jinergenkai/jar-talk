@@ -4,6 +4,7 @@ import 'package:jar_talk/controllers/shelf_controller.dart';
 import 'package:jar_talk/screens/shelf/widgets/jar_card.dart';
 import 'package:jar_talk/utils/app_theme.dart';
 import 'package:jar_talk/screens/journal_view/journal_view_screen.dart';
+import 'package:jar_talk/screens/notification/notification_screen.dart';
 
 class ShelfScreen extends StatelessWidget {
   const ShelfScreen({super.key});
@@ -44,6 +45,22 @@ class ShelfScreen extends StatelessWidget {
               ),
             ),
             actions: [
+              Padding(
+                padding: const EdgeInsets.only(right: 8.0),
+                child: IconButton(
+                  icon: const Icon(Icons.notifications_outlined),
+                  color: theme.brightness == Brightness.dark
+                      ? Colors.white
+                      : appTheme.woodLight,
+                  onPressed: () {
+                    Navigator.of(context, rootNavigator: true).push(
+                      MaterialPageRoute(
+                        builder: (context) => const NotificationScreen(),
+                      ),
+                    );
+                  },
+                ),
+              ),
               Padding(
                 padding: const EdgeInsets.only(right: 16.0),
                 child: Container(

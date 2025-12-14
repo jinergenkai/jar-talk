@@ -2,10 +2,11 @@ from sqlmodel import Session
 from fastapi import HTTPException, status
 from typing import List
 
-from ..models.container import Container, ContainerCreate, ContainerUpdate, ContainerResponse
+from ..models.container import Container, ContainerCreate, ContainerUpdate, ContainerResponse, ContainerDetailResponse, MemberInfo
 from ..models.membership import MembershipCreate, MemberRole
 from ..repos.container_repo import ContainerRepository
 from ..repos.membership_repo import MembershipRepository
+from ..repos.user_repo import UserRepository
 
 
 class ContainerService:
@@ -15,6 +16,7 @@ class ContainerService:
         self.session = session
         self.container_repo = ContainerRepository(session)
         self.membership_repo = MembershipRepository(session)
+        self.user_repo = UserRepository(session)
 
     def create_container(self, container_data: ContainerCreate, owner_id: int) -> ContainerResponse:
         """
@@ -43,7 +45,7 @@ class ContainerService:
             member_count=1
         )
 
-    def get_container(self, container_id: int, user_id: int) -> ContainerResponse:
+    def get_container(self, container_id: int, user_id: int) -> ContainerDetailResponse:
         """
         Get container by ID
         - Checks user has access to this container
@@ -63,17 +65,34 @@ class ContainerService:
                 detail="You don't have access to this container"
             )
 
-        # Get member count
-        members = self.membership_repo.get_container_members(container_id)
+        # Get all members
+        memberships = self.membership_repo.get_container_members(container_id)
 
-        return ContainerResponse(
+        # Build member info list
+        member_info_list = []
+        for m in memberships:
+            user = self.user_repo.get_by_id(m.user_id)
+            if user:
+                member_info_list.append(
+                    MemberInfo(
+                        user_id=user.user_id,
+                        username=user.username,
+                        email=user.email,
+                        profile_picture_url=user.profile_picture_url,
+                        role=m.role,
+                        joined_at=m.joined_at
+                    )
+                )
+
+        return ContainerDetailResponse(
             container_id=container.container_id,
             name=container.name,
             owner_id=container.owner_id,
             jar_style_settings=container.jar_style_settings,
             created_at=container.created_at,
             user_role=membership.role,
-            member_count=len(members)
+            member_count=len(memberships),
+            members=member_info_list
         )
 
     def get_user_containers(self, user_id: int) -> List[ContainerResponse]:

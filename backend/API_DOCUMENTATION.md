@@ -169,6 +169,7 @@ Create a new slip
 ```json
 {
   "container_id": 1,
+  "title": "Grand Canyon Adventure", // optional
   "text_content": "Today was an amazing day! We visited the Grand Canyon.",
   "location_data": "Grand Canyon, AZ" // optional
 }
@@ -180,11 +181,15 @@ Create a new slip
   "slip_id": 1,
   "container_id": 1,
   "author_id": 1,
+  "title": "Grand Canyon Adventure",
   "text_content": "Today was an amazing day!...",
   "created_at": "2024-01-01T12:00:00",
   "location_data": "Grand Canyon, AZ",
   "author_username": "johndoe",
-  "author_email": "john@example.com"
+  "author_email": "john@example.com",
+  "author_profile_picture": null,
+  "media": [],
+  "emotion": null
 }
 ```
 
@@ -204,21 +209,29 @@ Get slips from a container
     "slip_id": 10,
     "container_id": 1,
     "author_id": 2,
+    "title": "Amazing Day",
     "text_content": "Latest entry...",
     "created_at": "2024-01-05T12:00:00",
     "location_data": null,
     "author_username": "alice",
-    "author_email": "alice@example.com"
+    "author_email": "alice@example.com",
+    "author_profile_picture": "https://...",
+    "media": [],
+    "emotion": null
   },
   {
     "slip_id": 9,
     "container_id": 1,
     "author_id": 1,
+    "title": "Tokyo Trip",
     "text_content": "Previous entry...",
     "created_at": "2024-01-04T12:00:00",
     "location_data": "Tokyo, Japan",
     "author_username": "johndoe",
-    "author_email": "john@example.com"
+    "author_email": "john@example.com",
+    "author_profile_picture": null,
+    "media": [],
+    "emotion": null
   }
 ]
 ```
@@ -243,6 +256,7 @@ Update slip (author only)
 **Request:**
 ```json
 {
+  "title": "Updated Title",
   "text_content": "Updated content...",
   "location_data": "New Location"
 }
@@ -279,6 +293,7 @@ const container = await POST('/containers', {
 // 4. Create first entry
 const slip = await POST('/slips', {
   container_id: container.container_id,
+  title: "Day One",
   text_content: "My first journal entry!"
 }, {
   headers: { Authorization: `Bearer ${access_token}` }
@@ -429,7 +444,7 @@ curl -X POST http://localhost:8000/containers \
 curl -X POST http://localhost:8000/slips \
   -H "Authorization: Bearer $TOKEN" \
   -H "Content-Type: application/json" \
-  -d '{"container_id":1,"text_content":"Hello world!"}'
+  -d '{"container_id":1,"title":"First Entry","text_content":"Hello world!"}'
 
 # 4. Get slips
 curl http://localhost:8000/slips?container_id=1 \

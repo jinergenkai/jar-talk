@@ -193,7 +193,10 @@ class ShelfScreen extends StatelessWidget {
                                   ).push(
                                     MaterialPageRoute(
                                       builder: (context) =>
-                                          const JournalViewScreen(),
+                                          const JournalViewScreen(
+                                            jarId: 0,
+                                            jarName: "",
+                                          ),
                                     ),
                                   );
                                 },

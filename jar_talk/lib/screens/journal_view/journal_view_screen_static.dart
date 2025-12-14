@@ -16,7 +16,10 @@ class JournalViewScreen extends StatelessWidget {
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.of(context, rootNavigator: true).push(
-            MaterialPageRoute(builder: (context) => const NewEntryScreen()),
+            MaterialPageRoute(
+              builder: (context) =>
+                  const NewEntryScreen(jarId: 0, controllerTag: ""),
+            ),
           );
         },
         backgroundColor: theme.colorScheme.primary,
