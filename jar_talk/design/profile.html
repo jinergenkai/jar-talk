@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Jar Settings</title>
+<!-- Google Fonts: Inter & Material Symbols -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS with Config -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#d47311",
+                        "background-light": "#f8f7f6",
+                        "background-dark": "#221910",
+                        "surface-dark": "#2C241B", // Slightly lighter than bg-dark for cards
+                        "wood-accent": "#483623",
+                        "text-secondary": "#c9ad92",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.5rem",
+                        "lg": "1rem",
+                        "xl": "1.5rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        /* Hide scrollbar for horizontal scrolling areas */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-white antialiased overflow-x-hidden">
+<div class="relative flex min-h-screen w-full flex-col max-w-md mx-auto shadow-2xl overflow-hidden">
+<!-- Header -->
+<header class="sticky top-0 z-50 flex items-center bg-background-light/95 dark:bg-background-dark/95 backdrop-blur-md p-4 pb-2 justify-between border-b border-black/5 dark:border-white/5">
+<div class="text-slate-900 dark:text-white flex size-12 shrink-0 items-center justify-start cursor-pointer transition-opacity hover:opacity-70">
+<span class="material-symbols-outlined text-[24px]">arrow_back_ios</span>
+</div>
+<h2 class="text-slate-900 dark:text-white text-lg font-bold leading-tight tracking-[-0.015em] flex-1 text-center">Jar Settings</h2>
+<div class="flex w-12 items-center justify-end cursor-pointer">
+<p class="text-primary text-base font-bold leading-normal tracking-[0.015em] shrink-0">Save</p>
+</div>
+</header>
+<!-- Main Content -->
+<main class="flex-1 overflow-y-auto pb-8">
+<!-- Jar Identity Section -->
+<div class="flex flex-col items-center pt-6 pb-6 px-4">
+<div class="relative group cursor-pointer">
+<!-- Glass Jar Glow Effect -->
+<div class="absolute inset-0 bg-primary/20 blur-xl rounded-full scale-75"></div>
+<!-- Jar Image -->
+<div class="relative bg-center bg-no-repeat aspect-square bg-cover rounded-2xl h-32 w-32 shadow-lg ring-1 ring-white/10" data-alt="3D rendered glass mason jar filled with folded paper slips glowing warmly" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCE5866zhgUYWxReryWg4FbO8ZHO1OSmewyY5BLncuWaMqAlNB5ShlktP_W0Faq5dhyWxL1jTJCW--ajDexX2ZwSd70wgBj_argHrSAtwmX4vWOec6BcLWUdAEU0zxYXvBU9Thq6q0leahJzpxriPdaGj1GwrMP7G5LC4aztGvwPz0-IbEFweDrwfmf6wDCo9t8C6Sf5P-2QGLNoxztEwi5cMQIrszU-Hlpdwya6SVtuE3IGZKUk3BfYSoutYTtJMsHqceipueMe-Ar");'>
+</div>
+<div class="absolute -bottom-2 -right-2 bg-surface-dark p-1.5 rounded-full border border-wood-accent text-primary shadow-sm">
+<span class="material-symbols-outlined text-[16px] block">edit</span>
+</div>
+</div>
+<div class="mt-4 flex flex-col items-center justify-center gap-1">
+<div class="flex items-center gap-2">
+<input class="bg-transparent text-slate-900 dark:text-white text-[22px] font-bold leading-tight text-center border-b border-transparent hover:border-wood-accent focus:border-primary focus:outline-none transition-colors w-full max-w-[280px]" type="text" value="Summer 2024 Memories"/>
+</div>
+<p class="text-text-secondary text-sm font-normal leading-normal text-center">Created Oct 12, 2023</p>
+</div>
+</div>
+<!-- Members Section -->
+<section class="mt-2 px-4">
+<h3 class="text-text-secondary text-xs uppercase font-bold tracking-wider mb-2 ml-1">Members</h3>
+<div class="bg-white dark:bg-surface-dark rounded-xl overflow-hidden shadow-sm">
+<!-- Invite Button -->
+<div class="flex items-center gap-4 p-4 border-b border-black/5 dark:border-white/5 active:bg-black/5 dark:active:bg-white/5 cursor-pointer transition-colors">
+<div class="text-white flex items-center justify-center rounded-full bg-primary shrink-0 size-10 shadow-md">
+<span class="material-symbols-outlined text-[24px]">person_add</span>
+</div>
+<div class="flex-1">
+<p class="text-slate-900 dark:text-white text-base font-semibold">Invite New Member</p>
+<p class="text-text-secondary text-sm">Share link or add from contacts</p>
+</div>
+<span class="material-symbols-outlined text-text-secondary">chevron_right</span>
+</div>
+<!-- Member List -->
+<div class="flex items-center gap-4 p-4 border-b border-black/5 dark:border-white/5">
+<div class="relative">
+<div class="bg-center bg-no-repeat bg-cover rounded-full size-10 border border-wood-accent" data-alt="Portrait of a young woman with smiling face" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDbU504Y3fFBaHR18EIxfvr9jcdw36lVM7yC9J_mLrEuiiDSrmtKvLoiC-qrMwfOhwoAtLcAVMXoCQEyLnXYkyqyExhmRQv-w6csYwBMElFIy7NOUrnEoP1GhU2TW57A9J3yoP7MzYTuJBApfA2tD1VlsglJUNlsz_vDYoyfxDFiQfWEnb35YbZNJlDOQhzW_Q_T7sglxsty0WmIIsLT5zrb9jHrQuj7gfO8YgAc2WQ_-wD2epBLQ0nzbp7gCdpw2wOkK43-bMXVmgc");'></div>
+<div class="absolute -bottom-1 -right-1 bg-primary text-white text-[8px] font-bold px-1.5 py-0.5 rounded-full border border-surface-dark">ADMIN</div>
+</div>
+<p class="text-slate-900 dark:text-white text-base font-medium flex-1">Alice (You)</p>
+</div>
+<div class="flex items-center gap-4 p-4">
+<div class="bg-center bg-no-repeat bg-cover rounded-full size-10 border border-wood-accent" data-alt="Portrait of a man with a beard looking to the side" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCU5Ooke_Frv32NdjXKLudacAFqtoKs6dPtCbjThozEt0eBwB8noK9kjjIt7D-MhAJ0nmmqpy7URwPO2v4rb-F4XU26X6T5tFcONKgYfvm2kdBZDSamGh0clAoFeKiM63c8EVB2AXDvjtyEIN71ME9zfjgGxC4H_tWVyV4OQ5Uu3_G5G4xBMZV30F3o_5iXDHT7BeWCGgt0Kf7hbZZRTevFmlifXKHCvV0A3aoNriUPGlqR29lKxylhDVVjl52oTSah0Vup8T7bth8O");'></div>
+<p class="text-slate-900 dark:text-white text-base font-medium flex-1">Marcus</p>
+<button class="text-red-400 hover:text-red-300 p-2 rounded-full hover:bg-red-400/10 transition-colors">
+<span class="material-symbols-outlined text-[20px]">remove_circle_outline</span>
+</button>
+</div>
+</div>
+</section>
+<!-- Container Customization -->
+<section class="mt-6 px-4">
+<h3 class="text-text-secondary text-xs uppercase font-bold tracking-wider mb-2 ml-1">Appearance</h3>
+<div class="bg-white dark:bg-surface-dark rounded-xl p-4 shadow-sm flex flex-col gap-5">
+<!-- Jar Shape Selector -->
+<div>
+<p class="text-slate-900 dark:text-white text-sm font-semibold mb-3">Jar Shape</p>
+<div class="flex gap-4 overflow-x-auto no-scrollbar pb-1">
+<!-- Option 1: Selected -->
+<div class="flex flex-col items-center gap-2 cursor-pointer group">
+<div class="w-16 h-20 bg-wood-accent/30 rounded-lg border-2 border-primary flex items-center justify-center relative overflow-hidden">
+<div class="w-8 h-12 border-2 border-white/40 rounded-sm"></div>
+</div>
+<span class="text-primary text-xs font-medium">Mason</span>
+</div>
+<!-- Option 2 -->
+<div class="flex flex-col items-center gap-2 cursor-pointer group">
+<div class="w-16 h-20 bg-black/5 dark:bg-white/5 rounded-lg border-2 border-transparent hover:border-wood-accent flex items-center justify-center transition-colors">
+<div class="w-8 h-12 border-2 border-slate-400/40 dark:border-white/20 rounded-t-full rounded-b-lg"></div>
+</div>
+<span class="text-text-secondary text-xs">Apothecary</span>
+</div>
+<!-- Option 3 -->
+<div class="flex flex-col items-center gap-2 cursor-pointer group">
+<div class="w-16 h-20 bg-black/5 dark:bg-white/5 rounded-lg border-2 border-transparent hover:border-wood-accent flex items-center justify-center transition-colors">
+<div class="w-10 h-10 border-2 border-slate-400/40 dark:border-white/20 rounded-full"></div>
+</div>
+<span class="text-text-secondary text-xs">Bowl</span>
+</div>
+</div>
+</div>
+<div class="h-px bg-black/5 dark:bg-white/5 w-full"></div>
+<!-- Theme Color -->
+<div>
+<p class="text-slate-900 dark:text-white text-sm font-semibold mb-3">Shared Theme Color</p>
+<div class="flex gap-3 items-center justify-between">
+<button class="size-8 rounded-full bg-[#d47311] ring-2 ring-offset-2 ring-offset-surface-dark ring-white/50 shadow-inner flex items-center justify-center">
+<span class="material-symbols-outlined text-white text-[18px]">check</span>
+</button>
+<button class="size-8 rounded-full bg-[#5D4037] hover:scale-110 transition-transform"></button>
+<button class="size-8 rounded-full bg-[#388E3C] hover:scale-110 transition-transform"></button>
+<button class="size-8 rounded-full bg-[#1976D2] hover:scale-110 transition-transform"></button>
+<button class="size-8 rounded-full bg-[#7B1FA2] hover:scale-110 transition-transform"></button>
+<button class="size-8 rounded-full bg-gradient-to-br from-gray-700 to-gray-900 border border-white/10 hover:scale-110 transition-transform flex items-center justify-center">
+<span class="material-symbols-outlined text-white/50 text-[18px]">add</span>
+</button>
+</div>
+</div>
+</div>
+</section>
+<!-- Permissions -->
+<section class="mt-6 px-4">
+<h3 class="text-text-secondary text-xs uppercase font-bold tracking-wider mb-2 ml-1">Privacy &amp; Permissions</h3>
+<div class="bg-white dark:bg-surface-dark rounded-xl overflow-hidden shadow-sm">
+<div class="flex items-center justify-between p-4 border-b border-black/5 dark:border-white/5">
+<span class="text-slate-900 dark:text-white text-base">Allow members to invite</span>
+<!-- Toggle ON -->
+<div class="w-11 h-6 bg-primary rounded-full relative cursor-pointer transition-colors">
+<div class="absolute right-1 top-1 bg-white w-4 h-4 rounded-full shadow-sm transition-transform"></div>
+</div>
+</div>
+<div class="flex items-center justify-between p-4">
+<span class="text-slate-900 dark:text-white text-base">Only Admin can delete slips</span>
+<!-- Toggle OFF -->
+<div class="w-11 h-6 bg-gray-300 dark:bg-gray-600 rounded-full relative cursor-pointer transition-colors">
+<div class="absolute left-1 top-1 bg-white w-4 h-4 rounded-full shadow-sm transition-transform"></div>
+</div>
+</div>
+</div>
+</section>
+<!-- Jar Stats -->
+<section class="mt-6 px-4">
+<h3 class="text-text-secondary text-xs uppercase font-bold tracking-wider mb-2 ml-1">Jar Insights</h3>
+<div class="grid grid-cols-2 gap-3">
+<!-- Stat Card 1 -->
+<div class="bg-white dark:bg-surface-dark p-4 rounded-xl shadow-sm flex flex-col gap-2">
+<div class="flex items-start justify-between">
+<span class="material-symbols-outlined text-primary">inventory_2</span>
+</div>
+<div>
+<p class="text-2xl font-bold text-slate-900 dark:text-white">142</p>
+<p class="text-text-secondary text-xs">Total Slips</p>
+</div>
+</div>
+<!-- Stat Card 2 -->
+<div class="bg-white dark:bg-surface-dark p-4 rounded-xl shadow-sm flex flex-col gap-2">
+<div class="flex items-start justify-between">
+<span class="material-symbols-outlined text-primary">calendar_month</span>
+</div>
+<div>
+<p class="text-2xl font-bold text-slate-900 dark:text-white">Oct '23</p>
+<p class="text-text-secondary text-xs">Date Started</p>
+</div>
+</div>
+<!-- Stat Card 3 (Full Width) -->
+<div class="col-span-2 bg-white dark:bg-surface-dark p-4 rounded-xl shadow-sm flex items-center justify-between">
+<div class="flex items-center gap-3">
+<div class="bg-primary/20 p-2 rounded-lg">
+<span class="material-symbols-outlined text-primary">emoji_events</span>
+</div>
+<div>
+<p class="text-text-secondary text-xs uppercase font-bold">Most Active</p>
+<p class="text-slate-900 dark:text-white font-medium">Alice wrote 84 slips</p>
+</div>
+</div>
+<div class="bg-center bg-no-repeat bg-cover rounded-full size-8 border border-wood-accent" data-alt="Small avatar of Alice" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCgYtUkiDzOWThusnSsQ_QnZpBqbLWDQccYgEFzS7V0WDVwN0toMo_nad6qfy7Z46RXAvx0zt-f0XxCkmwGAz7FJc6NmBOsF6USBMBSvf11GesCBWH9g9d189UinhZ8CEi0diUdFTq0J0hIAt2c0y0Robv51wA8ILWqtbtcbqqBLbhNG68y2hs1DHMWD-Ltzv5kW8rk3J6QS5vcjy1riOledp52xj0yLNWuJmqQ10SRXgEO72ZeELPqjyelNMScIK2Qp5JDO6d2dSR_");'></div>
+</div>
+</div>
+</section>
+<!-- Destructive Zone -->
+<div class="mt-8 mb-4 px-4">
+<button class="w-full py-3 rounded-xl border border-red-500/30 text-red-500 bg-red-500/5 hover:bg-red-500/10 font-medium transition-colors">
+                    Archive Jar
+                </button>
+</div>
+<!-- Bottom Spacer -->
+<div class="h-8"></div>
+</main>
+</div>
+</body></html>
