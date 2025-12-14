@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:jar_talk/controllers/app_controller.dart';
 import 'package:jar_talk/utils/app_theme.dart';
+import 'package:jar_talk/controllers/auth_controller.dart' as jar_talk;
 
 class UserProfileScreen extends StatelessWidget {
   const UserProfileScreen({super.key});
@@ -36,7 +37,49 @@ class UserProfileScreen extends StatelessWidget {
 
             // Theme Section
             _buildThemeSection(context, appController, theme, appTheme),
+
+            const SizedBox(height: 32),
+
+            // Logout Button
+            _buildLogoutButton(theme),
           ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildLogoutButton(ThemeData theme) {
+    return SizedBox(
+      width: double.infinity,
+      child: TextButton(
+        onPressed: () {
+          // Find AuthController and sign out
+          try {
+            // For safety, though it should be registered
+            Get.find<jar_talk.AuthController>().signOut();
+          } catch (e) {
+            // Handle if controller not found, maybe just navigate to login
+            // but it should be there.
+            // Using full path to avoid conflicts if imports are missing,
+            // but better to import it at top.
+            // Let's add the import and use AuthController.instance
+            jar_talk.AuthController.instance.signOut();
+          }
+        },
+        style: TextButton.styleFrom(
+          padding: const EdgeInsets.symmetric(vertical: 16),
+          backgroundColor: Colors.redAccent.withOpacity(0.1),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+        ),
+        child: const Text(
+          "Log Out",
+          style: TextStyle(
+            color: Colors.redAccent,
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+          ),
         ),
       ),
     );

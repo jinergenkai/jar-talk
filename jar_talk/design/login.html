@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Log In Screen</title>
+    <link href="https://fonts.googleapis.com" rel="preconnect" />
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Noto+Sans:wght@400;500;700&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#d47311",
+                        "background-light": "#f8f7f6",
+                        "background-dark": "#221910",
+                        "surface-dark": "#2f2216", // Slightly lighter for inputs
+                    },
+                    fontFamily: {
+                        "display": ["Plus Jakarta Sans", "sans-serif"],
+                        "body": ["Noto Sans", "sans-serif"]
+                    },
+                    borderRadius: { "DEFAULT": "0.5rem", "lg": "1rem", "xl": "1.5rem", "full": "9999px" },
+                },
+            },
+        }
+    </script>
+    <style>
+        /* Custom scrollbar hiding for clean mobile look */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+    <style>
+        body {
+            min-height: max(884px, 100dvh);
+        }
+    </style>
+</head>
+
+<body
+    class="bg-background-light dark:bg-background-dark font-display antialiased text-slate-900 dark:text-white selection:bg-primary selection:text-white">
+    <div
+        class="relative flex min-h-screen w-full flex-col overflow-hidden max-w-md mx-auto shadow-2xl bg-background-light dark:bg-background-dark">
+        <!-- Background Glow Effect -->
+        <div
+            class="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[300px] bg-primary/10 dark:bg-primary/20 blur-[100px] rounded-full pointer-events-none z-0">
+        </div>
+        <!-- Scrollable Content Area -->
+        <div class="relative z-10 flex flex-col flex-1 px-6 pb-6 pt-12 overflow-y-auto no-scrollbar">
+            <!-- Hero / Brand Section -->
+            <div class="flex flex-col items-center justify-center mb-8 mt-4">
+                <div class="relative mb-6 group">
+                    <!-- Glow behind icon -->
+                    <div class="absolute inset-0 bg-primary/40 blur-[40px] rounded-full scale-75 animate-pulse"></div>
+                    <!-- Icon Image -->
+                    <div class="relative w-28 h-28 bg-cover bg-center rounded-2xl shadow-lg transform transition-transform duration-500 hover:scale-105"
+                        data-alt="A simple line art illustration of a glass jar with slips of paper inside"
+                        style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuC_l6lyvSH3mPShDhzk5gwNa3BipRyDEpw7c-29ZqMRot657mobZQ5Jp0oKUz7oh1LIPnzTCcxG74StIxwK9LUYtMWf2cKnXhSS6ZqcUviraLC7jC9-3k-fzSsWnJ9qZmPvxLO3yMuDt-rt3Qnhfb-amkWjECiDGQhscoJt3OetZ4OSX4TUWvS_9WEM0ps9UMg6GkdQEudnHW2DFAuYvvaFSDmwxiUGdNLqbQNf1YXPFuYr_gbMC7m4htWSV1fggjYouRS2muIuUFGg');">
+                    </div>
+                </div>
+                <p
+                    class="text-slate-500 dark:text-[#c9ad92] text-sm font-medium tracking-wide text-center uppercase opacity-90">
+                    Drop a Slip, build a memory.</p>
+            </div>
+            <!-- Welcome Headline -->
+            <div class="mb-6 text-center">
+                <h1 class="text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white">Find Your Jars.</h1>
+            </div>
+            <!-- Login Form -->
+            <form class="flex flex-col gap-4 w-full">
+                <!-- Email Field -->
+                <div class="flex flex-col gap-2">
+                    <label class="sr-only" for="email">Email or Username</label>
+                    <div class="relative flex items-center">
+                        <span class="absolute left-4 text-slate-400 material-symbols-outlined">mail</span>
+                        <input
+                            class="flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-xl text-slate-900 dark:text-white border-0 bg-white dark:bg-surface-dark shadow-sm ring-1 ring-slate-200 dark:ring-white/10 focus:ring-2 focus:ring-primary h-14 placeholder:text-slate-400 dark:placeholder:text-[#8a7a6b] pl-12 pr-4 text-base font-normal leading-normal transition-all"
+                            id="email" placeholder="Email or Username" type="email" value="" />
+                    </div>
+                </div>
+                <!-- Password Field -->
+                <div class="flex flex-col gap-2">
+                    <label class="sr-only" for="password">Password</label>
+                    <div class="relative flex items-center">
+                        <span class="absolute left-4 text-slate-400 material-symbols-outlined">lock</span>
+                        <input
+                            class="flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-xl text-slate-900 dark:text-white border-0 bg-white dark:bg-surface-dark shadow-sm ring-1 ring-slate-200 dark:ring-white/10 focus:ring-2 focus:ring-primary h-14 placeholder:text-slate-400 dark:placeholder:text-[#8a7a6b] pl-12 pr-12 text-base font-normal leading-normal transition-all"
+                            id="password" placeholder="Password" type="password" value="" />
+                        <button
+                            class="absolute right-0 top-0 bottom-0 px-4 flex items-center justify-center text-slate-400 hover:text-primary transition-colors focus:outline-none"
+                            type="button">
+                            <span class="material-symbols-outlined" data-icon="visibility">visibility</span>
+                        </button>
+                    </div>
+                    <!-- Forgot Password Link -->
+                    <div class="flex justify-end mt-1">
+                        <a class="text-sm font-medium text-slate-500 dark:text-[#c9ad92] hover:text-primary dark:hover:text-primary transition-colors"
+                            href="#">Forgot Password?</a>
+                    </div>
+                </div>
+                <!-- Primary Action Button -->
+                <button
+                    class="mt-4 flex w-full items-center justify-center rounded-xl bg-primary py-4 text-base font-bold text-white shadow-lg shadow-primary/30 transition-all hover:bg-primary/90 hover:shadow-primary/50 hover:-translate-y-0.5 active:translate-y-0 active:shadow-md"
+                    type="button">
+                    Log In
+                </button>
+            </form>
+            <!-- Divider -->
+            <div class="relative my-8">
+                <div aria-hidden="true" class="absolute inset-0 flex items-center">
+                    <div class="w-full border-t border-slate-200 dark:border-white/10"></div>
+                </div>
+                <div class="relative flex justify-center">
+                    <span
+                        class="bg-background-light dark:bg-background-dark px-3 text-sm text-slate-500 dark:text-[#8a7a6b]">Or
+                        continue with</span>
+                </div>
+            </div>
+            <!-- Social Login Buttons -->
+            <div class="flex flex-col gap-3">
+                <button
+                    class="flex w-full items-center justify-center gap-3 rounded-xl border border-slate-200 dark:border-white/10 bg-white dark:bg-surface-dark py-3.5 px-4 text-base font-medium text-slate-700 dark:text-white transition-colors hover:bg-slate-50 dark:hover:bg-white/5"
+                    type="button">
+                    <img alt="Google Logo" class="h-5 w-5" data-alt="Google G logo in multicolor"
+                        src="https://lh3.googleusercontent.com/aida-public/AB6AXuCEJ7dvFz8ptgDGJhTOf7vVdKGYSv-B4BzYipoP80tMXLgpZHKAW1pvf-cua3qy2gRQTcwcxR50WvyHqc7FX7VcP8abBiewHZUh4WsX1Dp__OFIEPp_h7MUYgSDWfKmfmXyNEp0UsHBaHJsCq6RLOLzxCFD4JUZCqt41h65lJSyfZJOL1poLyTiFstCBxY-RCffLyha3_WvblqyM843omAyae2d9aWJpMKigV27ndxK14oMnvnItBqM7zjHtUWyQY85z4Z_drM6aKi4" />
+                    Continue with Google
+                </button>
+                <button
+                    class="flex w-full items-center justify-center gap-3 rounded-xl border border-slate-200 dark:border-white/10 bg-white dark:bg-surface-dark py-3.5 px-4 text-base font-medium text-slate-700 dark:text-white transition-colors hover:bg-slate-50 dark:hover:bg-white/5"
+                    type="button">
+                    <span class="material-symbols-outlined text-black dark:text-white text-[22px]">ios</span>
+                    Continue with Apple
+                </button>
+            </div>
+            <!-- Footer / Sign Up Link -->
+            <div class="mt-auto pt-8 text-center">
+                <p class="text-sm text-slate-500 dark:text-[#8a7a6b]">
+                    Don't have an account?
+                    <a class="font-bold text-primary hover:text-primary/80 hover:underline" href="#">Sign Up</a>
+                </p>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

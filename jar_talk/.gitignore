@@ -1,3 +1,15 @@
+# Firebase secrets
+service-account.json
+firebase-credentials.json
+
+# Env
+.env
+.env.*
+
+# Firebase client config
+google-services.json
+GoogleService-Info.plist
+
 # Miscellaneous
 *.class
 *.log

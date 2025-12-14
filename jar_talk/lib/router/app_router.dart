@@ -4,6 +4,7 @@ import 'package:jar_talk/screens/explore/explore_screen.dart';
 import 'package:jar_talk/screens/main_wrapper.dart';
 import 'package:jar_talk/screens/profile/user_profile_screen.dart';
 import 'package:jar_talk/screens/shelf/shelf_screen.dart';
+import 'package:jar_talk/screens/login/login_screen.dart';
 
 class AppRouter {
   static final _rootNavigatorKey = GlobalKey<NavigatorState>();
@@ -21,6 +22,11 @@ class AppRouter {
     initialLocation: '/shelf',
     navigatorKey: _rootNavigatorKey,
     routes: [
+      GoRoute(
+        path: '/login',
+        pageBuilder: (context, state) =>
+            const NoTransitionPage(child: LoginScreen()),
+      ),
       StatefulShellRoute.indexedStack(
         builder: (context, state, navigationShell) {
           return MainWrapper(navigationShell: navigationShell);
