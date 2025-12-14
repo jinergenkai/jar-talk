@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 
-import 'package:jar_talk/controllers/profile_controller.dart';
-import 'package:jar_talk/screens/profile/widgets/section_header.dart'; // Import custom widgets if not exporting
+import 'package:jar_talk/controllers/setting_controller.dart';
+import 'package:jar_talk/screens/setting/widgets/section_header.dart'; // Import custom widgets if not exporting
+import 'package:jar_talk/utils/app_theme.dart';
 
 class MembersSection extends StatelessWidget {
   const MembersSection({super.key, required this.controller});
@@ -10,10 +11,12 @@ class MembersSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const primaryColor = Color(0xFFD47311);
-    const textSecondary = Color(0xFFC9AD92);
-    const surfaceLight = Colors.white;
-    const woodAccent = Color(0xFF483623);
+    final theme = Theme.of(context);
+    final primaryColor = theme.colorScheme.primary;
+    final appTheme = theme.extension<AppThemeExtension>()!;
+    final textSecondary = appTheme.textSecondary;
+    final surfaceLight = theme.cardColor;
+    final woodAccent = appTheme.woodAccent;
 
     return Column(
       children: [
@@ -37,7 +40,7 @@ class MembersSection extends StatelessWidget {
                       Container(
                         width: 40,
                         height: 40,
-                        decoration: const BoxDecoration(
+                        decoration: BoxDecoration(
                           color: primaryColor,
                           shape: BoxShape.circle,
                           boxShadow: [
@@ -51,7 +54,7 @@ class MembersSection extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(width: 16),
-                      const Expanded(
+                      Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -72,7 +75,7 @@ class MembersSection extends StatelessWidget {
                           ],
                         ),
                       ),
-                      const Icon(Icons.chevron_right, color: textSecondary),
+                      Icon(Icons.chevron_right, color: textSecondary),
                     ],
                   ),
                 ),

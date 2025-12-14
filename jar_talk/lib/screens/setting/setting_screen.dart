@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:jar_talk/controllers/profile_controller.dart';
-import 'package:jar_talk/screens/profile/widgets/appearance_section.dart';
-import 'package:jar_talk/screens/profile/widgets/jar_identity_card.dart';
-import 'package:jar_talk/screens/profile/widgets/jar_insights_section.dart';
-import 'package:jar_talk/screens/profile/widgets/members_section.dart';
-import 'package:jar_talk/screens/profile/widgets/permissions_section.dart';
-import 'package:jar_talk/screens/profile/widgets/profile_header.dart';
+import 'package:jar_talk/controllers/setting_controller.dart';
+import 'package:jar_talk/screens/setting/widgets/appearance_section.dart';
+import 'package:jar_talk/screens/setting/widgets/jar_identity_card.dart';
+import 'package:jar_talk/screens/setting/widgets/jar_insights_section.dart';
+import 'package:jar_talk/screens/setting/widgets/members_section.dart';
+import 'package:jar_talk/screens/setting/widgets/permissions_section.dart';
+import 'package:jar_talk/screens/setting/widgets/profile_header.dart';
 
-class ProfileScreen extends StatelessWidget {
-  const ProfileScreen({super.key});
+class SettingScreen extends StatelessWidget {
+  const SettingScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -47,11 +47,13 @@ class ProfileScreen extends StatelessWidget {
                             style: TextButton.styleFrom(
                               foregroundColor: Colors.red,
                               padding: const EdgeInsets.symmetric(vertical: 16),
-                              backgroundColor: Colors.red.withOpacity(0.05),
+                              backgroundColor: Colors.red.withValues(
+                                alpha: 0.05,
+                              ),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(12),
                                 side: BorderSide(
-                                  color: Colors.red.withOpacity(0.3),
+                                  color: Colors.red.withValues(alpha: 0.3),
                                 ),
                               ),
                             ),

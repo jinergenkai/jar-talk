@@ -6,7 +6,8 @@ class ProfileHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const primaryColor = Color(0xFFD47311);
+    final theme = Theme.of(context);
+    final primaryColor = theme.colorScheme.primary;
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -41,7 +42,7 @@ class ProfileHeader extends StatelessWidget {
             child: Container(
               width: 48,
               alignment: Alignment.centerRight,
-              child: const Text(
+              child: Text(
                 'Save',
                 style: TextStyle(
                   fontSize: 16,

@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Collection Shelf Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,100..900;1,100..900&amp;family=Noto+Sans:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              colors: {
+                "primary": "#d47311",
+                "background-light": "#f8f7f6",
+                "background-dark": "#221910",
+                "wood-dark": "#1a120b",
+                "wood-light": "#3e2b1d",
+              },
+              fontFamily: {
+                "display": ["Noto Serif", "serif"],
+                "sans": ["Noto Sans", "sans-serif"],
+              },
+              borderRadius: {"DEFAULT": "0.5rem", "lg": "1rem", "xl": "1.5rem", "2xl": "2rem", "full": "9999px"},
+              boxShadow: {
+                "glow": "0 0 20px -5px rgba(212, 115, 17, 0.5)",
+                "inner-glass": "inset 0 0 20px 0 rgba(255,255,255,0.1)",
+              }
+            },
+          },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #221910; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #3e2b1d; 
+            border-radius: 3px;
+        }
+    </style>
+<style>
+        body {
+          min-height: max(884px, 100dvh);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-white font-display antialiased min-h-screen flex flex-col overflow-hidden">
+<header class="sticky top-0 z-20 bg-background-light dark:bg-background-dark/95 backdrop-blur-sm border-b border-white/5 px-4 py-3 flex items-center justify-between shrink-0">
+<h1 class="text-2xl font-bold tracking-tight text-wood-light dark:text-white">The Collection</h1>
+<button class="flex items-center justify-center w-10 h-10 rounded-full bg-primary/20 hover:bg-primary/30 active:bg-primary/40 text-primary transition-colors">
+<span class="material-symbols-outlined text-[24px]">add</span>
+</button>
+</header>
+<main class="flex-1 overflow-y-auto pb-24">
+<section class="flex flex-col pt-6">
+<div class="px-6 pb-3 flex items-baseline justify-between">
+<h3 class="text-xl font-bold text-wood-light dark:text-white/90">Recent Jars</h3>
+<span class="text-xs text-primary font-medium tracking-wide uppercase">3 Active</span>
+</div>
+<div class="relative bg-wood-dark/30 dark:bg-black/20 border-y border-white/5 py-6">
+<div class="absolute bottom-0 left-0 right-0 h-4 bg-gradient-to-t from-black/40 to-transparent pointer-events-none"></div>
+<div class="grid grid-cols-2 sm:grid-cols-3 gap-x-4 gap-y-8 px-4">
+<div class="group flex flex-col items-center gap-3 relative">
+<div class="absolute -top-2 -right-1 z-20 animate-bounce">
+<div class="bg-primary text-white text-[10px] font-bold px-2 py-1 rounded-md shadow-lg border border-orange-300/30 flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">sticky_note_2</span>
+                                3
+                            </div>
+</div>
+<div class="relative w-full aspect-[3/4] rounded-2xl overflow-hidden cursor-pointer shadow-glow transition-transform duration-300 active:scale-95 group-hover:shadow-primary/20 bg-white/5 border border-white/5">
+<div class="absolute inset-0 z-10 bg-gradient-to-tr from-white/10 via-transparent to-white/5 pointer-events-none rounded-2xl shadow-inner-glass"></div>
+<svg class="w-full h-full p-2 relative z-0" fill="none" preserveAspectRatio="xMidYMid meet" viewBox="0 0 100 140" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<linearGradient id="glass-grad-1" x1="0" x2="1" y1="0" y2="1">
+<stop offset="0" stop-color="white" stop-opacity="0.15"></stop>
+<stop offset="0.5" stop-color="white" stop-opacity="0"></stop>
+<stop offset="1" stop-color="white" stop-opacity="0.1"></stop>
+</linearGradient>
+<clipPath id="jar-clip-1">
+<path d="M30 40 Q25 45 25 60 V115 Q25 130 50 130 Q75 130 75 115 V60 Q75 45 70 40 H30Z"></path>
+</clipPath>
+</defs>
+<g clip-path="url(#jar-clip-1)">
+<rect fill="rgba(255,255,255,0.02)" height="90" width="50" x="25" y="40"></rect>
+<rect fill="#d47311" height="10" opacity="0.9" rx="1" transform="rotate(5 30 115)" width="38" x="30" y="115"></rect>
+<rect fill="#fb923c" height="10" opacity="0.8" rx="1" transform="rotate(-3 32 105)" width="40" x="32" y="105"></rect>
+<rect fill="#fdba74" height="10" opacity="0.9" rx="1" transform="rotate(2 28 95)" width="42" x="28" y="95"></rect>
+<rect fill="#d47311" height="10" opacity="0.85" rx="1" transform="rotate(-5 30 85)" width="36" x="30" y="85"></rect>
+<rect fill="#fb923c" height="10" opacity="0.9" rx="1" transform="rotate(4 34 75)" width="38" x="34" y="75"></rect>
+<rect fill="#fdba74" height="10" opacity="0.8" rx="1" transform="rotate(-2 28 65)" width="40" x="28" y="65"></rect>
+<rect fill="#d47311" height="10" opacity="0.9" rx="1" transform="rotate(6 30 55)" width="35" x="30" y="55"></rect>
+</g>
+<path d="M30 40 Q25 45 25 60 V115 Q25 130 50 130 Q75 130 75 115 V60 Q75 45 70 40 H30Z" fill="url(#glass-grad-1)" stroke="rgba(255,255,255,0.3)" stroke-width="1.5"></path>
+<path d="M28 60 Q26 80 28 100" stroke="white" stroke-linecap="round" stroke-opacity="0.25" stroke-width="2"></path>
+<path d="M72 60 Q74 80 72 100" stroke="white" stroke-linecap="round" stroke-opacity="0.25" stroke-width="2"></path>
+<rect fill="#3e2b1d" height="10" rx="2" stroke="#1a120b" stroke-width="1" width="44" x="28" y="28"></rect>
+<rect fill="#5c4033" height="4" rx="1" width="48" x="26" y="36"></rect>
+<path d="M26 42 Q50 50 74 42" fill="none" stroke="#d47311" stroke-linecap="round" stroke-width="2"></path>
+<circle cx="40" cy="45" fill="#d47311" r="2"></circle>
+</svg>
+</div>
+<div class="text-center w-full">
+<p class="text-lg font-bold text-white leading-tight font-display">Family Notes</p>
+<p class="text-primary text-xs font-sans mt-1 font-medium">Glowing • Updated 2m ago</p>
+</div>
+</div>
+<div class="group flex flex-col items-center gap-3 relative">
+<div class="absolute -top-2 -right-1 z-20">
+<div class="bg-primary text-white text-[10px] font-bold px-2 py-1 rounded-md shadow-lg border border-orange-300/30 flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">favorite</span>
+                                5
+                            </div>
+</div>
+<div class="relative w-full aspect-[3/4] rounded-2xl overflow-hidden cursor-pointer transition-transform duration-300 active:scale-95 bg-white/5 border border-white/5">
+<div class="absolute inset-0 z-10 bg-gradient-to-tr from-white/10 via-transparent to-white/5 pointer-events-none rounded-2xl shadow-inner-glass"></div>
+<svg class="w-full h-full p-2 relative z-0" fill="none" preserveAspectRatio="xMidYMid meet" viewBox="0 0 100 140" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<linearGradient id="glass-grad-2" x1="0" x2="1" y1="0" y2="1">
+<stop offset="0" stop-color="white" stop-opacity="0.15"></stop>
+<stop offset="0.5" stop-color="white" stop-opacity="0"></stop>
+<stop offset="1" stop-color="white" stop-opacity="0.1"></stop>
+</linearGradient>
+<clipPath id="jar-clip-2">
+<path d="M30 40 Q25 45 25 60 V115 Q25 130 50 130 Q75 130 75 115 V60 Q75 45 70 40 H30Z"></path>
+</clipPath>
+</defs>
+<g clip-path="url(#jar-clip-2)">
+<rect fill="rgba(255,255,255,0.02)" height="90" width="50" x="25" y="40"></rect>
+<rect fill="#d47311" height="8" rx="1" transform="rotate(-2 30 120)" width="40" x="30" y="120"></rect>
+<rect fill="#fb923c" height="8" rx="1" transform="rotate(3 28 112)" width="42" x="28" y="112"></rect>
+<rect fill="#fdba74" height="8" rx="1" transform="rotate(-4 32 104)" width="38" x="32" y="104"></rect>
+<rect fill="#d47311" height="8" rx="1" transform="rotate(1 30 96)" width="40" x="30" y="96"></rect>
+<rect fill="#fb923c" height="8" rx="1" transform="rotate(-3 28 88)" width="44" x="28" y="88"></rect>
+<rect fill="#fdba74" height="8" rx="1" transform="rotate(5 34 80)" width="36" x="34" y="80"></rect>
+<rect fill="#d47311" height="8" rx="1" transform="rotate(-2 30 72)" width="40" x="30" y="72"></rect>
+<rect fill="#fb923c" height="8" rx="1" transform="rotate(4 28 64)" width="38" x="28" y="64"></rect>
+<rect fill="#fdba74" height="8" rx="1" transform="rotate(-1 32 56)" width="38" x="32" y="56"></rect>
+<rect fill="#d47311" height="8" rx="1" transform="rotate(2 30 48)" width="40" x="30" y="48"></rect>
+</g>
+<path d="M30 40 Q25 45 25 60 V115 Q25 130 50 130 Q75 130 75 115 V60 Q75 45 70 40 H30Z" fill="url(#glass-grad-2)" stroke="rgba(255,255,255,0.3)" stroke-width="1.5"></path>
+<path d="M28 60 Q26 80 28 100" stroke="white" stroke-linecap="round" stroke-opacity="0.25" stroke-width="2"></path>
+<path d="M72 60 Q74 80 72 100" stroke="white" stroke-linecap="round" stroke-opacity="0.25" stroke-width="2"></path>
+<rect fill="#574128" height="10" rx="2" width="44" x="28" y="28"></rect>
+<path d="M25 36 Q50 42 75 36 V40 Q50 46 25 40 Z" fill="#78350f" opacity="0.8"></path>
+<rect fill="#fef3c7" height="20" rx="1" stroke="#d47311" stroke-width="0.5" transform="rotate(-5 50 70)" width="16" x="42" y="60"></rect>
+<path d="M46 68 C46 68 48 66 50 68 C52 66 54 68 54 68 C54 68 50 74 50 74 C50 74 46 68 46 68" fill="#ef4444" transform="rotate(-5 50 70)"></path>
+</svg>
+</div>
+<div class="text-center w-full">
+<p class="text-lg font-bold text-white leading-tight font-display">Partner</p>
+<p class="text-primary text-xs font-sans mt-1 font-medium">Overflowing</p>
+</div>
+</div>
+<div class="group flex flex-col items-center gap-3 relative">
+<div class="relative w-full aspect-[3/4] rounded-2xl overflow-hidden cursor-pointer transition-transform duration-300 active:scale-95 opacity-80 group-hover:opacity-100 bg-white/5 border border-white/5">
+<div class="absolute inset-0 z-10 bg-gradient-to-tr from-white/10 via-transparent to-white/5 pointer-events-none rounded-2xl shadow-inner-glass"></div>
+<svg class="w-full h-full p-2 relative z-0" fill="none" preserveAspectRatio="xMidYMid meet" viewBox="0 0 100 140" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<linearGradient id="glass-grad-3" x1="0" x2="1" y1="0" y2="1">
+<stop offset="0" stop-color="white" stop-opacity="0.15"></stop>
+<stop offset="0.5" stop-color="white" stop-opacity="0"></stop>
+<stop offset="1" stop-color="white" stop-opacity="0.1"></stop>
+</linearGradient>
+<clipPath id="jar-clip-3">
+<path d="M30 40 Q25 45 25 60 V115 Q25 130 50 130 Q75 130 75 115 V60 Q75 45 70 40 H30Z"></path>
+</clipPath>
+</defs>
+<g clip-path="url(#jar-clip-3)">
+<rect fill="rgba(255,255,255,0.02)" height="90" width="50" x="25" y="40"></rect>
+<rect fill="#d47311" height="10" opacity="0.9" rx="1" transform="rotate(-10 35 120)" width="35" x="35" y="120"></rect>
+<rect fill="#fb923c" height="10" opacity="0.8" rx="1" transform="rotate(5 40 115)" width="35" x="40" y="115"></rect>
+</g>
+<path d="M30 40 Q25 45 25 60 V115 Q25 130 50 130 Q75 130 75 115 V60 Q75 45 70 40 H30Z" fill="url(#glass-grad-3)" stroke="rgba(255,255,255,0.3)" stroke-width="1.5"></path>
+<path d="M28 60 Q26 80 28 100" stroke="white" stroke-linecap="round" stroke-opacity="0.25" stroke-width="2"></path>
+<path d="M72 60 Q74 80 72 100" stroke="white" stroke-linecap="round" stroke-opacity="0.25" stroke-width="2"></path>
+<rect fill="#3e2b1d" height="10" rx="2" stroke="#1a120b" stroke-width="1" width="44" x="28" y="28"></rect>
+<rect fill="#5c4033" height="4" rx="1" width="48" x="26" y="36"></rect>
+<rect fill="rgba(255,255,255,0.1)" height="20" rx="1" stroke="rgba(255,255,255,0.2)" width="30" x="35" y="70"></rect>
+<path d="M40 76 H60 M40 80 H60 M40 84 H50" stroke="rgba(255,255,255,0.3)" stroke-width="1"></path>
+</svg>
+</div>
+<div class="text-center w-full">
+<p class="text-white/80 text-lg font-bold leading-tight font-display group-hover:text-white">Travel Plans</p>
+<p class="text-white/40 text-xs font-sans mt-1">1 new slip</p>
+</div>
+</div>
+</div>
+<div class="mt-6 h-3 bg-[#1a120b] border-t border-white/5 shadow-lg mx-2 rounded-sm"></div>
+</div>
+</section>
+<section class="flex flex-col pt-8">
+<div class="px-6 pb-3 flex items-baseline justify-between">
+<h3 class="text-xl font-bold text-wood-light dark:text-white/90">Archived Jars</h3>
+<span class="text-xs text-white/40 font-medium tracking-wide uppercase">Sealed</span>
+</div>
+<div class="relative bg-wood-dark/30 dark:bg-black/20 border-y border-white/5 py-6">
+<div class="absolute bottom-0 left-0 right-0 h-4 bg-gradient-to-t from-black/40 to-transparent pointer-events-none"></div>
+<div class="grid grid-cols-2 sm:grid-cols-3 gap-x-4 gap-y-8 px-4">
+<div class="group flex flex-col items-center gap-3 relative opacity-60 hover:opacity-100 transition-opacity">
+<div class="absolute top-2 right-2 z-20 text-white/50">
+<span class="material-symbols-outlined text-[18px]">lock</span>
+</div>
+<div class="relative w-full aspect-[3/4] rounded-2xl overflow-hidden cursor-pointer transition-transform duration-300 active:scale-95 bg-white/5 border border-white/5">
+<div class="absolute inset-0 z-10 bg-black/20 pointer-events-none rounded-2xl shadow-inner-glass border border-white/5"></div>
+<svg class="w-full h-full p-2 relative z-0" fill="none" preserveAspectRatio="xMidYMid meet" viewBox="0 0 100 140" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<linearGradient id="glass-grad-4" x1="0" x2="1" y1="0" y2="1">
+<stop offset="0" stop-color="white" stop-opacity="0.05"></stop>
+<stop offset="1" stop-color="white" stop-opacity="0.02"></stop>
+</linearGradient>
+<clipPath id="jar-clip-4">
+<path d="M30 40 Q25 45 25 60 V115 Q25 130 50 130 Q75 130 75 115 V60 Q75 45 70 40 H30Z"></path>
+</clipPath>
+</defs>
+<g clip-path="url(#jar-clip-4)">
+<rect fill="rgba(0,0,0,0.3)" height="90" width="50" x="25" y="40"></rect>
+<rect fill="#78716c" height="10" rx="1" transform="rotate(2 30 118)" width="40" x="30" y="118"></rect>
+<rect fill="#57534e" height="10" rx="1" transform="rotate(-3 28 108)" width="42" x="28" y="108"></rect>
+<rect fill="#a8a29e" height="10" rx="1" transform="rotate(1 32 98)" width="38" x="32" y="98"></rect>
+</g>
+<path d="M30 40 Q25 45 25 60 V115 Q25 130 50 130 Q75 130 75 115 V60 Q75 45 70 40 H30Z" fill="url(#glass-grad-4)" stroke="rgba(255,255,255,0.1)" stroke-width="1.5"></path>
+<rect fill="#292524" height="10" rx="2" stroke="#1c1917" width="44" x="28" y="28"></rect>
+<rect fill="#44403c" height="4" rx="1" width="48" x="26" y="36"></rect>
+</svg>
+</div>
+<div class="text-center w-full">
+<p class="text-white/70 text-lg font-bold leading-tight font-display">2023 Memories</p>
+<p class="text-white/30 text-xs font-sans mt-1">Sealed • Dec 31</p>
+</div>
+</div>
+<div class="group flex flex-col items-center gap-3 relative opacity-60 hover:opacity-100 transition-opacity">
+<div class="absolute top-2 right-2 z-20 text-white/50">
+<span class="material-symbols-outlined text-[18px]">lock</span>
+</div>
+<div class="relative w-full aspect-[3/4] rounded-2xl overflow-hidden cursor-pointer transition-transform duration-300 active:scale-95 bg-white/5 border border-white/5">
+<div class="absolute inset-0 z-10 bg-black/20 pointer-events-none rounded-2xl shadow-inner-glass border border-white/5"></div>
+<svg class="w-full h-full p-2 relative z-0" fill="none" preserveAspectRatio="xMidYMid meet" viewBox="0 0 100 140" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<clipPath id="jar-clip-5">
+<path d="M30 40 Q25 45 25 60 V115 Q25 130 50 130 Q75 130 75 115 V60 Q75 45 70 40 H30Z"></path>
+</clipPath>
+</defs>
+<g clip-path="url(#jar-clip-5)">
+<rect fill="rgba(0,0,0,0.3)" height="90" width="50" x="25" y="40"></rect>
+<rect fill="#4b5563" height="10" rx="1" transform="rotate(-1 32 120)" width="38" x="32" y="120"></rect>
+<rect fill="#374151" height="10" rx="1" transform="rotate(4 28 110)" width="40" x="28" y="110"></rect>
+</g>
+<path d="M30 40 Q25 45 25 60 V115 Q25 130 50 130 Q75 130 75 115 V60 Q75 45 70 40 H30Z" fill="url(#glass-grad-4)" stroke="rgba(255,255,255,0.1)" stroke-width="1.5"></path>
+<rect fill="#450a0a" height="10" rx="2" stroke="#1c1917" width="44" x="28" y="28"></rect>
+<rect fill="#7f1d1d" height="4" rx="1" width="48" x="26" y="36"></rect>
+<circle cx="50" cy="33" fill="#991b1b" r="3"></circle>
+</svg>
+</div>
+<div class="text-center w-full">
+<p class="text-white/70 text-lg font-bold leading-tight font-display">Old Friends</p>
+<p class="text-white/30 text-xs font-sans mt-1">Sealed • Nov 20</p>
+</div>
+</div>
+<div class="group flex flex-col items-center gap-3 relative justify-center">
+<div class="relative w-full aspect-[3/4] rounded-2xl overflow-hidden cursor-pointer border-2 border-dashed border-white/10 flex items-center justify-center hover:bg-white/5 transition-colors group-active:scale-95">
+<div class="flex flex-col items-center gap-2 text-white/30 group-hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-[32px]">add_circle</span>
+<span class="text-xs font-medium">Add Jar</span>
+</div>
+</div>
+<div class="text-center w-full opacity-0">
+<p class="text-lg">Placeholder</p>
+</div>
+</div>
+</div>
+<div class="mt-6 h-3 bg-[#1a120b] border-t border-white/5 shadow-lg mx-2 rounded-sm"></div>
+</div>
+</section>
+<div class="h-8"></div>
+</main>
+<nav class="fixed bottom-0 z-50 w-full bg-[#1a120b]/95 backdrop-blur-md border-t border-white/5 pb-safe">
+<div class="flex items-center justify-around h-16 max-w-md mx-auto">
+<button class="flex flex-col items-center justify-center w-full h-full gap-1 text-primary">
+<span class="material-symbols-outlined fill-1">shelves</span>
+<span class="text-[10px] font-medium font-sans">Shelf</span>
+</button>
+<button class="flex flex-col items-center justify-center w-full h-full gap-1 text-white/40 hover:text-white/80 transition-colors">
+<span class="material-symbols-outlined">explore</span>
+<span class="text-[10px] font-medium font-sans">Explore</span>
+</button>
+<button class="flex flex-col items-center justify-center w-full h-full gap-1 text-white/40 hover:text-white/80 transition-colors">
+<span class="material-symbols-outlined">person</span>
+<span class="text-[10px] font-medium font-sans">Profile</span>
+</button>
+</div>
+</nav>
+
+</body></html>

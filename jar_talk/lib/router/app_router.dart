@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:jar_talk/screens/explore/explore_screen.dart';
 import 'package:jar_talk/screens/main_wrapper.dart';
-import 'package:jar_talk/screens/profile/profile_screen.dart';
+import 'package:jar_talk/screens/profile/user_profile_screen.dart';
 import 'package:jar_talk/screens/shelf/shelf_screen.dart';
 
 class AppRouter {
@@ -52,7 +52,7 @@ class AppRouter {
               GoRoute(
                 path: '/profile',
                 pageBuilder: (context, state) =>
-                    const NoTransitionPage(child: ProfileScreen()),
+                    const NoTransitionPage(child: UserProfileScreen()),
               ),
             ],
           ),

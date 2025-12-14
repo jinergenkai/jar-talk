@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:jar_talk/controllers/profile_controller.dart';
-import 'package:jar_talk/screens/profile/widgets/section_header.dart';
+import 'package:jar_talk/controllers/setting_controller.dart';
+import 'package:jar_talk/screens/setting/widgets/section_header.dart';
 
 class PermissionsSection extends StatelessWidget {
   const PermissionsSection({super.key, required this.controller});

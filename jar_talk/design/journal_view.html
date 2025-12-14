@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Shared Journal - Trip to Japan</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&amp;family=Noto+Sans:wght@400;500;700&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#d47311",
+                        "background-light": "#f8f7f6",
+                        "background-dark": "#221910",
+                        "paper-light": "#f0ece6",
+                        "paper-text": "#2c221a",
+                    },
+                    fontFamily: {
+                        "display": ["Manrope", "sans-serif"],
+                        "body": ["Noto Sans", "sans-serif"],
+                    },
+                    borderRadius: { "DEFAULT": "0.5rem", "lg": "1rem", "xl": "1.5rem", "full": "9999px" },
+                },
+            },
+        }
+    </script>
+    <style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+
+        .icon-outline {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+
+        /* Hide scrollbar for clean look */
+        ::-webkit-scrollbar {
+            width: 0px;
+            background: transparent;
+        }
+    </style>
+    <style>
+        body {
+            min-height: max(884px, 100dvh);
+        }
+    </style>
+</head>
+
+<body
+    class="bg-background-light dark:bg-background-dark min-h-screen relative font-display text-white selection:bg-primary selection:text-white pb-24">
+    <!-- Top Navigation & Header -->
+    <header
+        class="sticky top-0 z-50 bg-[#221910]/95 backdrop-blur-md border-b border-white/5 pb-2 transition-all duration-300">
+        <div class="flex items-center justify-between px-4 h-16">
+            <button
+                class="flex items-center justify-center size-10 rounded-full hover:bg-white/10 transition-colors text-[#c9ad92]">
+                <span class="material-symbols-outlined icon-outline">arrow_back</span>
+            </button>
+            <button
+                class="flex items-center justify-center size-10 rounded-full hover:bg-white/10 transition-colors text-[#c9ad92]">
+                <span class="material-symbols-outlined icon-outline">settings</span>
+            </button>
+        </div>
+        <div class="px-6 pb-4 flex flex-col gap-4">
+            <h1 class="text-3xl font-extrabold tracking-tight text-[#f0ece6]">Trip to Japan 2023</h1>
+            <!-- Avatar Stack -->
+            <div class="flex items-center gap-3">
+                <div class="flex -space-x-3">
+                    <div class="relative size-10 rounded-full border-2 border-[#221910] overflow-hidden">
+                        <img alt="Portrait of Sarah" class="w-full h-full object-cover"
+                            src="https://lh3.googleusercontent.com/aida-public/AB6AXuAkQo-nMpekHzRZRoUWokGhE4z0DkKGcGXRgabEPxffCbRbebiVXrEFRdWDZsSRrgfRIQwhGxib9t3MLZSuTDmc84aOaouChFKY6HXoeTNpf6TPGp6OluSC_jTPXpeIjofR2cZyLsGcNFns2tqXjbesROTu6F989qIIWU83-emwcQfPpW2OWiIj13JXHy7nq5FFhGOTfcpzaTHjQxYAfIbEigPtj0aExTkn3jxp49ZguQl3iQ-8jUkuC4Y-bASzVd8sKEKW3oTmO2GA" />
+                    </div>
+                    <div class="relative size-10 rounded-full border-2 border-[#221910] overflow-hidden">
+                        <img alt="Portrait of Mike" class="w-full h-full object-cover"
+                            src="https://lh3.googleusercontent.com/aida-public/AB6AXuB7FFSwD4XtYeFI7I6oov1dalStnfSwNnvfPtPHOc_WBbuRJZBNa4PizRiyBnKX5Chf3OGP6tbXYPCxzWat8YgMyPGj8hbzzP69p3A46XWlXTC1JEY_yBjckZ7YrYLL_Rj0KnSDEwWsN13II5JOeTNl1EQRS686euVDJHvBYwL-Bt2UAfhi25yYOCGggE7ldjhtt5Co-nCsf9Ci0sqpF8E4Q13_MD69qozdxqb6i02kKZZLawv_doEOIdNa8s25gf7ePWwhf8zVPIX-" />
+                    </div>
+                    <div class="relative size-10 rounded-full border-2 border-[#221910] overflow-hidden">
+                        <img alt="Portrait of David" class="w-full h-full object-cover"
+                            src="https://lh3.googleusercontent.com/aida-public/AB6AXuBXrqRke-eI2aiGHtGYZeCIzwLOTOuKNApz5LX07lDZ5EtwtVWfp00fUuU5UI-CdJXZy7X5eVGjEYYlBvuVrvnwX3j0xwWeUbsfLFW_9wpzkhcCphLxRbHD16V6MNq1d7amZ67jx1OavlGrIAj-996jJLFs9uvfyIERdYcZ1IQ7B3L1iCyHkYopCI-5UYDQE8K0ux2ObQSp8mD3FteC-m5ceWC3UGrAzQ-NX2OaClCiQEFe7SPlSTsEA_A_0QDt_wQ5nhUfj6HNXFhT" />
+                    </div>
+                    <div
+                        class="relative size-10 rounded-full border-2 border-[#221910] bg-[#483623] text-[#c9ad92] flex items-center justify-center text-xs font-bold">
+                        +2
+                    </div>
+                </div>
+                <span class="text-[#c9ad92] text-sm font-medium">Shared with 5 friends</span>
+            </div>
+        </div>
+    </header>
+    <!-- Main Content: Vertical Timeline -->
+    <main class="relative px-4 pt-6">
+        <!-- Timeline Spine Layout -->
+        <div class="relative grid grid-cols-[40px_1fr] gap-x-4">
+            <!-- Continuous Spine Line -->
+            <div class="absolute left-[19px] top-4 bottom-0 w-[2px] bg-[#674d32]/30 h-full rounded-full"></div>
+            <!-- Entry 1: Ramen Shop -->
+            <div class="flex flex-col items-center pt-2 relative z-10">
+                <div class="size-3 bg-primary rounded-full outline outline-4 outline-[#221910]"></div>
+            </div>
+            <div class="pb-8">
+                <div class="text-[#c9ad92] text-xs font-bold uppercase tracking-wider mb-2 pl-1">Oct 24 • 10:30 AM</div>
+                <!-- Paper Slip Card -->
+                <div
+                    class="bg-paper-light text-paper-text rounded-lg p-1 shadow-[0_4px_12px_rgba(0,0,0,0.3)] transform transition-transform hover:scale-[1.01] duration-300 relative group overflow-hidden">
+                    <!-- Pin Visual -->
+                    <div class="absolute -top-3 left-1/2 -translate-x-1/2 z-20 opacity-90 drop-shadow-md">
+                        <span class="material-symbols-outlined text-primary text-3xl rotate-45">push_pin</span>
+                    </div>
+                    <div class="p-4 pt-6 flex flex-col gap-3">
+                        <div class="flex items-center gap-2 mb-1">
+                            <img alt="User avatar" class="size-6 rounded-full object-cover"
+                                src="https://lh3.googleusercontent.com/aida-public/AB6AXuDADCOZ2GRBXntnm7Ln1K27CooWgQ6kanRSO6lYwfq1Lh0js6yprXY7TW29PE5Q4PTtX1ea_lVYa3uLsQnZGyMUJTxsQUFsKpDxeMUKJyvtnJPpendFdHouN57T8-CHWNepqGO4izIJFb1FtTLhqJXMzRv22LUpy7XXZkcZdkF6vP_8fO0nw16_9gX299EbnHnqGZGTngyenWgzpvgNmoSJI_2eiNhPqPveM6dJsimgLApTN_uEkHIsabKTB22na4vYhIaJ4s6kEUsS" />
+                            <span class="text-sm font-bold text-gray-800">Sarah Jenkins</span>
+                        </div>
+                        <h2 class="text-xl font-bold leading-tight font-display text-gray-900">Found this amazing ramen
+                            shop in Shinjuku!</h2>
+                        <div class="rounded-md overflow-hidden aspect-video bg-gray-200 relative">
+                            <img alt="Steaming ramen bowl" class="w-full h-full object-cover"
+                                data-alt="Steaming bowl of ramen with pork and egg"
+                                src="https://lh3.googleusercontent.com/aida-public/AB6AXuAehqPX9ITcZtyxCjiXehRri02xOhlL42KAJkEPGDLa1ADOFxp9tl0MMRbexxzVOP-es8JscnioVmFpCjEOUt524klvlh1TACfQbEWVRnRzMTWS6y7qPy6Fiqe1CTZshvXfY-owie1m6bx7p5YtljPv4XXkvl_Y9eGm6eEtP9kofTXrLGy7SG87jLTG_FURB1-yGqrdIZkRYE1m0OhxjKhWmjhFZYberO9mLPncrPw89b9f2-iEegXfPuspZz8CEXDIUAKDi7pMkqng" />
+                            <div
+                                class="absolute bottom-2 right-2 bg-black/60 text-white text-[10px] px-2 py-1 rounded-md backdrop-blur-sm flex items-center gap-1">
+                                <span class="material-symbols-outlined text-[12px]">location_on</span> Shinjuku
+                            </div>
+                        </div>
+                        <p class="text-base leading-relaxed text-gray-700">Best broth I've ever had. The chashu simply
+                            melts in your mouth. We definitely need to come back here before we leave.</p>
+                        <!-- Interactive Footer (Pin Section) -->
+                        <div class="border-t border-gray-300/50 mt-2 pt-3 flex items-center justify-between">
+                            <button
+                                class="flex items-center gap-1.5 text-gray-500 hover:text-primary transition-colors group/btn">
+                                <span
+                                    class="material-symbols-outlined text-[20px] group-hover/btn:fill-1">chat_bubble</span>
+                                <span class="text-xs font-bold">3 Comments</span>
+                            </button>
+                            <div class="flex items-center gap-2">
+                                <button
+                                    class="flex items-center gap-1 text-gray-500 hover:text-red-500 transition-colors">
+                                    <span class="material-symbols-outlined icon-outline text-[20px]">favorite</span>
+                                    <span class="text-xs font-bold">12</span>
+                                </button>
+                                <button
+                                    class="flex items-center justify-center size-8 rounded-full hover:bg-black/5 text-gray-400 hover:text-gray-700">
+                                    <span class="material-symbols-outlined text-[20px]">more_horiz</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Entry 2: Train Tickets -->
+            <div class="flex flex-col items-center pt-2 relative z-10">
+                <div class="size-3 bg-[#674d32] rounded-full outline outline-4 outline-[#221910]"></div>
+            </div>
+            <div class="pb-8">
+                <div class="text-[#c9ad92] text-xs font-bold uppercase tracking-wider mb-2 pl-1">Oct 24 • 2:15 PM</div>
+                <!-- Paper Slip Card -->
+                <div class="bg-paper-light text-paper-text rounded-lg p-4 shadow-[0_4px_12px_rgba(0,0,0,0.3)] relative">
+                    <!-- Pin Visual -->
+                    <div class="absolute -top-3 left-1/2 -translate-x-1/2 z-20 opacity-80 drop-shadow-md">
+                        <span class="material-symbols-outlined text-gray-400 text-3xl rotate-[-15deg]">push_pin</span>
+                    </div>
+                    <div class="pt-2 flex flex-col gap-3">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-2">
+                                <img alt="User avatar" class="size-6 rounded-full object-cover"
+                                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuAeO0kXy86sGsN6JD2E0CPNKRl1IuVpm_bMf1s5Ww2O3atVfYXkoCczTV5eM0MbIlt5ZcFa5tkGvp-aWgA-a94HY5aLJtpZ9moed1plMatovxwZrIAWWctcSj1CpyeDnANRdWI2MH07FsBnektFst7fVzx29zv_VQwQSIk6mbn641pastYeRrMHyFtnrVKF2VuMZoc9vfGqJHaOsRUeSza7lBdsA4UvqpRk33i0vjPtWSqomgQgOfqG4NSYypPklFgoh2meSgzR1LFd" />
+                                <span class="text-sm font-bold text-gray-800">Mike Ross</span>
+                            </div>
+                            <span
+                                class="bg-primary/10 text-primary text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wide">Logistics</span>
+                        </div>
+                        <div class="flex gap-4 items-start">
+                            <div class="bg-white p-2 rounded border border-gray-200 shadow-sm shrink-0 rotate-[-2deg]">
+                                <span class="material-symbols-outlined text-4xl text-gray-700">train</span>
+                            </div>
+                            <div>
+                                <h3 class="text-lg font-bold text-gray-900 leading-tight">Shinkansen Tickets</h3>
+                                <p class="text-sm text-gray-600 mt-1">Booked for tomorrow morning. 9:00 AM from Tokyo
+                                    Station. Don't be late!</p>
+                            </div>
+                        </div>
+                        <!-- Interactive Footer -->
+                        <div class="border-t border-gray-300/50 mt-1 pt-2 flex items-center justify-end">
+                            <button
+                                class="flex items-center gap-1 text-gray-400 hover:text-primary transition-colors text-xs font-bold uppercase tracking-wide">
+                                <span class="material-symbols-outlined text-[18px]">push_pin</span>
+                                Pin to top
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Entry 3: Quote -->
+            <div class="flex flex-col items-center pt-2 relative z-10">
+                <div class="size-3 bg-[#674d32] rounded-full outline outline-4 outline-[#221910]"></div>
+            </div>
+            <div class="pb-8">
+                <div class="text-[#c9ad92] text-xs font-bold uppercase tracking-wider mb-2 pl-1">Oct 25 • 9:00 AM</div>
+                <!-- Paper Slip Card -->
+                <div
+                    class="bg-paper-light text-paper-text rounded-lg p-6 shadow-[0_4px_12px_rgba(0,0,0,0.3)] relative flex flex-col items-center text-center">
+                    <!-- Pin Visual -->
+                    <div class="absolute -top-3 right-4 z-20 opacity-80 drop-shadow-md">
+                        <span class="material-symbols-outlined text-primary text-3xl rotate-[15deg]">push_pin</span>
+                    </div>
+                    <span class="material-symbols-outlined text-primary/40 text-4xl mb-2">format_quote</span>
+                    <p class="text-xl font-serif italic text-gray-800 leading-normal">"Travel is the only thing you buy
+                        that makes you richer."</p>
+                    <div class="mt-4 flex items-center gap-2 justify-center">
+                        <img alt="User avatar" class="size-5 rounded-full object-cover grayscale opacity-70"
+                            src="https://lh3.googleusercontent.com/aida-public/AB6AXuAdsCgHctCepw1PgvzZvtunBdgznepH5nX9FgqRaJGo-BfJ9QGme8Y0PIQzbuNf-57plHIMoUYajRcj_yZMDXqcUqtGMkpvRQp3tqIOZudQ2NdQ9CpOPy1Dq-eI1XbaK28svG56ew1pqc2pnLOMrZa3ti5ZgX0OtUuZNTx3UZT2AhjJjkPJVqThvRe7rdff-n2uws-LY9sgwVbd-83gAoJfhOEUBfEHjfFMOZJT8YymSs1rJ98OLhO4qrGe3LQuPiQ_S2C3E5JWTuVk" />
+                        <span class="text-xs font-bold text-gray-500 uppercase tracking-widest">— David</span>
+                    </div>
+                </div>
+            </div>
+            <!-- Entry 4: Map Location -->
+            <div class="flex flex-col items-center pt-2 relative z-10">
+                <div class="size-3 bg-[#674d32] rounded-full outline outline-4 outline-[#221910]"></div>
+            </div>
+            <div class="pb-24">
+                <div class="text-[#c9ad92] text-xs font-bold uppercase tracking-wider mb-2 pl-1">Oct 25 • 11:30 AM</div>
+                <!-- Paper Slip Card -->
+                <div class="bg-paper-light text-paper-text rounded-lg p-1 shadow-[0_4px_12px_rgba(0,0,0,0.3)] relative">
+                    <div class="p-3">
+                        <div class="flex items-center justify-between mb-2">
+                            <h3 class="text-base font-bold text-gray-900">Next Stop: Kyoto</h3>
+                            <span class="material-symbols-outlined text-gray-400">near_me</span>
+                        </div>
+                        <div class="rounded overflow-hidden h-32 w-full relative">
+                            <img alt="Kyoto map location"
+                                class="w-full h-full object-cover opacity-80 mix-blend-multiply"
+                                data-alt="Map view of Kyoto streets" data-location="Kyoto"
+                                src="https://lh3.googleusercontent.com/aida-public/AB6AXuCtcC2zAPl7u5AvfKpEcWdW6LpOBIIrDh9laK-MPEOoh5bWB-qJBDcGYRF5MmZy7VE49OWdQWV66RB99LktmvaZulhmeSF3-z7G7Y6HA_PHqXJyE9eQQndpEW5BXTlxyg0b9HDNMHBbr3DCg4JaKsja62ONjGb_qZNobsHuICadtY6-82WsFssI2kmlgw5D9ovqV7NcIr8g0KHYZaWFvWObxT5EMaVoLcPF5DaxZq1g9bxOvL8TeAIH-zCPqkLxhYABr1J01UP5_Fpt" />
+                            <div class="absolute inset-0 bg-[#eaddcf]/20"></div>
+                            <div class="absolute inset-0 flex items-center justify-center">
+                                <div class="bg-white/90 p-2 rounded-full shadow-lg">
+                                    <span class="material-symbols-outlined text-primary">location_on</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    <!-- Floating Action Button -->
+    <div class="fixed bottom-6 right-6 z-50">
+        <button
+            class="group flex items-center justify-center size-14 bg-primary text-white rounded-full shadow-[0_4px_20px_rgba(212,115,17,0.4)] hover:bg-[#b8620e] hover:scale-105 transition-all duration-300">
+            <span
+                class="material-symbols-outlined text-2xl group-hover:rotate-90 transition-transform duration-300">edit</span>
+        </button>
+    </div>
+</body>
+
+</html>

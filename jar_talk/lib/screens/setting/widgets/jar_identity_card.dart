@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:jar_talk/controllers/profile_controller.dart';
+import 'package:jar_talk/controllers/setting_controller.dart';
+import 'package:jar_talk/utils/app_theme.dart';
 import 'package:jar_talk/utils/ui_extensions.dart';
 
 class JarIdentityCard extends StatelessWidget {
@@ -10,9 +11,11 @@ class JarIdentityCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const primaryColor = Color(0xFFD47311);
-    const textSecondary = Color(0xFFC9AD92);
-    const woodAccent = Color(0xFF483623);
+    final theme = Theme.of(context);
+    final primaryColor = theme.colorScheme.primary;
+    final appTheme = theme.extension<AppThemeExtension>()!;
+    final textSecondary = appTheme.textSecondary;
+    final woodAccent = appTheme.woodAccent;
 
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 16),
@@ -69,7 +72,7 @@ class JarIdentityCard extends StatelessWidget {
                       BoxShadow(color: Colors.black12, blurRadius: 2),
                     ],
                   ),
-                  child: const Icon(Icons.edit, size: 16, color: primaryColor),
+                  child: Icon(Icons.edit, size: 16, color: primaryColor),
                 ),
               ),
             ],
@@ -88,12 +91,12 @@ class JarIdentityCard extends StatelessWidget {
                 fontWeight: FontWeight.bold,
                 color: Colors.black87,
               ),
-              decoration: const InputDecoration(
+              decoration: InputDecoration(
                 border: InputBorder.none,
                 focusedBorder: UnderlineInputBorder(
                   borderSide: BorderSide(color: primaryColor),
                 ),
-                enabledBorder: UnderlineInputBorder(
+                enabledBorder: const UnderlineInputBorder(
                   borderSide: BorderSide(color: Colors.transparent),
                 ),
               ),
@@ -101,7 +104,7 @@ class JarIdentityCard extends StatelessWidget {
           ),
           Text(
             'Created ${controller.createdDate}',
-            style: const TextStyle(fontSize: 14, color: textSecondary),
+            style: TextStyle(fontSize: 14, color: textSecondary),
           ),
         ],
       ),

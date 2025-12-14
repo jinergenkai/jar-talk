@@ -1,15 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:jar_talk/screens/profile/widgets/section_header.dart';
+import 'package:jar_talk/screens/setting/widgets/section_header.dart';
+import 'package:jar_talk/utils/app_theme.dart';
 
 class JarInsightsSection extends StatelessWidget {
   const JarInsightsSection({super.key});
 
   @override
   Widget build(BuildContext context) {
-    const primaryColor = Color(0xFFD47311);
-    const textSecondary = Color(0xFFC9AD92);
-    const surfaceLight = Colors.white;
-    const woodAccent = Color(0xFF483623);
+    final theme = Theme.of(context);
+    final primaryColor = theme.colorScheme.primary;
+    final appTheme = theme.extension<AppThemeExtension>()!;
+    final textSecondary = appTheme.textSecondary;
+    final surfaceLight = theme.cardColor;
+    final woodAccent = appTheme.woodAccent;
 
     return Column(
       children: [
@@ -22,6 +25,7 @@ class JarInsightsSection extends StatelessWidget {
                 children: [
                   Expanded(
                     child: _buildStatCard(
+                      context,
                       Icons.inventory_2,
                       '142',
                       'Total Slips',
@@ -30,6 +34,7 @@ class JarInsightsSection extends StatelessWidget {
                   const SizedBox(width: 12),
                   Expanded(
                     child: _buildStatCard(
+                      context,
                       Icons.calendar_month,
                       "Oct '23",
                       'Date Started',
@@ -55,16 +60,13 @@ class JarInsightsSection extends StatelessWidget {
                         Container(
                           padding: const EdgeInsets.all(8),
                           decoration: BoxDecoration(
-                            color: primaryColor.withOpacity(0.2),
+                            color: primaryColor.withValues(alpha: 0.2),
                             borderRadius: BorderRadius.circular(8),
                           ),
-                          child: const Icon(
-                            Icons.emoji_events,
-                            color: primaryColor,
-                          ),
+                          child: Icon(Icons.emoji_events, color: primaryColor),
                         ),
                         const SizedBox(width: 12),
-                        const Column(
+                        Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
@@ -110,11 +112,21 @@ class JarInsightsSection extends StatelessWidget {
     );
   }
 
-  Widget _buildStatCard(IconData icon, String value, String label) {
+  Widget _buildStatCard(
+    BuildContext context,
+    IconData icon,
+    String value,
+    String label,
+  ) {
+    final theme = Theme.of(context);
+    // Note: This method needs context or colors passed to it. Assuming context is available or refactoring to pass it.
+    // Since it's a separate method in a StatelessWidget, context isn't global.
+    // Better to inline or pass colors.
+    // Refactoring to pass colors.
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: theme.cardColor,
         borderRadius: BorderRadius.circular(12),
         boxShadow: const [BoxShadow(color: Colors.black12, blurRadius: 1)],
       ),
@@ -123,7 +135,7 @@ class JarInsightsSection extends StatelessWidget {
         children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [Icon(icon, color: const Color(0xFFD47311))],
+            children: [Icon(icon, color: theme.colorScheme.primary)],
           ),
           const SizedBox(height: 8),
           Text(
@@ -132,7 +144,10 @@ class JarInsightsSection extends StatelessWidget {
           ),
           Text(
             label,
-            style: const TextStyle(fontSize: 12, color: Color(0xFFC9AD92)),
+            style: TextStyle(
+              fontSize: 12,
+              color: theme.extension<AppThemeExtension>()!.textSecondary,
+            ),
           ),
         ],
       ),

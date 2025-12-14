@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart'; // If you use Obx for selections later
-import 'package:jar_talk/controllers/profile_controller.dart';
-import 'package:jar_talk/screens/profile/widgets/section_header.dart';
+import 'package:jar_talk/controllers/setting_controller.dart';
+import 'package:jar_talk/screens/setting/widgets/section_header.dart';
+import 'package:jar_talk/utils/app_theme.dart';
 
 class AppearanceSection extends StatelessWidget {
   const AppearanceSection({super.key, required this.controller});
@@ -10,7 +11,10 @@ class AppearanceSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const surfaceLight = Colors.white;
+    final theme = Theme.of(context);
+    // final appTheme = theme.extension<AppThemeExtension>()!;
+    final surfaceLight =
+        theme.cardColor; // Or theme.colorScheme.surface depending on map
 
     return Column(
       children: [
@@ -39,16 +43,19 @@ class AppearanceSection extends StatelessWidget {
                 () => Row(
                   children: [
                     _buildShapeOption(
+                      context,
                       'Mason',
                       controller.selectedShape.value == 'Mason',
                     ),
                     const SizedBox(width: 16),
                     _buildShapeOption(
+                      context,
                       'Apothecary',
                       controller.selectedShape.value == 'Apothecary',
                     ),
                     const SizedBox(width: 16),
                     _buildShapeOption(
+                      context,
                       'Bowl',
                       controller.selectedShape.value == 'Bowl',
                     ),
@@ -112,9 +119,15 @@ class AppearanceSection extends StatelessWidget {
     );
   }
 
-  Widget _buildShapeOption(String label, bool isSelected) {
-    const primaryColor = Color(0xFFD47311);
-    const woodAccent = Color(0xFF483623);
+  Widget _buildShapeOption(
+    BuildContext context,
+    String label,
+    bool isSelected,
+  ) {
+    final theme = Theme.of(context);
+    final primaryColor = theme.colorScheme.primary;
+    final woodAccent = theme.extension<AppThemeExtension>()!.woodAccent;
+    final textSecondary = theme.extension<AppThemeExtension>()!.textSecondary;
 
     // In real app, attach onTap to this widget or parent to change selection
     // Here we assume simple display or modify to include onTap
@@ -133,8 +146,8 @@ class AppearanceSection extends StatelessWidget {
               height: 80,
               decoration: BoxDecoration(
                 color: isSelected
-                    ? woodAccent.withOpacity(0.3)
-                    : Colors.black.withOpacity(0.05),
+                    ? woodAccent.withValues(alpha: 0.3)
+                    : Colors.black.withValues(alpha: 0.05),
                 borderRadius: BorderRadius.circular(8),
                 border: isSelected
                     ? Border.all(color: primaryColor, width: 2)
@@ -146,7 +159,7 @@ class AppearanceSection extends StatelessWidget {
                   height: 48,
                   decoration: BoxDecoration(
                     border: Border.all(
-                      color: Colors.grey.withOpacity(0.4),
+                      color: Colors.grey.withValues(alpha: 0.4),
                       width: 2,
                     ),
                     borderRadius: BorderRadius.circular(2), // Rough Mason shape
@@ -160,7 +173,7 @@ class AppearanceSection extends StatelessWidget {
               style: TextStyle(
                 fontSize: 12,
                 fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
-                color: isSelected ? primaryColor : const Color(0xFFC9AD92),
+                color: isSelected ? primaryColor : textSecondary,
               ),
             ),
           ],

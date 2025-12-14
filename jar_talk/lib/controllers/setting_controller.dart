@@ -1,5 +1,6 @@
-import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:jar_talk/controllers/app_controller.dart';
 
 class ProfileController extends GetxController {
   // Jar Identity
@@ -48,6 +49,9 @@ class ProfileController extends GetxController {
 
   void selectColor(int index) {
     selectedColorIndex.value = index;
+    // Update global theme
+    final appController = Get.find<AppController>();
+    // appController.changeThemeColor(Color(themeColors[index]));
   }
 
   void toggleInvite(bool value) {
