@@ -7,6 +7,7 @@ import 'package:jar_talk/screens/setting/widgets/jar_insights_section.dart';
 import 'package:jar_talk/screens/setting/widgets/members_section.dart';
 import 'package:jar_talk/screens/setting/widgets/permissions_section.dart';
 import 'package:jar_talk/screens/setting/widgets/profile_header.dart';
+import 'package:jar_talk/screens/setting/widgets/invite_section.dart';
 
 class SettingScreen extends StatelessWidget {
   final int jarId;
@@ -39,6 +40,8 @@ class SettingScreen extends StatelessWidget {
                     children: [
                       JarIdentityCard(controller: controller),
                       MembersSection(controller: controller),
+                      const SizedBox(height: 24),
+                      InviteSection(jarId: jarId),
                       const SizedBox(height: 24),
                       AppearanceSection(controller: controller),
                       const SizedBox(height: 24),

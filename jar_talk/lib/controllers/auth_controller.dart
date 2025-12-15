@@ -7,6 +7,7 @@ import 'package:jar_talk/services/dio_client.dart';
 import 'package:jar_talk/models/backend_auth_models.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:jar_talk/controllers/app_controller.dart';
+import 'package:jar_talk/controllers/shelf_controller.dart';
 
 class AuthController extends GetxController {
   static AuthController get instance => Get.find();

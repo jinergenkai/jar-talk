@@ -40,6 +40,7 @@ docker exec jar_talk_db mysql -u root -ppassword jar_talk -e "source /tmp/add_ti
 | Date | File | Description |
 |------|------|-------------|
 | 2025-12-15 | `add_title_to_slip.sql` | Add `title` column to `slip` table |
+| 2025-12-15 | `create_invite_table.sql` | Create `invite` table for invite system |
 
 ## Creating New Migrations
 

@@ -159,6 +159,101 @@ Remove member from container
 
 ---
 
+## 🎫 Invites (Container Invitations)
+
+### POST /invites
+
+Create a new invite link for a container (Admin only)
+
+**Request:**
+```json
+{
+  "container_id": 1,
+  "expires_in_hours": 24, // optional, null = never expires
+  "max_uses": 10 // optional, null = unlimited
+}
+```
+
+**Response:**
+```json
+{
+  "invite_id": 1,
+  "container_id": 1,
+  "invite_code": "ABC123XY",
+  "invite_link": "http://localhost:8000/invites/join?code=ABC123XY",
+  "created_by": 1,
+  "created_at": "2024-01-01T12:00:00",
+  "expires_at": "2024-01-02T12:00:00",
+  "max_uses": 10,
+  "current_uses": 0,
+  "is_active": true,
+  "container_name": "My Travel Journal"
+}
+```
+
+### GET /invites/container/{container_id}
+
+Get all active invites for a container (Admin only)
+
+**Response:**
+```json
+[
+  {
+    "invite_id": 1,
+    "container_id": 1,
+    "invite_code": "ABC123XY",
+    "invite_link": "http://localhost:8000/invites/join?code=ABC123XY",
+    "created_by": 1,
+    "created_at": "2024-01-01T12:00:00",
+    "expires_at": "2024-01-02T12:00:00",
+    "max_uses": 10,
+    "current_uses": 3,
+    "is_active": true,
+    "container_name": "My Travel Journal"
+  }
+]
+```
+
+### POST /invites/join?code=ABC123XY
+
+Join a container using an invite code
+
+**Query Parameters:**
+- `code` (required): The invite code
+
+**Usage:**
+- Click invite link: `POST /invites/join?code=ABC123XY`
+- Manual entry: User enters code, app calls `POST /invites/join?code=ABC123XY`
+
+**Response:**
+```json
+{
+  "message": "Successfully joined container",
+  "container": {
+    "container_id": 1,
+    "name": "My Travel Journal"
+  },
+  "membership": {
+    "participant_id": 10,
+    "role": "member",
+    "joined_at": "2024-01-01T12:00:00"
+  }
+}
+```
+
+### DELETE /invites/{invite_id}
+
+Deactivate an invite (Admin or creator only)
+
+**Response:**
+```json
+{
+  "message": "Invite deactivated successfully"
+}
+```
+
+---
+
 ## 📝 Slips (Journal Entries)
 
 ### POST /slips
@@ -300,12 +395,25 @@ const slip = await POST('/slips', {
 });
 ```
 
-### 2. Share Container with Friend
+### 2. Invite Friend to Container
 
 ```javascript
-// Admin adds friend as member
-await POST(`/containers/${container_id}/members?member_user_id=5&role=member`, null, {
+// Admin creates invite link
+const invite = await POST('/invites', {
+  container_id: container_id,
+  expires_in_hours: 24, // expires in 24 hours
+  max_uses: 5 // max 5 people can use this link
+}, {
   headers: { Authorization: `Bearer ${access_token}` }
+});
+
+// Share invite link with friend
+console.log(invite.invite_link); // "http://localhost:8000/invites/join?code=ABC123XY"
+console.log(invite.invite_code); // "ABC123XY"
+
+// Friend joins using invite code (from link or manual entry)
+const result = await POST('/invites/join?code=ABC123XY', null, {
+  headers: { Authorization: `Bearer ${friend_token}` }
 });
 
 // Friend can now view and create slips
@@ -337,8 +445,14 @@ const slips = await GET(`/slips?container_id=${containers[0].container_id}&limit
 - **View**: Members only
 - **Update**: Admins only
 - **Delete**: Owner only
-- **Add Members**: Admins only
+- **Add Members**: Via invites (see below)
 - **Remove Members**: Admins (anyone), Self (leave)
+
+### Invites
+- **Create**: Container admins only
+- **View**: Container admins only
+- **Join**: Any authenticated user with valid code
+- **Deactivate**: Container admins or invite creator
 
 ### Slips
 - **Create**: Container members only

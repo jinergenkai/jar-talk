@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:jar_talk/services/invite_service.dart';
+import 'package:jar_talk/controllers/shelf_controller.dart';
 import 'package:jar_talk/utils/app_theme.dart';
 
 class JoinJarDialog extends StatelessWidget {
@@ -145,14 +147,51 @@ class JoinJarDialog extends StatelessWidget {
                   const SizedBox(width: 16),
                   Expanded(
                     child: FilledButton(
-                      onPressed: () {
-                        // TODO: Implement Join Logic
-                        if (textController.text.isNotEmpty) {
-                          Get.snackbar(
-                            "Coming Soon",
-                            "Joining via code is not yet implemented.",
+                      onPressed: () async {
+                        if (textController.text.isEmpty) return;
+
+                        try {
+                          // Show loading
+                          showDialog(
+                            context: context,
+                            barrierDismissible: false,
+                            builder: (context) => const Center(
+                              child: CircularProgressIndicator(),
+                            ),
                           );
-                          Navigator.pop(context);
+
+                          final inviteService = Get.put(InviteService());
+                          await inviteService.joinByCode(textController.text);
+
+                          // Close loading
+                          if (context.mounted) Navigator.pop(context);
+
+                          // Close dialog
+                          if (context.mounted) Navigator.pop(context);
+
+                          // Refresh shelf (using Get.find to find existing controller)
+                          try {
+                            Get.find<ShelfController>().fetchJars();
+                          } catch (_) {
+                            // Controller might not be ready, ignore
+                          }
+
+                          Get.snackbar(
+                            "Success",
+                            "You have joined the journal!",
+                            backgroundColor: Colors.green,
+                            colorText: Colors.white,
+                          );
+                        } catch (e) {
+                          // Close loading
+                          if (context.mounted) Navigator.pop(context);
+
+                          Get.snackbar(
+                            "Error",
+                            e.toString().replaceAll("Exception: ", ""),
+                            backgroundColor: Colors.red,
+                            colorText: Colors.white,
+                          );
                         }
                       },
                       style: FilledButton.styleFrom(
