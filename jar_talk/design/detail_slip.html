@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>View Single Slip Variant 2</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <!-- Google Fonts -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,100..900;1,100..900&amp;family=Noto+Sans:wght@400;500;700&amp;display=swap"
+        rel="stylesheet" />
+    <!-- Material Symbols -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <style>
+        .font-display {
+            font-family: 'Noto Serif', serif;
+        }
+
+        .font-sans {
+            font-family: 'Noto Sans', sans-serif;
+        }
+
+        /* Smooth scrolling */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* Hide scrollbar for clean look in demos */
+        ::-webkit-scrollbar {
+            width: 0px;
+            background: transparent;
+        }
+    </style>
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#d47311",
+                        "background-light": "#f8f7f6",
+                        "background-dark": "#221910",
+                        "paper-light": "#ffffff",
+                        "paper-dark": "#2c241b",
+                        "text-main-light": "#1b140d",
+                        "text-main-dark": "#e8e6e3",
+                        "text-sub-light": "#9a734c",
+                        "text-sub-dark": "#b08d6a",
+                    },
+                    fontFamily: {
+                        "display": ["Noto Serif", "serif"],
+                        "sans": ["Noto Sans", "sans-serif"]
+                    },
+                    borderRadius: { "DEFAULT": "0.5rem", "lg": "1rem", "xl": "1.5rem", "full": "9999px" },
+                    boxShadow: {
+                        'paper': '0 4px 20px -2px rgba(27, 20, 13, 0.1)',
+                        'paper-dark': '0 4px 20px -2px rgba(0, 0, 0, 0.4)',
+                    }
+                },
+            },
+        }
+    </script>
+    <style>
+        body {
+            min-height: max(884px, 100dvh);
+        }
+    </style>
+</head>
+
+<body class="bg-background-light dark:bg-background-dark transition-colors duration-300">
+    <!-- Main Container -->
+    <div
+        class="relative flex h-full min-h-screen w-full flex-col max-w-md mx-auto overflow-x-hidden font-display text-text-main-light dark:text-text-main-dark">
+        <!-- Header -->
+        <header
+            class="flex items-center justify-between p-4 sticky top-0 z-10 bg-background-light/95 dark:bg-background-dark/95 backdrop-blur-sm">
+            <button
+                class="flex size-10 shrink-0 items-center justify-center rounded-full hover:bg-black/5 dark:hover:bg-white/10 transition-colors">
+                <span class="material-symbols-outlined text-[24px]">arrow_back_ios_new</span>
+            </button>
+            <h2 class="text-lg font-bold leading-tight tracking-tight flex-1 text-center opacity-90">View Slip</h2>
+            <div class="flex size-10 items-center justify-end">
+                <button
+                    class="flex size-10 shrink-0 items-center justify-center rounded-full hover:bg-black/5 dark:hover:bg-white/10 transition-colors text-text-main-light dark:text-text-main-dark">
+                    <span class="material-symbols-outlined text-[24px]">more_horiz</span>
+                </button>
+            </div>
+        </header>
+        <!-- Scrollable Content -->
+        <main class="flex-1 flex flex-col items-center px-4 pb-8 pt-2">
+            <!-- The Slip (Card Component) -->
+            <div class="w-full relative group">
+                <!-- Slip Visual -->
+                <div
+                    class="relative bg-paper-light dark:bg-paper-dark rounded-xl shadow-paper dark:shadow-paper-dark overflow-hidden transition-all duration-300">
+                    <!-- Decorative top edge/texture optional, keeping clean for now -->
+                    <div class="h-2 bg-primary/20 w-full absolute top-0 left-0"></div>
+                    <div class="p-6 md:p-8 flex flex-col gap-6">
+                        <!-- Slip Header Info -->
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-2">
+                                <span class="material-symbols-outlined text-primary text-[20px]">calendar_today</span>
+                                <span
+                                    class="text-sm font-bold tracking-wide text-text-sub-light dark:text-text-sub-dark uppercase">Oct
+                                    24, 2023</span>
+                            </div>
+                            <div
+                                class="px-2 py-1 rounded-lg bg-primary/10 dark:bg-primary/20 text-xs font-medium text-primary flex items-center gap-1">
+                                <span class="material-symbols-outlined text-[14px]">lock_open</span>
+                                Shared with Jar
+                            </div>
+                        </div>
+                        <!-- Content Body -->
+                        <div class="flex flex-col gap-4">
+                            <!-- Optional Image in slip -->
+                            <div class="w-full h-48 rounded-lg overflow-hidden relative mb-2">
+                                <img alt="Morning coffee cup with sunlight casting shadows on a wooden table"
+                                    class="w-full h-full object-cover opacity-90 hover:opacity-100 transition-opacity"
+                                    data-alt="Morning coffee cup with sunlight casting shadows on a wooden table"
+                                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuBb_pERLNbTsJjS9DhvE5aFQAzxafI8Ygyz4NtrC8glw41-oxojHcRRZBNH4MA5V_yytC5SR3wmjV8b3ooL61E4iJPmf1PT2ov5ax9XQosGmaQ93E4kyAMwB8GRJRAj1WIUBYanE_sbrVKl0oN6IyTKzn252KCuH_xUOKiY77u6lgecc3ab0AVYbxAIArnpmzejEOe_nzpi9HYyZgfo4uTLJESxm1sAob9C0JS-aum0gtnoazot5HGApNVk20S_SwYYPgf_CiV0itRH" />
+                            </div>
+                            <p
+                                class="text-lg md:text-xl font-medium leading-relaxed text-text-main-light dark:text-text-main-dark">
+                                Today I realized that slowing down isn't about doing less, but noticing more. The way
+                                the light hit the coffee cup this morning reminded me that beauty is often just waiting
+                                for us to pay attention.
+                            </p>
+                            <p
+                                class="text-lg md:text-xl font-medium leading-relaxed text-text-main-light dark:text-text-main-dark">
+                                I want to hold onto this feeling of stillness, even when the world starts moving fast
+                                again.
+                            </p>
+                        </div>
+                        <!-- Author / Signature -->
+                        <div class="flex items-center gap-3 pt-4 border-t border-black/5 dark:border-white/5">
+                            <div class="size-8 rounded-full overflow-hidden bg-gray-200">
+                                <img alt="Portrait of a woman smiling" class="w-full h-full object-cover"
+                                    data-alt="Portrait of a woman smiling"
+                                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuCxWcV-eYlIDebPAeeBHcnKD2FXpNZhDW_NSUEX5KLUi-plXc31dJDNZiy1dQk7fDanM6NtgfWJh467OLK0HU5okxpLLA0wnxSXhv1XLmJrMDJL6aCCdnaXlCnbMCmiUhX6aumiEXambAk9ZMj26MiJp-cDsJlW0A9KDAyiFjAw6VHe-9gunKfQJ_1k56gWNDNR3yOZgjtMyP8wnsV-mEzjRUer9p8qYVkOKef53LSwsNS0ixxZgPtZIJ635Q74eIlA2icg8ZbFEdZ9" />
+                            </div>
+                            <span
+                                class="text-sm font-bold text-text-sub-light dark:text-text-sub-dark font-sans">Written
+                                by Sarah</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Interaction Section (Variant 2 Focus) -->
+            <!-- Located immediately below the slip -->
+            <div class="w-full mt-6 flex flex-col gap-4">
+                <!-- Compact Reaction Row -->
+                <div class="flex items-center justify-between px-2">
+                    <div class="flex items-center -space-x-3">
+                        <!-- Avatar 1 -->
+                        <div class="relative">
+                            <div
+                                class="size-8 rounded-full ring-2 ring-background-light dark:ring-background-dark overflow-hidden">
+                                <img alt="Portrait of a man" class="w-full h-full object-cover"
+                                    data-alt="Portrait of a man"
+                                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuAFLypWTinP2Rh2k8wi1yN7BYbwaRtP_r29bQ9-AEZk17_BqCFmAbKFapdSjIK7DPPefDpIO0RrtPlS2I98a3Jsc_LZea9nY_JLR3JHIl9Iubm_Apbd458hxTAmFRcWIbTC27VqscKyTPAYYIPTfxCewZTZdDlDbSRuH-LlWxNCVOdXuvRbtR-EYqa6QL1VfpAchf4n9uQAUkrziJcjwSn1bbBM9waUZPU17M02JANgtT1N6HuVa4CPe5o9zZk9g14ppIy_u7cKZ9AU" />
+                            </div>
+                            <div
+                                class="absolute -bottom-1 -right-1 bg-white dark:bg-gray-800 rounded-full p-[2px] shadow-sm">
+                                <span class="block text-[10px]">❤️</span>
+                            </div>
+                        </div>
+                        <!-- Avatar 2 -->
+                        <div class="relative">
+                            <div
+                                class="size-8 rounded-full ring-2 ring-background-light dark:ring-background-dark overflow-hidden">
+                                <img alt="Portrait of a woman" class="w-full h-full object-cover"
+                                    data-alt="Portrait of a woman"
+                                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuBfEO1m5iHEEsf4l2qi5MBE2N0-bZGO5N3_MZkRl7ZrwLFI9WZ_3jEfDayNK2X9chcFKRJw0pmTX1itCE__MnWTlCi7zOqHZ1GbjPPr6arQjyK_BkohaCE8oq-tikFOVHAfvzD-b_MOhKd6qUSDXRlB0355_SmYCTKQlvxE3_6f66apQ76a-IvcQIx4Yl5aEAeRByFSsruX3FaXSunLLiv6stCV55_1OWXEyVkjHmE96CzmOyrB0_ScpLakFQjoToQUqWs1Iq0kXZfP" />
+                            </div>
+                            <div
+                                class="absolute -bottom-1 -right-1 bg-white dark:bg-gray-800 rounded-full p-[2px] shadow-sm">
+                                <span class="block text-[10px]">👏</span>
+                            </div>
+                        </div>
+                        <!-- Overflow Counter -->
+                        <div
+                            class="relative z-10 flex items-center justify-center size-8 rounded-full ring-2 ring-background-light dark:ring-background-dark bg-primary/10 dark:bg-primary/30 text-primary text-[10px] font-bold font-sans">
+                            +24
+                        </div>
+                    </div>
+                    <span class="text-xs font-medium text-text-sub-light dark:text-text-sub-dark font-sans">
+                        Jane, Mike + 24 others reacted
+                    </span>
+                </div>
+                <!-- Direct Input Field -->
+                <div class="flex w-full items-end gap-2">
+                    <div class="relative flex-1 group/input">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <span
+                                class="material-symbols-outlined text-text-sub-light dark:text-text-sub-dark/50">edit_note</span>
+                        </div>
+                        <input
+                            class="block w-full rounded-xl border-none bg-white dark:bg-paper-dark py-3.5 pl-10 pr-12 text-sm placeholder:text-text-sub-light/60 dark:placeholder:text-text-sub-dark/60 focus:ring-2 focus:ring-primary/50 shadow-sm text-text-main-light dark:text-text-main-dark font-sans"
+                            placeholder="Write a supportive note..." type="text" />
+                        <div class="absolute inset-y-0 right-1 flex items-center">
+                            <button class="p-2 text-primary hover:text-primary/80 transition-colors">
+                                <span class="material-symbols-outlined text-[20px] fill-1">send</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <!-- View More Comments Link -->
+                <div class="flex justify-center pt-2">
+                    <button
+                        class="text-sm font-bold text-text-sub-light dark:text-text-sub-dark hover:text-primary dark:hover:text-primary transition-colors flex items-center gap-1 font-sans">
+                        View all 12 comments
+                        <span class="material-symbols-outlined text-[16px]">expand_more</span>
+                    </button>
+                </div>
+            </div>
+        </main>
+        <!-- Bottom Safe Area Spacer -->
+        <div class="h-6"></div>
+    </div>
+</body>
+
+</html>

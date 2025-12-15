@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:jar_talk/screens/journal_view/widgets/journal_entry_card.dart';
 import 'package:jar_talk/screens/journal_view/widgets/timeline_entry.dart';
 import 'package:jar_talk/screens/new_entry/new_entry_screen.dart';
+import 'package:jar_talk/screens/journal_view/slip_detail_screen.dart';
 import 'package:get/get.dart';
 import 'package:jar_talk/controllers/slip_controller.dart';
 import 'package:jar_talk/screens/setting/setting_screen.dart';
@@ -196,61 +197,84 @@ class _JournalViewScreenState extends State<JournalViewScreen> {
                     final rotations = [1, -1, 2, 0];
                     final rotation = rotations[index % rotations.length];
 
-                    return TimelineEntry(
-                      isLast: index == controller.slips.length - 1,
-                      child: JournalEntryCard(
-                        date: formatDate(slip.createdAt),
-                        rotation: rotation.toDouble(),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            _buildAuthorRow(
-                              slip.authorUsername ?? 'Unknown',
-                              slip.authorEmail != null
-                                  ? 'https://ui-avatars.com/api/?name=${slip.authorUsername}&background=random' // Fallback avatar
-                                  : 'https://i.pravatar.cc/100?img=${(slip.authorId % 70) + 1}',
-                            ),
-                            const SizedBox(height: 12),
-                            if (slip.title != null) ...[
-                              Text(
-                                slip.title!,
-                                style: const TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold,
-                                  height: 1.2,
-                                ),
+                    return AnimatedEntry(
+                      index: index,
+                      child: TimelineEntry(
+                        isLast: index == controller.slips.length - 1,
+                        child: GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    SlipDetailScreen(slip: slip),
                               ),
-                              const SizedBox(height: 8),
-                            ],
-                            if (slip.media != null &&
-                                slip.media!.isNotEmpty) ...[
-                              for (var media in slip.media!)
-                                if (media.mediaType == 'image')
-                                  Container(
-                                    height: 140, // Reduced height as requested
-                                    width: double.infinity,
-                                    margin: const EdgeInsets.only(bottom: 12),
-                                    decoration: BoxDecoration(
-                                      color: Colors.grey[200],
-                                      borderRadius: BorderRadius.circular(12),
-                                      image: DecorationImage(
-                                        image: NetworkImage(media.downloadUrl),
-                                        fit: BoxFit.cover,
-                                      ),
+                            );
+                          },
+                          child: JournalEntryCard(
+                            date: formatDate(slip.createdAt),
+                            rotation: rotation.toDouble(),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                _buildAuthorRow(
+                                  slip.authorUsername ?? 'Unknown',
+                                  slip.authorEmail != null
+                                      ? 'https://ui-avatars.com/api/?name=${slip.authorUsername}&background=random' // Fallback avatar
+                                      : 'https://i.pravatar.cc/100?img=${(slip.authorId % 70) + 1}',
+                                ),
+                                const SizedBox(height: 12),
+                                if (slip.title != null) ...[
+                                  Text(
+                                    slip.title!,
+                                    style: const TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold,
+                                      height: 1.2,
                                     ),
                                   ),
-                            ],
-                            Text(
-                              slip.textContent,
-                              style: const TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.normal,
-                                height: 1.5,
-                              ),
+                                  const SizedBox(height: 8),
+                                ],
+                                if (slip.media != null &&
+                                    slip.media!.isNotEmpty) ...[
+                                  for (var media in slip.media!)
+                                    if (media.mediaType == 'image')
+                                      Container(
+                                        height:
+                                            140, // Reduced height as requested
+                                        width: double.infinity,
+                                        margin: const EdgeInsets.only(
+                                          bottom: 12,
+                                        ),
+                                        decoration: BoxDecoration(
+                                          color: Colors.grey[200],
+                                          borderRadius: BorderRadius.circular(
+                                            12,
+                                          ),
+                                          image: DecorationImage(
+                                            image: NetworkImage(
+                                              media.downloadUrl,
+                                            ),
+                                            fit: BoxFit.cover,
+                                          ),
+                                        ),
+                                      ),
+                                ],
+                                Text(
+                                  slip.textContent,
+                                  style: const TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.normal,
+                                    height: 1.5,
+                                  ),
+                                  maxLines: 3,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                                const SizedBox(height: 16),
+                                _buildFooter(),
+                              ],
                             ),
-                            const SizedBox(height: 16),
-                            _buildFooter(),
-                          ],
+                          ),
                         ),
                       ),
                     );
@@ -402,6 +426,58 @@ class _JournalViewScreenState extends State<JournalViewScreen> {
           ),
         ],
       ),
+    );
+  }
+}
+
+class AnimatedEntry extends StatefulWidget {
+  final Widget child;
+  final int index;
+  const AnimatedEntry({super.key, required this.child, required this.index});
+
+  @override
+  State<AnimatedEntry> createState() => _AnimatedEntryState();
+}
+
+class _AnimatedEntryState extends State<AnimatedEntry>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<double> _fadeAnimation;
+  late Animation<Offset> _slideAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 1500),
+    );
+    _fadeAnimation = CurvedAnimation(
+      parent: _controller,
+      curve: Curves.easeOut,
+    );
+    _slideAnimation = Tween<Offset>(
+      begin: const Offset(0, 0.1),
+      end: Offset.zero,
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOut));
+
+    final delay = (widget.index % 5) * 50;
+    Future.delayed(Duration(milliseconds: delay), () {
+      if (mounted) _controller.forward();
+    });
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return FadeTransition(
+      opacity: _fadeAnimation,
+      child: SlideTransition(position: _slideAnimation, child: widget.child),
     );
   }
 }
