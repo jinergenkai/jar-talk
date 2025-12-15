@@ -5,6 +5,9 @@ import 'package:jar_talk/screens/shelf/widgets/jar_card.dart';
 import 'package:jar_talk/utils/app_theme.dart';
 import 'package:jar_talk/screens/journal_view/journal_view_screen.dart';
 import 'package:jar_talk/screens/notification/notification_screen.dart';
+import 'package:jar_talk/screens/shelf/widgets/add_jar_options_sheet.dart';
+import 'package:jar_talk/screens/shelf/widgets/create_jar_dialog.dart';
+import 'package:jar_talk/screens/shelf/widgets/join_jar_dialog.dart';
 
 class ShelfScreen extends StatelessWidget {
   const ShelfScreen({super.key});
@@ -64,18 +67,44 @@ class ShelfScreen extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.only(right: 16.0),
                 child: Container(
-                  width: 40,
-                  height: 40,
+                  height: 36,
                   decoration: BoxDecoration(
-                    color: theme.colorScheme.primary.withOpacity(0.2),
-                    shape: BoxShape.circle,
+                    color: theme.colorScheme.primary.withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(20),
+                    border: Border.all(
+                      color: theme.colorScheme.primary.withOpacity(0.2),
+                    ),
                   ),
-                  child: IconButton(
-                    icon: Icon(Icons.add, color: theme.colorScheme.primary),
-                    onPressed: () {
-                      // Simple dialog to create Jar for now
-                      _showCreateJarDialog(context, controller);
-                    },
+                  child: Material(
+                    color: Colors.transparent,
+                    child: InkWell(
+                      borderRadius: BorderRadius.circular(20),
+                      onTap: () {
+                        _showAddOptions(context, controller);
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 12),
+                        child: Row(
+                          children: [
+                            Icon(
+                              Icons.add,
+                              color: theme.colorScheme.primary,
+                              size: 20,
+                            ),
+                            const SizedBox(width: 4),
+                            Text(
+                              "NEW",
+                              style: TextStyle(
+                                color: theme.colorScheme.primary,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 12,
+                                letterSpacing: 0.5,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
                   ),
                 ),
               ),
@@ -275,32 +304,27 @@ class ShelfScreen extends StatelessWidget {
     );
   }
 
+  void _showAddOptions(BuildContext context, ShelfController controller) {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      isScrollControlled: true,
+      useRootNavigator: true,
+      builder: (context) => AddJarOptionsSheet(
+        onCreate: () => _showCreateJarDialog(context, controller),
+        onJoin: () => _showJoinJarDialog(context),
+      ),
+    );
+  }
+
+  void _showJoinJarDialog(BuildContext context) {
+    showDialog(context: context, builder: (context) => const JoinJarDialog());
+  }
+
   void _showCreateJarDialog(BuildContext context, ShelfController controller) {
-    final textController = TextEditingController();
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text("Create New Jar"),
-        content: TextField(
-          controller: textController,
-          decoration: const InputDecoration(hintText: "Jar Name"),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text("Cancel"),
-          ),
-          TextButton(
-            onPressed: () {
-              if (textController.text.isNotEmpty) {
-                controller.createJar(textController.text);
-                Navigator.pop(context);
-              }
-            },
-            child: const Text("Create"),
-          ),
-        ],
-      ),
+      builder: (context) => CreateJarDialog(controller: controller),
     );
   }
 }

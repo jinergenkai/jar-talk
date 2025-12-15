@@ -276,7 +276,7 @@ class _JournalViewScreenState extends State<JournalViewScreen> {
     final remainingCount = members.length - 3;
 
     return SizedBox(
-      height: 40,
+      height: 36,
       width:
           40.0 +
           (24.0 * (displayMembers.isEmpty ? 0 : displayMembers.length - 1)) +

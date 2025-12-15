@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 import 'package:jar_talk/controllers/main_wrapper_controller.dart';
+import 'package:jar_talk/widgets/custom_bottom_bar.dart';
 
 class MainWrapper extends StatelessWidget {
   const MainWrapper({required this.navigationShell, super.key});
@@ -13,22 +14,18 @@ class MainWrapper extends StatelessWidget {
     final MainWrapperController controller = Get.put(MainWrapperController());
 
     return Scaffold(
+      extendBody: true, // Content behind bar
       body: navigationShell,
       bottomNavigationBar: Obx(
-        () => NavigationBar(
-          selectedIndex: controller.selectedIndex,
-          onDestinationSelected: (index) {
+        () => CustomBottomBar(
+          currentIndex: controller.selectedIndex,
+          onTap: (index) {
             controller.goToTab(index);
             navigationShell.goBranch(
               index,
               initialLocation: index == navigationShell.currentIndex,
             );
           },
-          destinations: const [
-            NavigationDestination(icon: Icon(Icons.shelves), label: 'Shelf'),
-            NavigationDestination(icon: Icon(Icons.explore), label: 'Explore'),
-            NavigationDestination(icon: Icon(Icons.person), label: 'Profile'),
-          ],
         ),
       ),
     );
