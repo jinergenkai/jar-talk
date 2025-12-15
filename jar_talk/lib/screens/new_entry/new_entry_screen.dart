@@ -36,9 +36,9 @@ class _NewEntryScreenState extends State<NewEntryScreen> {
     'x_eyes_dizzy_deadpan.gif',
   ];
 
-  Future<void> _pickImage() async {
+  Future<void> _pickImage(ImageSource source) async {
     try {
-      final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
+      final XFile? image = await _picker.pickImage(source: source);
       if (image != null) {
         setState(() {
           _selectedImage = image;
@@ -361,11 +361,25 @@ class _NewEntryScreenState extends State<NewEntryScreen> {
                           children: [
                             Row(
                               children: [
-                                _buildAttachButton(Icons.photo_camera, isDark),
+                                _buildAttachButton(
+                                  Icons.image,
+                                  isDark,
+                                  () => _pickImage(ImageSource.gallery),
+                                ),
                                 const SizedBox(width: 8),
-                                _buildAttachButton(Icons.mic, isDark),
+                                _buildAttachButton(
+                                  Icons.photo_camera,
+                                  isDark,
+                                  () => _pickImage(ImageSource.camera),
+                                ),
                                 const SizedBox(width: 8),
-                                _buildAttachButton(Icons.location_on, isDark),
+                                _buildAttachButton(Icons.mic, isDark, () {}),
+                                const SizedBox(width: 8),
+                                _buildAttachButton(
+                                  Icons.location_on,
+                                  isDark,
+                                  () {},
+                                ),
                               ],
                             ),
                             // Hidden thumbnail placeholder
@@ -393,14 +407,10 @@ class _NewEntryScreenState extends State<NewEntryScreen> {
           ),
 
           // "How do you feel?" Sticky Note
-          Positioned(
-            top: -12,
-            right: -8,
-            child: _buildHowDoYouFeel(isDark),
-          ),
+          Positioned(top: -12, right: -8, child: _buildHowDoYouFeel(isDark)),
         ],
       ),
-  );
+    );
   }
 
   void _showMoodSelector(bool isDark) {
@@ -426,10 +436,14 @@ class _NewEntryScreenState extends State<NewEntryScreen> {
                 height: 300,
                 width: double.infinity,
                 decoration: BoxDecoration(
-                  color: isDark ? const Color(0xFF1c1917) : const Color(0xFFfafaf9),
+                  color: isDark
+                      ? const Color(0xFF1c1917)
+                      : const Color(0xFFfafaf9),
                   borderRadius: BorderRadius.circular(24),
                   border: Border.all(
-                    color: isDark ? const Color(0xFF44403c) : const Color(0xFFd6d3d1),
+                    color: isDark
+                        ? const Color(0xFF44403c)
+                        : const Color(0xFFd6d3d1),
                   ),
                 ),
                 child: Column(
@@ -442,7 +456,9 @@ class _NewEntryScreenState extends State<NewEntryScreen> {
                         fontFamily: 'Noto Serif',
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
-                        color: isDark ? const Color(0xFFd4a276) : const Color(0xFF9a734c),
+                        color: isDark
+                            ? const Color(0xFFd4a276)
+                            : const Color(0xFF9a734c),
                       ),
                     ),
                     Expanded(
@@ -462,18 +478,18 @@ class _NewEntryScreenState extends State<NewEntryScreen> {
                               double value = 1.0;
                               if (pageController.position.haveDimensions) {
                                 value = pageController.page! - index;
-                                value = (1 - (value.abs() * 0.5)).clamp(0.5, 1.0);
+                                value = (1 - (value.abs() * 0.5)).clamp(
+                                  0.5,
+                                  1.0,
+                                );
                               } else {
                                 value = (index == initialPage) ? 1.0 : 0.5;
                               }
-                              
+
                               return Center(
                                 child: Transform.scale(
                                   scale: value,
-                                  child: Opacity(
-                                    opacity: value,
-                                    child: child,
-                                  ),
+                                  child: Opacity(opacity: value, child: child),
                                 ),
                               );
                             },
@@ -491,7 +507,9 @@ class _NewEntryScreenState extends State<NewEntryScreen> {
                       child: Text(
                         "Done",
                         style: TextStyle(
-                          color: isDark ? const Color(0xFFa8a29e) : const Color(0xFF78716c),
+                          color: isDark
+                              ? const Color(0xFFa8a29e)
+                              : const Color(0xFF78716c),
                           fontWeight: FontWeight.bold,
                         ),
                       ),
@@ -517,9 +535,7 @@ class _NewEntryScreenState extends State<NewEntryScreen> {
           height: 96,
           padding: const EdgeInsets.all(8),
           decoration: BoxDecoration(
-            color: isDark
-                ? const Color(0xFFca8a04)
-                : const Color(0xFFfef9c3),
+            color: isDark ? const Color(0xFFca8a04) : const Color(0xFFfef9c3),
             borderRadius: const BorderRadius.only(
               bottomLeft: Radius.circular(24),
               topRight: Radius.circular(8),
@@ -570,16 +586,12 @@ class _NewEntryScreenState extends State<NewEntryScreen> {
     );
   }
 
-  Widget _buildAttachButton(IconData icon, bool isDark) {
+  Widget _buildAttachButton(IconData icon, bool isDark, VoidCallback onTap) {
     return Material(
       color: Colors.transparent,
       child: InkWell(
         borderRadius: BorderRadius.circular(20),
-        onTap: () {
-          if (icon == Icons.photo_camera) {
-            _pickImage();
-          }
-        },
+        onTap: onTap,
         child: Padding(
           padding: const EdgeInsets.all(8.0),
           child: Icon(
