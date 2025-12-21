@@ -78,6 +78,77 @@ def create_invite_table(cursor, db_name):
     print("   ✅ Created table: invite")
 
 
+def create_comment_and_reaction_tables(cursor, db_name):
+    """Migration 3: Create comment and slipreaction tables"""
+    print("🔄 Migration 3: Create comment and slipreaction tables...")
+
+    # Check if comment table already exists
+    cursor.execute("""
+        SELECT COUNT(*)
+        FROM information_schema.TABLES
+        WHERE TABLE_SCHEMA = %s
+        AND TABLE_NAME = 'comment'
+    """, (db_name,))
+
+    result = cursor.fetchone()
+
+    if result[0] > 0:
+        print("   ✅ Table 'comment' already exists. Skipping comment table creation.")
+    else:
+        # Create comment table
+        cursor.execute("""
+            CREATE TABLE comment (
+                comment_id INT AUTO_INCREMENT PRIMARY KEY,
+                slip_id INT NOT NULL,
+                author_id INT NOT NULL,
+                text_content TEXT NOT NULL,
+                created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+                FOREIGN KEY (slip_id) REFERENCES slip(slip_id) ON DELETE CASCADE,
+                FOREIGN KEY (author_id) REFERENCES user(user_id) ON DELETE CASCADE,
+
+                INDEX idx_slip_id (slip_id),
+                INDEX idx_author_id (author_id),
+                INDEX idx_created_at (created_at)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+        """)
+        print("   ✅ Created table: comment")
+
+    # Check if slipreaction table already exists
+    cursor.execute("""
+        SELECT COUNT(*)
+        FROM information_schema.TABLES
+        WHERE TABLE_SCHEMA = %s
+        AND TABLE_NAME = 'slipreaction'
+    """, (db_name,))
+
+    result = cursor.fetchone()
+
+    if result[0] > 0:
+        print("   ✅ Table 'slipreaction' already exists. Skipping.")
+    else:
+        # Create slipreaction table
+        cursor.execute("""
+            CREATE TABLE slipreaction (
+                slip_reaction_id INT AUTO_INCREMENT PRIMARY KEY,
+                slip_id INT NOT NULL,
+                user_id INT NOT NULL,
+                reaction_type VARCHAR(50) NOT NULL,
+                created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+                FOREIGN KEY (slip_id) REFERENCES slip(slip_id) ON DELETE CASCADE,
+                FOREIGN KEY (user_id) REFERENCES user(user_id) ON DELETE CASCADE,
+
+                UNIQUE KEY unique_user_slip_reaction (slip_id, user_id),
+
+                INDEX idx_slip_id (slip_id),
+                INDEX idx_user_id (user_id),
+                INDEX idx_reaction_type (reaction_type)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+        """)
+        print("   ✅ Created table: slipreaction")
+
+
 def run_migration():
     """Run all pending migrations"""
 
@@ -98,6 +169,7 @@ def run_migration():
             # Run all migrations
             add_title_to_slip(cursor, settings.DB_NAME)
             create_invite_table(cursor, settings.DB_NAME)
+            create_comment_and_reaction_tables(cursor, settings.DB_NAME)
 
             connection.commit()
 

@@ -2,11 +2,13 @@ from sqlmodel import Session
 from fastapi import HTTPException, status
 from typing import List
 
-from ..models.slip import Slip, SlipCreate, SlipUpdate, SlipResponse, MediaInfo, EmotionInfo
+from ..models.slip import Slip, SlipCreate, SlipUpdate, SlipResponse, MediaInfo, EmotionInfo, CommentInfo, ReactionInfo
 from ..repos.slip_repo import SlipRepository
 from ..repos.membership_repo import MembershipRepository
 from ..repos.user_repo import UserRepository
 from ..repos.media_repo import MediaRepository
+from ..repos.comment_repo import CommentRepository
+from ..repos.reaction_repo import ReactionRepository
 from ..cores.storage import storage_service
 
 
@@ -19,6 +21,8 @@ class SlipService:
         self.membership_repo = MembershipRepository(session)
         self.user_repo = UserRepository(session)
         self.media_repo = MediaRepository(session)
+        self.comment_repo = CommentRepository(session)
+        self.reaction_repo = ReactionRepository(session)
 
     def _build_slip_response(self, slip: Slip) -> SlipResponse:
         """Build enriched slip response with media and emotions"""
@@ -44,6 +48,31 @@ class SlipService:
         # For now, set to None
         emotion = None
 
+        # Get comments (recent 3 only)
+        comments_list = self.comment_repo.get_by_slip(slip.slip_id, skip=0, limit=3)
+        comments_info = []
+        for comment in comments_list:
+            comment_author = self.user_repo.get_by_id(comment.author_id)
+            comments_info.append(
+                CommentInfo(
+                    comment_id=comment.comment_id,
+                    author_id=comment.author_id,
+                    author_username=comment_author.username if comment_author else None,
+                    author_profile_picture=comment_author.profile_picture_url if comment_author else None,
+                    text_content=comment.text_content,
+                    created_at=comment.created_at
+                )
+            )
+        comment_count = self.comment_repo.count_by_slip(slip.slip_id)
+
+        # Get reactions summary
+        reactions_summary = self.reaction_repo.get_reaction_summary(slip.slip_id)
+        reactions_info = [
+            ReactionInfo(reaction_type=reaction_type, count=count)
+            for reaction_type, count in reactions_summary.items()
+        ]
+        reaction_count = self.reaction_repo.count_by_slip(slip.slip_id)
+
         return SlipResponse(
             slip_id=slip.slip_id,
             container_id=slip.container_id,
@@ -56,7 +85,11 @@ class SlipService:
             author_email=author.email if author else None,
             author_profile_picture=author.profile_picture_url if author else None,
             media=media_info,
-            emotion=emotion
+            emotion=emotion,
+            comments=comments_info,
+            comment_count=comment_count,
+            reactions=reactions_info,
+            reaction_count=reaction_count
         )
 
     def create_slip(self, slip_data: SlipCreate, author_id: int) -> SlipResponse:

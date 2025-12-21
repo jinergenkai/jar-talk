@@ -52,6 +52,22 @@ class EmotionInfo(SQLModel):
     logged_at: datetime
 
 
+class CommentInfo(SQLModel):
+    """Comment info for slip response"""
+    comment_id: int
+    author_id: int
+    author_username: Optional[str] = None
+    author_profile_picture: Optional[str] = None
+    text_content: str
+    created_at: datetime
+
+
+class ReactionInfo(SQLModel):
+    """Reaction summary info for slip response"""
+    reaction_type: str
+    count: int
+
+
 class SlipResponse(SQLModel):
     """Schema for slip response"""
     slip_id: int
@@ -69,3 +85,9 @@ class SlipResponse(SQLModel):
     media: List[MediaInfo] = []
     # Emotion log
     emotion: Optional[EmotionInfo] = None
+    # Comments (recent 3)
+    comments: List[CommentInfo] = []
+    comment_count: int = 0
+    # Reactions summary
+    reactions: List[ReactionInfo] = []
+    reaction_count: int = 0

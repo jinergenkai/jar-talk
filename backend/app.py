@@ -10,6 +10,8 @@ from src.controllers.container_controller import router as container_router
 from src.controllers.slip_controller import router as slip_router
 from src.controllers.media_controller import router as media_router
 from src.controllers.invite_controller import router as invite_router
+from src.controllers.comment_controller import router as comment_router
+from src.controllers.reaction_controller import router as reaction_router
 
 
 @asynccontextmanager
@@ -54,6 +56,8 @@ app.include_router(container_router)
 app.include_router(slip_router)
 app.include_router(media_router)
 app.include_router(invite_router)
+app.include_router(comment_router)
+app.include_router(reaction_router)
 
 
 @app.get("/")
