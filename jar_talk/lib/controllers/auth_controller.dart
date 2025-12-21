@@ -46,9 +46,9 @@ class AuthController extends GetxController {
         if (Get.isRegistered<MainWrapperController>()) {
           Get.delete<MainWrapperController>(force: true);
         }
-        // ProfileController is defined in setting_controller.dart
-        if (Get.isRegistered<ProfileController>()) {
-          Get.delete<ProfileController>(force: true);
+        // SettingController is defined in setting_controller.dart
+        if (Get.isRegistered<SettingController>()) {
+          Get.delete<SettingController>(force: true);
         }
         if (Get.isRegistered<SlipController>()) {
           Get.delete<SlipController>(force: true);

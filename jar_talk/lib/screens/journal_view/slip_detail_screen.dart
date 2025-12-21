@@ -1,11 +1,72 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:jar_talk/controllers/slip_controller.dart';
+import 'package:jar_talk/controllers/app_controller.dart';
 import 'package:jar_talk/models/slip_model.dart';
+import 'package:jar_talk/models/comment_model.dart';
+import 'package:jar_talk/models/reaction_model.dart';
 import 'package:jar_talk/utils/app_theme.dart';
 
-class SlipDetailScreen extends StatelessWidget {
+class SlipDetailScreen extends StatefulWidget {
   final Slip slip;
 
   const SlipDetailScreen({super.key, required this.slip});
+
+  @override
+  State<SlipDetailScreen> createState() => _SlipDetailScreenState();
+}
+
+class _SlipDetailScreenState extends State<SlipDetailScreen> {
+  late SlipController controller;
+  late TextEditingController commentController;
+  bool showAllComments = false;
+
+  @override
+  void initState() {
+    super.initState();
+    controller = Get.find<SlipController>(tag: 'jar_${widget.slip.containerId}');
+    commentController = TextEditingController();
+
+    // Load comments and reactions
+    controller.fetchCommentsForSlip(widget.slip.id);
+    controller.fetchReactionSummary(widget.slip.id);
+  }
+
+  @override
+  void dispose() {
+    commentController.dispose();
+    super.dispose();
+  }
+
+  String formatCommentTime(DateTime dateTime) {
+    final now = DateTime.now();
+    final difference = now.difference(dateTime);
+
+    if (difference.inMinutes < 60) {
+      return '${difference.inMinutes}m ago';
+    } else if (difference.inHours < 24) {
+      return '${difference.inHours}h ago';
+    } else if (difference.inDays < 7) {
+      return '${difference.inDays}d ago';
+    } else {
+      return '${dateTime.day}/${dateTime.month}/${dateTime.year}';
+    }
+  }
+
+  String getReactionEmoji(String type) {
+    switch (type) {
+      case 'Heart':
+        return '❤️';
+      case 'Fire':
+        return '🔥';
+      case 'Resonate':
+        return '✨';
+      case 'Like':
+        return '👍';
+      default:
+        return '👍';
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -131,7 +192,7 @@ class SlipDetailScreen extends StatelessWidget {
                                         ),
                                         const SizedBox(width: 8),
                                         Text(
-                                          formatDate(slip.createdAt),
+                                          formatDate(widget.slip.createdAt),
                                           style: TextStyle(
                                             fontSize: 12,
                                             fontWeight: FontWeight.bold,
@@ -175,9 +236,9 @@ class SlipDetailScreen extends StatelessWidget {
                                 const SizedBox(height: 24),
 
                                 // Media (Image)
-                                if (slip.media != null &&
-                                    slip.media!.isNotEmpty) ...[
-                                  for (var media in slip.media!)
+                                if (widget.slip.media != null &&
+                                    widget.slip.media!.isNotEmpty) ...[
+                                  for (var media in widget.slip.media!)
                                     if (media.mediaType == 'image')
                                       Padding(
                                         padding: const EdgeInsets.only(
@@ -203,7 +264,7 @@ class SlipDetailScreen extends StatelessWidget {
 
                                 // Content Body
                                 Text(
-                                  slip.textContent,
+                                  widget.slip.textContent,
                                   style: TextStyle(
                                     fontFamily: 'Noto Serif',
                                     fontSize: 18,
@@ -240,9 +301,9 @@ class SlipDetailScreen extends StatelessWidget {
                                         ),
                                         child: ClipOval(
                                           child: Image.network(
-                                            slip.authorEmail != null
-                                                ? 'https://ui-avatars.com/api/?name=${slip.authorUsername}&background=random'
-                                                : 'https://i.pravatar.cc/100?img=${(slip.authorId % 70) + 1}',
+                                            widget.slip.authorEmail != null
+                                                ? 'https://ui-avatars.com/api/?name=${widget.slip.authorUsername}&background=random'
+                                                : 'https://i.pravatar.cc/100?img=${(widget.slip.authorId % 70) + 1}',
                                             fit: BoxFit.cover,
                                             errorBuilder: (_, __, ___) =>
                                                 Container(color: Colors.grey),
@@ -251,7 +312,7 @@ class SlipDetailScreen extends StatelessWidget {
                                       ),
                                       const SizedBox(width: 12),
                                       Text(
-                                        'Written by ${slip.authorUsername ?? "Unknown"}',
+                                        'Written by ${widget.slip.authorUsername ?? "Unknown"}',
                                         style: TextStyle(
                                           fontFamily: 'Noto Sans',
                                           fontWeight: FontWeight.bold,
@@ -277,57 +338,152 @@ class SlipDetailScreen extends StatelessWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          // Placeholder for Reactions
+                          // Reactions Display
+                          Obx(() {
+                            if (controller.currentSlipReactions.isEmpty) {
+                              return const SizedBox.shrink();
+                            }
+
+                            final totalReactions = controller.currentSlipReactions
+                                .fold<int>(0, (sum, r) => sum + r.count);
+                            final firstUsers = controller.currentSlipReactions
+                                .expand((r) => r.users)
+                                .take(2)
+                                .toList();
+
+                            return Column(
+                              children: [
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    // User avatars
+                                    Row(
+                                      children: [
+                                        if (firstUsers.isNotEmpty)
+                                          for (var i = 0; i < firstUsers.length; i++)
+                                            Container(
+                                              width: 32,
+                                              height: 32,
+                                              transform: i > 0
+                                                  ? Matrix4.translationValues(-8 * i.toDouble(), 0, 0)
+                                                  : null,
+                                              decoration: BoxDecoration(
+                                                shape: BoxShape.circle,
+                                                color: isDark ? Colors.grey[800] : Colors.grey[200],
+                                                border: Border.all(
+                                                  color: theme.scaffoldBackgroundColor,
+                                                  width: 2,
+                                                ),
+                                              ),
+                                              child: ClipOval(
+                                                child: firstUsers[i].profilePicture != null
+                                                    ? Image.network(
+                                                        firstUsers[i].profilePicture!,
+                                                        fit: BoxFit.cover,
+                                                        errorBuilder: (_, __, ___) => Icon(
+                                                          Icons.person,
+                                                          size: 20,
+                                                          color: Colors.grey,
+                                                        ),
+                                                      )
+                                                    : Icon(
+                                                        Icons.person,
+                                                        size: 20,
+                                                        color: Colors.grey,
+                                                      ),
+                                              ),
+                                            ),
+                                        if (totalReactions > 2)
+                                          Container(
+                                            width: 32,
+                                            height: 32,
+                                            transform: Matrix4.translationValues(
+                                              -8 * firstUsers.length.toDouble(),
+                                              0,
+                                              0,
+                                            ),
+                                            decoration: BoxDecoration(
+                                              color: theme.colorScheme.primary
+                                                  .withOpacity(isDark ? 0.3 : 0.1),
+                                              shape: BoxShape.circle,
+                                              border: Border.all(
+                                                color: theme.scaffoldBackgroundColor,
+                                                width: 2,
+                                              ),
+                                            ),
+                                            child: Center(
+                                              child: Text(
+                                                '+${totalReactions - 2}',
+                                                style: TextStyle(
+                                                  fontSize: 10,
+                                                  fontWeight: FontWeight.bold,
+                                                  color: theme.colorScheme.primary,
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                      ],
+                                    ),
+                                    // Reaction summary text
+                                    Flexible(
+                                      child: Text(
+                                        firstUsers.isEmpty
+                                            ? '$totalReactions ${totalReactions == 1 ? "reaction" : "reactions"}'
+                                            : firstUsers.length == 1 && totalReactions == 1
+                                                ? '${firstUsers[0].username} reacted'
+                                                : firstUsers.length == 2 && totalReactions == 2
+                                                    ? '${firstUsers[0].username} and ${firstUsers[1].username} reacted'
+                                                    : '${firstUsers[0].username}, ${firstUsers.length > 1 ? firstUsers[1].username : ""} + ${totalReactions - 2} others reacted',
+                                        style: TextStyle(
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.w500,
+                                          color: appTheme.textSecondary,
+                                        ),
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height: 12),
+                              ],
+                            );
+                          }),
+
+                          // Reaction Buttons
+                          Row(
+                            children: [
+                              _buildReactionButton(theme, isDark, '❤️', 'Heart'),
+                              const SizedBox(width: 8),
+                              _buildReactionButton(theme, isDark, '🔥', 'Fire'),
+                              const SizedBox(width: 8),
+                              _buildReactionButton(theme, isDark, '✨', 'Resonate'),
+                              const SizedBox(width: 8),
+                              _buildReactionButton(theme, isDark, '👍', 'Like'),
+                            ],
+                          ),
+
+                          const SizedBox(height: 16),
+                          Divider(color: appTheme.textSecondary.withOpacity(0.1)),
+                          const SizedBox(height: 16),
+
+                          // Comments Header
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Row(
-                                children: [
-                                  _buildReactionAvatar(isDark),
-                                  _buildReactionAvatar(isDark, offset: true),
-                                  Container(
-                                    width: 32,
-                                    height: 32,
-                                    transform: Matrix4.translationValues(
-                                      -16,
-                                      0,
-                                      0,
-                                    ),
-                                    decoration: BoxDecoration(
-                                      color: theme.colorScheme.primary
-                                          .withOpacity(isDark ? 0.3 : 0.1),
-                                      shape: BoxShape.circle,
-                                      border: Border.all(
-                                        color: theme.scaffoldBackgroundColor,
-                                        width: 2,
-                                      ),
-                                    ),
-                                    child: Center(
-                                      child: Text(
-                                        '+24',
-                                        style: TextStyle(
-                                          fontSize: 10,
-                                          fontWeight: FontWeight.bold,
-                                          color: theme.colorScheme.primary,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
                               Text(
-                                'Jane, Mike + 24 others reacted',
+                                'Comments (${widget.slip.commentCount})',
                                 style: TextStyle(
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w500,
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
                                   color: appTheme.textSecondary,
                                 ),
                               ),
                             ],
                           ),
-                          const SizedBox(height: 16),
 
-                          // Input Field
+                          const SizedBox(height: 12),
+
+                          // Comment Input Field
                           Row(
                             children: [
                               Expanded(
@@ -345,6 +501,7 @@ class SlipDetailScreen extends StatelessWidget {
                                     ],
                                   ),
                                   child: TextField(
+                                    controller: commentController,
                                     decoration: InputDecoration(
                                       hintText: 'Write a supportive note...',
                                       hintStyle: TextStyle(
@@ -358,7 +515,18 @@ class SlipDetailScreen extends StatelessWidget {
                                             .withOpacity(0.5),
                                       ),
                                       suffixIcon: IconButton(
-                                        onPressed: () {},
+                                        onPressed: () async {
+                                          final text = commentController.text.trim();
+                                          if (text.isNotEmpty) {
+                                            final success = await controller.addComment(
+                                              widget.slip.id,
+                                              text,
+                                            );
+                                            if (success) {
+                                              commentController.clear();
+                                            }
+                                          }
+                                        },
                                         icon: Icon(
                                           Icons.send,
                                           color: theme.colorScheme.primary,
@@ -376,24 +544,77 @@ class SlipDetailScreen extends StatelessWidget {
                             ],
                           ),
 
-                          const SizedBox(height: 12),
-                          Center(
-                            child: TextButton.icon(
-                              onPressed: () {},
-                              icon: Text(
-                                'View all 12 comments',
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  color: appTheme.textSecondary,
+                          const SizedBox(height: 16),
+
+                          // Comments List
+                          Obx(() {
+                            if (controller.commentsLoading.value) {
+                              return const Center(
+                                child: Padding(
+                                  padding: EdgeInsets.all(24.0),
+                                  child: CircularProgressIndicator(),
                                 ),
-                              ),
-                              label: Icon(
-                                Icons.expand_more,
-                                size: 16,
-                                color: appTheme.textSecondary,
-                              ),
-                            ),
-                          ),
+                              );
+                            }
+
+                            if (controller.currentSlipComments.isEmpty) {
+                              return Center(
+                                child: Padding(
+                                  padding: const EdgeInsets.all(24.0),
+                                  child: Text(
+                                    'No comments yet. Be the first!',
+                                    style: TextStyle(
+                                      color: appTheme.textSecondary.withOpacity(0.6),
+                                      fontSize: 14,
+                                    ),
+                                  ),
+                                ),
+                              );
+                            }
+
+                            final displayComments = showAllComments
+                                ? controller.currentSlipComments
+                                : controller.currentSlipComments.take(3).toList();
+
+                            return Column(
+                              children: [
+                                ...displayComments.map((comment) {
+                                  return _buildCommentItem(
+                                    theme,
+                                    appTheme,
+                                    isDark,
+                                    comment,
+                                  );
+                                }),
+                                if (controller.currentSlipComments.length > 3)
+                                  Center(
+                                    child: TextButton.icon(
+                                      onPressed: () {
+                                        setState(() {
+                                          showAllComments = !showAllComments;
+                                        });
+                                      },
+                                      icon: Text(
+                                        showAllComments
+                                            ? 'Show less'
+                                            : 'View all ${controller.currentSlipComments.length} comments',
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          color: appTheme.textSecondary,
+                                        ),
+                                      ),
+                                      label: Icon(
+                                        showAllComments
+                                            ? Icons.expand_less
+                                            : Icons.expand_more,
+                                        size: 16,
+                                        color: appTheme.textSecondary,
+                                      ),
+                                    ),
+                                  ),
+                              ],
+                            );
+                          }),
                         ],
                       ),
                     ),
@@ -407,22 +628,157 @@ class SlipDetailScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildReactionAvatar(bool isDark, {bool offset = false}) {
-    return Container(
-      width: 32,
-      height: 32,
-      transform: offset ? Matrix4.translationValues(-8, 0, 0) : null,
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        color: isDark ? Colors.grey[800] : Colors.grey[200],
-        border: Border.all(
+  Widget _buildReactionButton(
+    ThemeData theme,
+    bool isDark,
+    String emoji,
+    String reactionType,
+  ) {
+    return InkWell(
+      onTap: () {
+        controller.toggleReaction(widget.slip.id, reactionType);
+      },
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+        decoration: BoxDecoration(
           color: isDark
-              ? const Color(0xFF221910)
-              : const Color(0xFFf8f7f6), // Match scaffold bg
-          width: 2,
+              ? Colors.white.withOpacity(0.05)
+              : Colors.black.withOpacity(0.03),
+          border: Border.all(
+            color: isDark
+                ? Colors.white.withOpacity(0.1)
+                : Colors.black.withOpacity(0.1),
+          ),
+          borderRadius: BorderRadius.circular(20),
+        ),
+        child: Text(
+          emoji,
+          style: const TextStyle(fontSize: 20),
         ),
       ),
-      child: const Icon(Icons.person, size: 20, color: Colors.grey),
+    );
+  }
+
+  Widget _buildCommentItem(
+    ThemeData theme,
+    AppThemeExtension appTheme,
+    bool isDark,
+    Comment comment,
+  ) {
+    final currentUserId = Get.find<AppController>().userInfo['user_id'] as int?;
+    final isAuthor = currentUserId == comment.authorId;
+
+    return Container(
+      margin: const EdgeInsets.only(bottom: 16),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Avatar
+          Container(
+            width: 32,
+            height: 32,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: isDark ? Colors.grey[800] : Colors.grey[200],
+            ),
+            child: ClipOval(
+              child: comment.authorProfilePicture != null
+                  ? Image.network(
+                      comment.authorProfilePicture!,
+                      fit: BoxFit.cover,
+                      errorBuilder: (_, __, ___) => Icon(
+                        Icons.person,
+                        size: 20,
+                        color: Colors.grey,
+                      ),
+                    )
+                  : Icon(
+                      Icons.person,
+                      size: 20,
+                      color: Colors.grey,
+                    ),
+            ),
+          ),
+          const SizedBox(width: 12),
+
+          // Comment content
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Text(
+                      comment.authorUsername ?? 'Unknown',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 14,
+                        color: appTheme.textSecondary,
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    Text(
+                      formatCommentTime(comment.createdAt),
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: appTheme.textSecondary.withOpacity(0.6),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  comment.textContent,
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: appTheme.textSecondary,
+                  ),
+                ),
+              ],
+            ),
+          ),
+
+          // Delete button (only for comment author)
+          if (isAuthor)
+            IconButton(
+              icon: const Icon(Icons.delete_outline, size: 18),
+              color: Colors.red.shade300,
+              padding: EdgeInsets.zero,
+              constraints: const BoxConstraints(),
+              onPressed: () async {
+                final confirm = await showDialog<bool>(
+                  context: context,
+                  builder: (context) => AlertDialog(
+                    title: const Text('Delete Comment'),
+                    content: const Text(
+                      'Are you sure you want to delete this comment?',
+                    ),
+                    actions: [
+                      TextButton(
+                        onPressed: () => Navigator.pop(context, false),
+                        child: const Text('Cancel'),
+                      ),
+                      TextButton(
+                        onPressed: () => Navigator.pop(context, true),
+                        child: const Text(
+                          'Delete',
+                          style: TextStyle(color: Colors.red),
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+
+                if (confirm == true) {
+                  await controller.deleteComment(
+                    comment.commentId,
+                    widget.slip.id,
+                  );
+                }
+              },
+            ),
+        ],
+      ),
     );
   }
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 import 'package:jar_talk/controllers/setting_controller.dart';
 import 'package:jar_talk/screens/setting/widgets/section_header.dart'; // Import custom widgets if not exporting
@@ -7,7 +8,7 @@ import 'package:jar_talk/utils/app_theme.dart';
 class MembersSection extends StatelessWidget {
   const MembersSection({super.key, required this.controller});
 
-  final ProfileController controller;
+  final SettingController controller;
 
   @override
   Widget build(BuildContext context) {
@@ -82,84 +83,100 @@ class MembersSection extends StatelessWidget {
               ),
               const Divider(height: 1, color: Colors.black12),
               // Members List
-              ...controller.members.asMap().entries.map((entry) {
-                final index = entry.key;
-                final member = entry.value;
-                return Column(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.all(16),
-                      child: Row(
-                        children: [
-                          Stack(
-                            clipBehavior: Clip.none,
+              Obx(
+                () => Column(
+                  // Wrap in Obx for reactivity
+                  children: controller.members.asMap().entries.map((entry) {
+                    final index = entry.key;
+                    final member = entry.value;
+                    final isAdmin =
+                        member.role.toLowerCase() == 'admin' ||
+                        member.role.toLowerCase() == 'owner';
+                    // Default avatar if null
+                    final avatarUrl =
+                        member.profilePictureUrl ??
+                        'https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y';
+
+                    return Column(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.all(16),
+                          child: Row(
                             children: [
-                              Container(
-                                width: 40,
-                                height: 40,
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  border: Border.all(color: woodAccent),
-                                  image: DecorationImage(
-                                    image: NetworkImage(member['avatarUrl']),
-                                    fit: BoxFit.cover,
+                              Stack(
+                                clipBehavior: Clip.none,
+                                children: [
+                                  Container(
+                                    width: 40,
+                                    height: 40,
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      border: Border.all(color: woodAccent),
+                                      image: DecorationImage(
+                                        image: NetworkImage(avatarUrl),
+                                        fit: BoxFit.cover,
+                                      ),
+                                    ),
+                                  ),
+                                  if (isAdmin)
+                                    Positioned(
+                                      bottom: -4,
+                                      right: -4,
+                                      child: Container(
+                                        padding: const EdgeInsets.symmetric(
+                                          horizontal: 4,
+                                          vertical: 2,
+                                        ),
+                                        decoration: BoxDecoration(
+                                          color: primaryColor,
+                                          borderRadius: BorderRadius.circular(
+                                            10,
+                                          ),
+                                          border: Border.all(
+                                            color: const Color(0xFF2C241B),
+                                          ),
+                                        ),
+                                        child: const Text(
+                                          'ADMIN',
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 8,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                ],
+                              ),
+                              const SizedBox(width: 16),
+                              Expanded(
+                                child: Text(
+                                  member.username,
+                                  style: const TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w500,
                                   ),
                                 ),
                               ),
-                              if (member['isAdmin'])
-                                Positioned(
-                                  bottom: -4,
-                                  right: -4,
-                                  child: Container(
-                                    padding: const EdgeInsets.symmetric(
-                                      horizontal: 4,
-                                      vertical: 2,
-                                    ),
-                                    decoration: BoxDecoration(
-                                      color: primaryColor,
-                                      borderRadius: BorderRadius.circular(10),
-                                      border: Border.all(
-                                        color: const Color(0xFF2C241B),
-                                      ),
-                                    ),
-                                    child: const Text(
-                                      'ADMIN',
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 8,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
+                              if (!isAdmin)
+                                IconButton(
+                                  icon: const Icon(
+                                    Icons.remove_circle_outline,
+                                    color: Colors.redAccent,
                                   ),
+                                  onPressed: () =>
+                                      controller.removeMember(index),
                                 ),
                             ],
                           ),
-                          const SizedBox(width: 16),
-                          Expanded(
-                            child: Text(
-                              member['name'],
-                              style: const TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                          ),
-                          if (!member['isAdmin'])
-                            IconButton(
-                              icon: const Icon(
-                                Icons.remove_circle_outline,
-                                color: Colors.redAccent,
-                              ),
-                              onPressed: () => controller.removeMember(index),
-                            ),
-                        ],
-                      ),
-                    ),
-                    if (index < controller.members.length - 1)
-                      const Divider(height: 1, color: Colors.black12),
-                  ],
-                );
-              }),
+                        ),
+                        if (index < controller.members.length - 1)
+                          const Divider(height: 1, color: Colors.black12),
+                      ],
+                    );
+                  }).toList(),
+                ),
+              ),
             ],
           ),
         ),

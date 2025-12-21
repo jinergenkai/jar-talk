@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'package:get/get.dart';
 import 'package:jar_talk/models/jar_model.dart';
 import 'package:jar_talk/services/jar_service.dart';
@@ -34,9 +35,12 @@ class ShelfController extends GetxController {
     }
   }
 
-  Future<void> createJar(String name) async {
+  Future<void> createJar(String name, {String? styleSettings}) async {
     try {
-      final newJar = await _jarService.createJar(name);
+      final settings =
+          styleSettings ??
+          jsonEncode({"shape": "Mason", "colorIndex": 0, "theme": "default"});
+      final newJar = await _jarService.createJar(name, styleSettings: settings);
       activeJars.add(newJar);
     } catch (e) {
       Get.snackbar("Error", "Could not create jar: $e");

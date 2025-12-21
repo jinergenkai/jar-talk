@@ -1,11 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:jar_talk/controllers/app_controller.dart';
+import 'package:jar_talk/models/jar_model.dart'; // Ensure Member is imported
+import 'package:jar_talk/models/jar_style.dart';
+import 'package:jar_talk/services/jar_service.dart';
 
-class ProfileController extends GetxController {
+class SettingController extends GetxController {
+  final int jarId;
+  final JarService _jarService = JarService();
+
+  SettingController({required this.jarId});
+
   // Jar Identity
-  final RxString jarName = 'Summer 2024 Memories'.obs;
-  final String createdDate = 'Oct 12, 2023';
+  final RxString jarName = ''.obs;
+  final Rx<DateTime> createdDate = DateTime.now().obs;
 
   // Appearance
   final RxString selectedShape = 'Mason'.obs;
@@ -15,21 +22,8 @@ class ProfileController extends GetxController {
   final RxBool allowInvite = true.obs;
   final RxBool adminOnlyDelete = false.obs;
 
-  // Mock Data
-  final List<Map<String, dynamic>> members = [
-    {
-      'name': 'Alice (You)',
-      'isAdmin': true,
-      'avatarUrl':
-          'https://lh3.googleusercontent.com/aida-public/AB6AXuDbU504Y3fFBaHR18EIxfvr9jcdw36lVM7yC9J_mLrEuiiDSrmtKvLoiC-qrMwfOhwoAtLcAVMXoCQEyLnXYkyqyExhmRQv-w6csYwBMElFIy7NOUrnEoP1GhU2TW57A9J3yoP7MzYTuJBApfA2tD1VlsglJUNlsz_vDYoyfxDFiQfWEnb35YbZNJlDOQhzW_Q_T7sglxsty0WmIIsLT5zrb9jHrQuj7gfO8YgAc2WQ_-wD2epBLQ0nzbp7gCdpw2wOkK43-bMXVmgc',
-    },
-    {
-      'name': 'Marcus',
-      'isAdmin': false,
-      'avatarUrl':
-          'https://lh3.googleusercontent.com/aida-public/AB6AXuCU5Ooke_Frv32NdjXKLudacAFqtoKs6dPtCbjThozEt0eBwB8noK9kjjIt7D-MhAJ0nmmqpy7URwPO2v4rb-F4XU26X6T5tFcONKgYfvm2kdBZDSamGh0clAoFeKiM63c8EVB2AXDvjtyEIN71ME9zfjgGxC4H_tWVyV4OQ5Uu3_G5G4xBMZV30F3o_5iXDHT7BeWCGgt0Kf7hbZZRTevFmlifXKHCvV0A3aoNriUPGlqR29lKxylhDVVjl52oTSah0Vup8T7bth8O',
-    },
-  ];
+  // Members
+  final RxList<Member> members = <Member>[].obs;
 
   final List<int> themeColors = [
     0xFFD47311, // Primary Orange
@@ -39,19 +33,75 @@ class ProfileController extends GetxController {
     0xFF7B1FA2, // Purple
   ];
 
+  @override
+  void onInit() {
+    super.onInit();
+    fetchJarDetails();
+  }
+
+  Future<void> fetchJarDetails() async {
+    try {
+      final jar = await _jarService.getJarDetails(jarId);
+      jarName.value = jar.name;
+      createdDate.value = jar.createdAt;
+
+      if (jar.members != null) {
+        members.assignAll(jar.members!);
+      }
+
+      if (jar.styleSettings != null && jar.styleSettings!.isNotEmpty) {
+        final style = JarStyle.fromJson(jar.styleSettings!);
+        selectedShape.value = style.shape;
+        selectedColorIndex.value = style.colorIndex;
+      }
+    } catch (e) {
+      debugPrint('Error fetching jar details: $e');
+    }
+  }
+
   void updateJarName(String name) {
     jarName.value = name;
   }
 
   void selectShape(String shape) {
     selectedShape.value = shape;
+    // Auto-save logic removed in favor of manual save if requested,
+    // but typically UI updates immediately.
+    // User requested "save button trigger update api", so we might remove auto-save here
+    // But for now, I'll keep the state update and expose a public save method.
   }
 
   void selectColor(int index) {
     selectedColorIndex.value = index;
-    // Update global theme
-    final appController = Get.find<AppController>();
-    // appController.changeThemeColor(Color(themeColors[index]));
+  }
+
+  Future<void> saveSettings() async {
+    final style = JarStyle(
+      shape: selectedShape.value,
+      colorIndex: selectedColorIndex.value,
+      theme: 'custom',
+    );
+
+    try {
+      await _jarService.updateJar(
+        jarId,
+        name: jarName.value,
+        styleSettings: style.toJson(),
+      );
+      Get.snackbar(
+        'Success',
+        'Jar settings saved successfully',
+        snackPosition: SnackPosition.BOTTOM,
+      );
+    } catch (e) {
+      Get.snackbar(
+        'Error',
+        'Failed to save settings: $e',
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.redAccent,
+        colorText: Colors.white,
+      );
+    }
   }
 
   void toggleInvite(bool value) {

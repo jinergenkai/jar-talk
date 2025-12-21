@@ -271,7 +271,7 @@ class _JournalViewScreenState extends State<JournalViewScreen> {
                                   overflow: TextOverflow.ellipsis,
                                 ),
                                 const SizedBox(height: 16),
-                                _buildFooter(),
+                                _buildFooter(slip),
                               ],
                             ),
                           ),
@@ -381,7 +381,7 @@ class _JournalViewScreenState extends State<JournalViewScreen> {
     );
   }
 
-  Widget _buildFooter() {
+  Widget _buildFooter(slip) {
     return Container(
       padding: const EdgeInsets.only(top: 12),
       decoration: const BoxDecoration(
@@ -399,7 +399,7 @@ class _JournalViewScreenState extends State<JournalViewScreen> {
               ),
               const SizedBox(width: 4),
               Text(
-                '3 Comments',
+                '${slip.commentCount} ${slip.commentCount == 1 ? "Comment" : "Comments"}',
                 style: TextStyle(
                   color: Colors.grey[600],
                   fontSize: 11,
@@ -413,7 +413,7 @@ class _JournalViewScreenState extends State<JournalViewScreen> {
               const Icon(Icons.favorite_border, size: 16, color: Colors.grey),
               const SizedBox(width: 4),
               Text(
-                '12',
+                '${slip.reactionCount}',
                 style: TextStyle(
                   color: Colors.grey[600],
                   fontSize: 11,

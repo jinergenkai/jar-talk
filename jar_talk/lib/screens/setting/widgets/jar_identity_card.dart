@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:jar_talk/controllers/setting_controller.dart';
 import 'package:jar_talk/utils/app_theme.dart';
 import 'package:jar_talk/utils/ui_extensions.dart';
@@ -7,7 +8,7 @@ import 'package:jar_talk/utils/ui_extensions.dart';
 class JarIdentityCard extends StatelessWidget {
   const JarIdentityCard({super.key, required this.controller});
 
-  final ProfileController controller;
+  final SettingController controller;
 
   @override
   Widget build(BuildContext context) {
@@ -102,9 +103,11 @@ class JarIdentityCard extends StatelessWidget {
               ),
             ),
           ),
-          Text(
-            'Created ${controller.createdDate}',
-            style: TextStyle(fontSize: 14, color: textSecondary),
+          Obx(
+            () => Text(
+              'Created ${DateFormat.yMMMd().format(controller.createdDate.value)}',
+              style: TextStyle(fontSize: 14, color: textSecondary),
+            ),
           ),
         ],
       ),

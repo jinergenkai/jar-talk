@@ -1,4 +1,6 @@
 import 'package:jar_talk/models/media_model.dart';
+import 'package:jar_talk/models/comment_model.dart';
+import 'package:jar_talk/models/reaction_model.dart';
 
 class Slip {
   final int id;
@@ -11,7 +13,13 @@ class Slip {
   final String? locationData;
   final String? authorUsername;
   final String? authorEmail;
+  final String? authorProfilePicture;
   final List<Media>? media;
+  // Comment & Reaction data from enriched response
+  final List<CommentPreview>? comments;
+  final int commentCount;
+  final List<ReactionPreview>? reactions;
+  final int reactionCount;
 
   Slip({
     required this.id,
@@ -24,7 +32,12 @@ class Slip {
     this.locationData,
     this.authorUsername,
     this.authorEmail,
+    this.authorProfilePicture,
     this.media,
+    this.comments,
+    this.commentCount = 0,
+    this.reactions,
+    this.reactionCount = 0,
   });
 
   factory Slip.fromJson(Map<String, dynamic> json) {
@@ -39,9 +52,18 @@ class Slip {
       locationData: json['location_data'],
       authorUsername: json['author_username'],
       authorEmail: json['author_email'],
+      authorProfilePicture: json['author_profile_picture'],
       media: json['media'] != null
           ? (json['media'] as List).map((i) => Media.fromJson(i)).toList()
           : null,
+      comments: json['comments'] != null
+          ? (json['comments'] as List).map((i) => CommentPreview.fromJson(i)).toList()
+          : null,
+      commentCount: json['comment_count'] ?? 0,
+      reactions: json['reactions'] != null
+          ? (json['reactions'] as List).map((i) => ReactionPreview.fromJson(i)).toList()
+          : null,
+      reactionCount: json['reaction_count'] ?? 0,
     );
   }
 

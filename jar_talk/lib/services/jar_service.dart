@@ -39,6 +39,24 @@ class JarService {
     }
   }
 
+  Future<void> updateJar(
+    int jarId, {
+    String? name,
+    String? styleSettings,
+  }) async {
+    try {
+      await _dio.put(
+        '/containers/$jarId',
+        data: {
+          if (name != null) 'name': name,
+          if (styleSettings != null) 'jar_style_settings': styleSettings,
+        },
+      );
+    } catch (e) {
+      throw Exception('Failed to update jar: $e');
+    }
+  }
+
   Future<void> deleteJar(int jarId) async {
     try {
       await _dio.delete('/containers/$jarId');

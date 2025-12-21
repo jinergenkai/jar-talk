@@ -6,7 +6,7 @@ import 'package:jar_talk/screens/setting/widgets/section_header.dart';
 class PermissionsSection extends StatelessWidget {
   const PermissionsSection({super.key, required this.controller});
 
-  final ProfileController controller;
+  final SettingController controller;
 
   @override
   Widget build(BuildContext context) {

@@ -7,7 +7,7 @@ import 'package:jar_talk/utils/app_theme.dart';
 class AppearanceSection extends StatelessWidget {
   const AppearanceSection({super.key, required this.controller});
 
-  final ProfileController controller;
+  final SettingController controller;
 
   @override
   Widget build(BuildContext context) {

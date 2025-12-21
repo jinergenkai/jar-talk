@@ -18,16 +18,18 @@ class SettingScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // Initializing controller with specific tag to separate different jars if needed
-    // For now we can just put it. If we want unique controllers per jar settings, we use tag.
-    final controller = Get.put(ProfileController(), tag: 'settings_$jarId');
+    final controller = Get.put(
+      SettingController(jarId: jarId),
+      tag: 'settings_$jarId',
+    );
 
-    // Initialize with passed data
-    controller.jarName.value = jarName;
+    // Remove initialization here as it's done in onInit now
+    // controller.jarName.value = jarName;
 
-    const bgLight = Color(0xFFF8F7F6);
+    final theme = Theme.of(context);
 
     return Scaffold(
-      backgroundColor: bgLight,
+      backgroundColor: theme.scaffoldBackgroundColor,
       body: SafeArea(
         child: Column(
           children: [
@@ -51,31 +53,59 @@ class SettingScreen extends StatelessWidget {
                       const SizedBox(height: 32),
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 16),
-                        child: SizedBox(
-                          width: double.infinity,
-                          child: TextButton(
-                            onPressed: controller.archiveJar,
-                            style: TextButton.styleFrom(
-                              foregroundColor: Colors.red,
-                              padding: const EdgeInsets.symmetric(vertical: 16),
-                              backgroundColor: Colors.red.withValues(
-                                alpha: 0.05,
-                              ),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(12),
-                                side: BorderSide(
-                                  color: Colors.red.withValues(alpha: 0.3),
+                        child: Column(
+                          children: [
+                            SizedBox(
+                              width: double.infinity,
+                              child: FilledButton(
+                                onPressed: () => controller.saveSettings(),
+                                style: FilledButton.styleFrom(
+                                  padding: const EdgeInsets.symmetric(
+                                    vertical: 16,
+                                  ),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                ),
+                                child: const Text(
+                                  'Save Settings',
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                  ),
                                 ),
                               ),
                             ),
-                            child: const Text(
-                              'Archive Jar',
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w500,
+                            const SizedBox(height: 16),
+                            SizedBox(
+                              width: double.infinity,
+                              child: TextButton(
+                                onPressed: controller.archiveJar,
+                                style: TextButton.styleFrom(
+                                  foregroundColor: Colors.red,
+                                  padding: const EdgeInsets.symmetric(
+                                    vertical: 16,
+                                  ),
+                                  backgroundColor: Colors.red.withValues(
+                                    alpha: 0.05,
+                                  ),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                    side: BorderSide(
+                                      color: Colors.red.withValues(alpha: 0.3),
+                                    ),
+                                  ),
+                                ),
+                                child: const Text(
+                                  'Archive Jar',
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
                               ),
                             ),
-                          ),
+                          ],
                         ),
                       ),
                     ],
