@@ -1,6 +1,8 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:jar_talk/controllers/auth_controller.dart';
+import 'package:jar_talk/models/auth_error.dart';
 import 'dart:ui';
 
 // Specific colors from design
@@ -8,8 +10,8 @@ const Color kPrimaryColor = Color(0xFFD47311);
 const Color kBackgroundDark = Color(0xFF221910);
 const Color kSurfaceDark = Color(0xFF2F2216);
 const Color kTextColorDark = Colors.white;
-const Color kTextColorSubtle = Color(0xFFC9AD92); // #c9ad92
-const Color kInputPlaceholder = Color(0xFF8A7A6B); // #8a7a6b
+const Color kTextColorSubtle = Color(0xFFC9AD92);
+const Color kInputPlaceholder = Color(0xFF8A7A6B);
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -26,23 +28,96 @@ class _LoginScreenState extends State<LoginScreen> {
   bool _isLogin = true;
   bool _isPasswordVisible = false;
 
+  StreamSubscription<AuthError>? _errorSubscription;
+
   @override
   void initState() {
     super.initState();
-    // Ensure fields are clear when landing here (e.g. after logout)
     _emailController.clear();
     _passwordController.clear();
+
+    // Listen to error stream
+    _errorSubscription = _controller.errorStream.listen((error) {
+      if (mounted) {
+        _showErrorDialog(error);
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _errorSubscription?.cancel();
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
+
+  void _showErrorDialog(AuthError error) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        backgroundColor: kSurfaceDark,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+        ),
+        title: Row(
+          children: [
+            Icon(
+              Icons.error_outline,
+              color: Colors.red.shade400,
+            ),
+            const SizedBox(width: 12),
+            const Text(
+              'Error',
+              style: TextStyle(
+                color: kTextColorDark,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ],
+        ),
+        content: Text(
+          error.message,
+          style: const TextStyle(
+            color: kTextColorSubtle,
+            fontSize: 14,
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+              _controller.clearError();
+            },
+            style: TextButton.styleFrom(
+              backgroundColor: kPrimaryColor.withOpacity(0.1),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
+              ),
+            ),
+            child: const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+              child: Text(
+                'OK',
+                style: TextStyle(
+                  color: kPrimaryColor,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    // Determine screen size for responsiveness if needed, but mainly focused on aesthetic match
     return Scaffold(
       backgroundColor: kBackgroundDark,
       body: Stack(
         children: [
           // Background Glow Effect
-          // absolute top-0 left-1/2 -translate-x-1/2 w-full h-[300px] bg-primary/10 dark:bg-primary/20 blur-[100px] rounded-full
           Positioned(
             top: 0,
             left: 0,
@@ -55,7 +130,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   color: kPrimaryColor.withOpacity(0.2),
                   borderRadius: const BorderRadius.vertical(
                     bottom: Radius.circular(150),
-                  ), // Ellipse-ish
+                  ),
                 ),
                 child: BackdropFilter(
                   filter: ImageFilter.blur(sigmaX: 100, sigmaY: 100),
@@ -83,8 +158,8 @@ class _LoginScreenState extends State<LoginScreen> {
                   Text(
                     _isLogin ? "Find Your Jars." : "Create Account.",
                     style: const TextStyle(
-                      fontSize: 32, // text-3xl
-                      fontWeight: FontWeight.w800, // font-extrabold
+                      fontSize: 32,
+                      fontWeight: FontWeight.w800,
                       color: kTextColorDark,
                       height: 1.2,
                     ),
@@ -137,7 +212,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     height: 56,
                     child: Obx(
                       () => ElevatedButton(
-                        onPressed: _controller.isLoading.value
+                        onPressed: _controller.isAnyLoading
                             ? null
                             : _handleAuthAction,
                         style: ElevatedButton.styleFrom(
@@ -148,8 +223,11 @@ class _LoginScreenState extends State<LoginScreen> {
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12),
                           ),
+                          disabledBackgroundColor:
+                              kPrimaryColor.withOpacity(0.5),
                         ),
-                        child: _controller.isLoading.value
+                        child: _controller.isEmailAuthLoading.value ||
+                                _controller.isBackendAuthLoading.value
                             ? const SizedBox(
                                 height: 24,
                                 width: 24,
@@ -194,19 +272,21 @@ class _LoginScreenState extends State<LoginScreen> {
                   // Social Login Buttons
                   _buildSocialButton(
                     label: "Continue with Google",
-                    iconPath:
-                        "assets/icons/google_logo.svg", // Assuming asset or fallback icon
                     isGoogle: true,
-                    onTap: () => _controller.signInWithGoogle(),
-                    isLoading:
-                        false, // Could map to specific loading state if needed, but global is fine for now
+                    onTap: () => _handleGoogleSignIn(),
                   ),
                   const SizedBox(height: 12),
                   _buildSocialButton(
                     label: "Continue with Apple",
                     icon: Icons.apple,
                     onTap: () {
-                      // Placeholder
+                      // Placeholder for Apple Sign In
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('Apple Sign In coming soon!'),
+                          backgroundColor: kPrimaryColor,
+                        ),
+                      );
                     },
                   ),
 
@@ -229,6 +309,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         onTap: () {
                           setState(() {
                             _isLogin = !_isLogin;
+                            _controller.clearError();
                           });
                         },
                         child: Text(
@@ -242,7 +323,50 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                     ],
                   ),
-                  // Extra padding for safe area bottom
+
+                  const SizedBox(height: 20),
+
+                  // Backend loading indicator
+                  Obx(() {
+                    if (_controller.isBackendAuthLoading.value) {
+                      return Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 20,
+                          vertical: 12,
+                        ),
+                        decoration: BoxDecoration(
+                          color: kSurfaceDark,
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(
+                            color: kPrimaryColor.withOpacity(0.3),
+                          ),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            SizedBox(
+                              height: 16,
+                              width: 16,
+                              child: CircularProgressIndicator(
+                                color: kPrimaryColor,
+                                strokeWidth: 2,
+                              ),
+                            ),
+                            const SizedBox(width: 12),
+                            Text(
+                              'Authenticating with server...',
+                              style: TextStyle(
+                                color: kTextColorSubtle,
+                                fontSize: 13,
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    }
+                    return const SizedBox.shrink();
+                  }),
+
                   const SizedBox(height: 20),
                 ],
               ),
@@ -253,48 +377,19 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  void _handleAuthAction() {
+  Future<void> _handleAuthAction() async {
     final email = _emailController.text.trim();
     final password = _passwordController.text.trim();
 
-    if (email.isEmpty || password.isEmpty) {
-      Get.defaultDialog(
-        title: "Validation Error",
-        middleText: "Please fill in all fields.",
-        textConfirm: "OK",
-        confirmTextColor: Colors.white,
-        onConfirm: () => Get.back(),
-      );
-      return;
-    }
-
-    if (!GetUtils.isEmail(email)) {
-      Get.defaultDialog(
-        title: "Invalid Email",
-        middleText: "Please enter a valid email address.",
-        textConfirm: "OK",
-        confirmTextColor: Colors.white,
-        onConfirm: () => Get.back(),
-      );
-      return;
-    }
-
-    if (password.length < 6) {
-      Get.defaultDialog(
-        title: "Weak Password",
-        middleText: "Password must be at least 6 characters long.",
-        textConfirm: "OK",
-        confirmTextColor: Colors.white,
-        onConfirm: () => Get.back(),
-      );
-      return;
-    }
-
     if (_isLogin) {
-      _controller.signIn(email, password);
+      await _controller.signInWithEmail(email, password);
     } else {
-      _controller.signUp(email, password);
+      await _controller.signUpWithEmail(email, password);
     }
+  }
+
+  Future<void> _handleGoogleSignIn() async {
+    await _controller.signInWithGoogle();
   }
 
   Widget _buildHeroSection() {
@@ -303,7 +398,6 @@ class _LoginScreenState extends State<LoginScreen> {
         Stack(
           alignment: Alignment.center,
           children: [
-            // Current Glow
             Container(
               width: 130,
               height: 130,
@@ -312,11 +406,10 @@ class _LoginScreenState extends State<LoginScreen> {
                 color: kPrimaryColor.withOpacity(0.4),
               ),
             ),
-            // The image box
             ClipRRect(
               borderRadius: BorderRadius.circular(24),
               child: Container(
-                width: 112, // w-28 = 28 * 4 = 112px
+                width: 112,
                 height: 112,
                 color: Colors.black26,
                 child: Image.network(
@@ -342,8 +435,8 @@ class _LoginScreenState extends State<LoginScreen> {
           style: TextStyle(
             color: kTextColorSubtle,
             fontSize: 14,
-            fontWeight: FontWeight.w600, // Medium/SemiBold
-            letterSpacing: 1.2, // tracking-wide
+            fontWeight: FontWeight.w600,
+            letterSpacing: 1.2,
           ),
           textAlign: TextAlign.center,
         ),
@@ -373,7 +466,7 @@ class _LoginScreenState extends State<LoginScreen> {
         decoration: InputDecoration(
           hintText: hint,
           hintStyle: TextStyle(color: kInputPlaceholder),
-          prefixIcon: Icon(icon, color: Colors.grey), // text-slate-400
+          prefixIcon: Icon(icon, color: Colors.grey),
           border: InputBorder.none,
           contentPadding: const EdgeInsets.symmetric(
             horizontal: 16,
@@ -396,16 +489,14 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget _buildSocialButton({
     required String label,
     required VoidCallback onTap,
-    String? iconPath,
     IconData? icon,
     bool isGoogle = false,
-    bool isLoading = false,
   }) {
     return Obx(
       () => SizedBox(
         width: double.infinity,
         child: OutlinedButton(
-          onPressed: _controller.isLoading.value ? null : onTap,
+          onPressed: _controller.isAnyLoading ? null : onTap,
           style: OutlinedButton.styleFrom(
             backgroundColor: kSurfaceDark,
             side: BorderSide(color: Colors.white.withOpacity(0.1)),
@@ -414,10 +505,9 @@ class _LoginScreenState extends State<LoginScreen> {
               borderRadius: BorderRadius.circular(12),
             ),
             foregroundColor: kTextColorDark,
+            disabledBackgroundColor: kSurfaceDark.withOpacity(0.5),
           ),
-          child:
-              _controller.isLoading.value &&
-                  isGoogle // Only show loading on basic button or specific if drilled down. Simplified: disable all when loading.
+          child: _controller.isGoogleAuthLoading.value && isGoogle
               ? const SizedBox(
                   height: 20,
                   width: 20,
@@ -430,7 +520,6 @@ class _LoginScreenState extends State<LoginScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     if (isGoogle)
-                      // Simple text fallback if asset missing, or network image for logo to allow easy run
                       SizedBox(
                         width: 20,
                         height: 20,
@@ -444,7 +533,6 @@ class _LoginScreenState extends State<LoginScreen> {
                       )
                     else if (icon != null)
                       Icon(icon, size: 22, color: Colors.white),
-
                     const SizedBox(width: 12),
                     Text(
                       label,

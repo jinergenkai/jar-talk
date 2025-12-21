@@ -29,8 +29,8 @@ class AuthService:
         Flow:
         1. Verify Firebase token with Firebase Admin SDK
         2. Extract user info (uid, email) from token
-        3. Check if user exists in our database
-        4. Create new user if first time login
+        3. Check if user exists in our database (by firebase_uid OR email)
+        4. Create new user if first time login OR update existing user
         5. Return JWT token for API access
         """
 
@@ -49,26 +49,54 @@ class AuthService:
             # 2. Check if user exists with this Firebase UID
             user = self.user_repo.get_by_firebase_uid(firebase_uid)
 
+            # 3. If not found by firebase_uid, check by email
+            #    (user might have logged in with different auth method before)
             if not user:
-                # 3. First time login - create new user
+                user = self.user_repo.get_by_email(email)
+
+                if user:
+                    # User exists with same email but different firebase_uid
+                    # Update their firebase_uid (they switched auth methods)
+                    print(f"Updating firebase_uid for existing user: {email}")
+                    user.firebase_uid = firebase_uid
+
+                    # Also update profile picture if available
+                    try:
+                        firebase_user = get_firebase_user(firebase_uid)
+                        if hasattr(firebase_user, 'photo_url') and firebase_user.photo_url:
+                            user.profile_picture_url = firebase_user.photo_url
+                    except:
+                        pass
+
+                    user = self.user_repo.update(user)
+
+            if not user:
+                # 4. First time login - create new user
                 # Get additional info from Firebase
                 try:
                     firebase_user = get_firebase_user(firebase_uid)
                     display_name = firebase_user.display_name if hasattr(firebase_user, 'display_name') else None
                     photo_url = firebase_user.photo_url if hasattr(firebase_user, 'photo_url') else None
-                except:
+                except Exception as e:
+                    print(f"Error getting Firebase user info: {e}")
                     display_name = None
                     photo_url = None
 
                 # Generate username from email or provided username
                 if not username:
                     username = email.split("@")[0]
-                    # Ensure username is unique
-                    base_username = username
-                    counter = 1
-                    while self.user_repo.username_exists(username):
-                        username = f"{base_username}{counter}"
-                        counter += 1
+                    # Remove special characters and make it alphanumeric
+                    username = ''.join(c for c in username if c.isalnum() or c in ['_', '-'])
+
+                # Ensure username is unique
+                base_username = username
+                counter = 1
+                while self.user_repo.username_exists(username):
+                    username = f"{base_username}{counter}"
+                    counter += 1
+                    # Safety check to prevent infinite loop
+                    if counter > 1000:
+                        raise Exception("Unable to generate unique username")
 
                 # Create user
                 user_data = UserCreate(
@@ -77,12 +105,29 @@ class AuthService:
                     firebase_uid=firebase_uid,
                     profile_picture_url=photo_url
                 )
-                user = self.user_repo.create(user_data)
 
-            # 4. Create JWT access token for API
+                try:
+                    user = self.user_repo.create(user_data)
+                    print(f"Created new user: {username} ({email})")
+                except Exception as e:
+                    # If creation fails, try to get by email one more time
+                    # (race condition handling)
+                    print(f"User creation failed, checking if user exists: {e}")
+                    user = self.user_repo.get_by_email(email)
+                    if not user:
+                        raise HTTPException(
+                            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                            detail=f"Failed to create user: {str(e)}"
+                        )
+                    # Update firebase_uid if needed
+                    if user.firebase_uid != firebase_uid:
+                        user.firebase_uid = firebase_uid
+                        user = self.user_repo.update(user)
+
+            # 5. Create JWT access token for API
             access_token = create_access_token(data={"sub": str(user.user_id)})
 
-            # 5. Return response
+            # 6. Return response
             return AuthResponse(
                 access_token=access_token,
                 user=UserResponse.model_validate(user)
@@ -96,6 +141,7 @@ class AuthService:
         except HTTPException:
             raise
         except Exception as e:
+            print(f"Authentication error: {str(e)}")
             raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                 detail=f"Authentication failed: {str(e)}"
