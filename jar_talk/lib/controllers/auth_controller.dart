@@ -23,6 +23,7 @@ class AuthController extends GetxController {
 
   User? get user => _user.value;
   bool get isAuthenticated => _user.value != null;
+  final RxBool isLoading = false.obs;
 
   @override
   void onReady() {
@@ -33,6 +34,7 @@ class AuthController extends GetxController {
 
   void _authChanged(User? user) async {
     if (user == null) {
+      isLoading.value = false; // Reset loading state on logout
       final prefs = await SharedPreferences.getInstance();
       await prefs.clear(); // Clear tokens on logout
 
@@ -60,6 +62,7 @@ class AuthController extends GetxController {
       AppRouter.router.go('/login');
     } else {
       try {
+        isLoading.value = true;
         final firebaseToken = await user.getIdToken();
         print("Firebase JWT: $firebaseToken");
 
@@ -70,17 +73,41 @@ class AuthController extends GetxController {
         AppRouter.router.go('/shelf');
       } catch (e) {
         print("Backend Auth Error: $e");
-        // Still navigate to shelf or handle error appropriately?
-        // Maybe stay on login if backend auth is strict requirement?
-        // For now, let's allow access but log error (or maybe show snackbar)
-        Get.snackbar(
-          "Connection Error",
-          "Could not connect to backend server. Some features may be unavailable.",
-          snackPosition: SnackPosition.BOTTOM,
-          backgroundColor: Colors.orangeAccent.withOpacity(0.8),
-          colorText: Colors.white,
+        isLoading.value = false; // Ensure loading is off before dialog
+        Get.defaultDialog(
+          title: "Connection Error",
+          content: Column(
+            children: [
+              const Icon(Icons.error_outline, color: Colors.red, size: 48),
+              const SizedBox(height: 16),
+              Text(
+                "Backend Auth Failed:\n$e",
+                textAlign: TextAlign.center,
+                style: const TextStyle(fontSize: 14),
+              ),
+            ],
+          ),
+          textConfirm: "Retry",
+          textCancel: "Logout",
+          confirmTextColor: Colors.white,
+          onConfirm: () async {
+            Get.back(); // Close dialog
+            // Retry backend auth logic
+            isLoading.value = true;
+            // Recursive retry effectively
+            _authChanged(user);
+          },
+          onCancel: () {
+            _auth
+                .signOut(); // This will trigger _authChanged(null) -> go to login
+          },
         );
-        AppRouter.router.go('/shelf');
+        // Do NOT navigate to shelf on error.
+      } finally {
+        // isLoading.value = false; // handled inside catch for dialog case, and end of try for success?
+        // Actually, successful path goes to shelf. Loading can stay true during transition.
+        // But for error, we must turn it off. Moved to catch block to be safe.
+        // If we put it here, it might flicker off before navigation.
       }
     }
   }
@@ -124,37 +151,64 @@ class AuthController extends GetxController {
 
   Future<void> signIn(String email, String password) async {
     try {
+      isLoading.value = true;
       await _auth.signInWithEmailAndPassword(email: email, password: password);
     } on FirebaseAuthException catch (e) {
-      Get.snackbar(
-        "Login Failed",
-        e.message ?? "An error occurred",
-        snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: Colors.redAccent.withOpacity(0.8),
-        colorText: Colors.white,
+      isLoading.value = false;
+      Get.defaultDialog(
+        title: "Login Failed",
+        middleText: "Error: ${e.message}\nCode: ${e.code}",
+        textConfirm: "OK",
+        confirmTextColor: Colors.white,
+        onConfirm: () => Get.back(),
       );
+    } catch (e) {
+      isLoading.value = false;
+      Get.defaultDialog(
+        title: "Login Error",
+        middleText: "Unexpected error: $e",
+        textConfirm: "OK",
+        confirmTextColor: Colors.white,
+        onConfirm: () => Get.back(),
+      );
+    } finally {
+      if (_auth.currentUser == null) {
+        isLoading.value = false;
+      }
     }
   }
 
   Future<void> signUp(String email, String password) async {
     try {
+      isLoading.value = true;
       await _auth.createUserWithEmailAndPassword(
         email: email,
         password: password,
       );
     } on FirebaseAuthException catch (e) {
-      Get.snackbar(
-        "Sign Up Failed",
-        e.message ?? "An error occurred",
-        snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: Colors.redAccent.withOpacity(0.8),
-        colorText: Colors.white,
+      isLoading.value = false;
+      Get.defaultDialog(
+        title: "Sign Up Failed",
+        middleText: "Error: ${e.message}\nCode: ${e.code}",
+        textConfirm: "OK",
+        confirmTextColor: Colors.white,
+        onConfirm: () => Get.back(),
+      );
+    } catch (e) {
+      isLoading.value = false;
+      Get.defaultDialog(
+        title: "Sign Up Error",
+        middleText: "Unexpected error: $e",
+        textConfirm: "OK",
+        confirmTextColor: Colors.white,
+        onConfirm: () => Get.back(),
       );
     }
   }
 
   Future<void> signInWithGoogle() async {
     try {
+      isLoading.value = true;
       final g_sign_in.GoogleSignInAccount? googleUser = await _googleSignIn
           .signIn();
 
@@ -169,27 +223,32 @@ class AuthController extends GetxController {
         );
 
         await _auth.signInWithCredential(credential);
+      } else {
+        // User canceled
+        isLoading.value = false;
       }
     } on FirebaseAuthException catch (e) {
       debugPrint("Google Sign In Failed: ${e.message}");
+      isLoading.value = false;
       if (Get.context != null) {
-        Get.snackbar(
-          "Google Sign In Failed",
-          e.message ?? "An error occurred",
-          snackPosition: SnackPosition.BOTTOM,
-          backgroundColor: Colors.redAccent.withOpacity(0.8),
-          colorText: Colors.white,
+        Get.defaultDialog(
+          title: "Google Sign In Failed",
+          middleText: "Error: ${e.message}\nCode: ${e.code}",
+          textConfirm: "OK",
+          confirmTextColor: Colors.white,
+          onConfirm: () => Get.back(),
         );
       }
     } catch (e) {
       debugPrint("Critical Google Sign In Error: $e");
+      isLoading.value = false;
       if (Get.context != null) {
-        Get.snackbar(
-          "Error",
-          "Could not sign in with Google: $e",
-          snackPosition: SnackPosition.BOTTOM,
-          backgroundColor: Colors.redAccent.withOpacity(0.8),
-          colorText: Colors.white,
+        Get.defaultDialog(
+          title: "Error",
+          middleText: "Could not sign in with Google: $e",
+          textConfirm: "OK",
+          confirmTextColor: Colors.white,
+          onConfirm: () => Get.back(),
         );
       }
     }

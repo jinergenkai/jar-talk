@@ -27,6 +27,14 @@ class _LoginScreenState extends State<LoginScreen> {
   bool _isPasswordVisible = false;
 
   @override
+  void initState() {
+    super.initState();
+    // Ensure fields are clear when landing here (e.g. after logout)
+    _emailController.clear();
+    _passwordController.clear();
+  }
+
+  @override
   Widget build(BuildContext context) {
     // Determine screen size for responsiveness if needed, but mainly focused on aesthetic match
     return Scaffold(
@@ -127,23 +135,36 @@ class _LoginScreenState extends State<LoginScreen> {
                   SizedBox(
                     width: double.infinity,
                     height: 56,
-                    child: ElevatedButton(
-                      onPressed: _handleAuthAction,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: kPrimaryColor,
-                        foregroundColor: Colors.white,
-                        elevation: 8,
-                        shadowColor: kPrimaryColor.withOpacity(0.5),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
+                    child: Obx(
+                      () => ElevatedButton(
+                        onPressed: _controller.isLoading.value
+                            ? null
+                            : _handleAuthAction,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: kPrimaryColor,
+                          foregroundColor: Colors.white,
+                          elevation: 8,
+                          shadowColor: kPrimaryColor.withOpacity(0.5),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
                         ),
-                      ),
-                      child: Text(
-                        _isLogin ? "Log In" : "Sign Up",
-                        style: const TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                        ),
+                        child: _controller.isLoading.value
+                            ? const SizedBox(
+                                height: 24,
+                                width: 24,
+                                child: CircularProgressIndicator(
+                                  color: Colors.white,
+                                  strokeWidth: 2,
+                                ),
+                              )
+                            : Text(
+                                _isLogin ? "Log In" : "Sign Up",
+                                style: const TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
                       ),
                     ),
                   ),
@@ -177,6 +198,8 @@ class _LoginScreenState extends State<LoginScreen> {
                         "assets/icons/google_logo.svg", // Assuming asset or fallback icon
                     isGoogle: true,
                     onTap: () => _controller.signInWithGoogle(),
+                    isLoading:
+                        false, // Could map to specific loading state if needed, but global is fine for now
                   ),
                   const SizedBox(height: 12),
                   _buildSocialButton(
@@ -235,11 +258,34 @@ class _LoginScreenState extends State<LoginScreen> {
     final password = _passwordController.text.trim();
 
     if (email.isEmpty || password.isEmpty) {
-      Get.snackbar(
-        "Error",
-        "Please fill in all fields",
-        colorText: Colors.white,
-        backgroundColor: kPrimaryColor,
+      Get.defaultDialog(
+        title: "Validation Error",
+        middleText: "Please fill in all fields.",
+        textConfirm: "OK",
+        confirmTextColor: Colors.white,
+        onConfirm: () => Get.back(),
+      );
+      return;
+    }
+
+    if (!GetUtils.isEmail(email)) {
+      Get.defaultDialog(
+        title: "Invalid Email",
+        middleText: "Please enter a valid email address.",
+        textConfirm: "OK",
+        confirmTextColor: Colors.white,
+        onConfirm: () => Get.back(),
+      );
+      return;
+    }
+
+    if (password.length < 6) {
+      Get.defaultDialog(
+        title: "Weak Password",
+        middleText: "Password must be at least 6 characters long.",
+        textConfirm: "OK",
+        confirmTextColor: Colors.white,
+        onConfirm: () => Get.back(),
       );
       return;
     }
@@ -353,43 +399,62 @@ class _LoginScreenState extends State<LoginScreen> {
     String? iconPath,
     IconData? icon,
     bool isGoogle = false,
+    bool isLoading = false,
   }) {
-    return SizedBox(
-      width: double.infinity,
-      child: OutlinedButton(
-        onPressed: onTap,
-        style: OutlinedButton.styleFrom(
-          backgroundColor: kSurfaceDark,
-          side: BorderSide(color: Colors.white.withOpacity(0.1)),
-          padding: const EdgeInsets.symmetric(vertical: 14),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
-          ),
-          foregroundColor: kTextColorDark,
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            if (isGoogle)
-              // Simple text fallback if asset missing, or network image for logo to allow easy run
-              SizedBox(
-                width: 20,
-                height: 20,
-                child: Image.network(
-                  "https://lh3.googleusercontent.com/COxitqgJr1sJnIDe8-jiKhxDx1FrYbtRHKJ9z_hELisAlapwE9LUPh6fcXIfb5vwpbMl4xl9H9TRFPc5NOO8Sb3VSgIBrfRYvW6cUA",
-                  errorBuilder: (c, e, s) =>
-                      const Icon(Icons.g_mobiledata, color: Colors.white),
-                ),
-              )
-            else if (icon != null)
-              Icon(icon, size: 22, color: Colors.white),
-
-            const SizedBox(width: 12),
-            Text(
-              label,
-              style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 16),
+    return Obx(
+      () => SizedBox(
+        width: double.infinity,
+        child: OutlinedButton(
+          onPressed: _controller.isLoading.value ? null : onTap,
+          style: OutlinedButton.styleFrom(
+            backgroundColor: kSurfaceDark,
+            side: BorderSide(color: Colors.white.withOpacity(0.1)),
+            padding: const EdgeInsets.symmetric(vertical: 14),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
             ),
-          ],
+            foregroundColor: kTextColorDark,
+          ),
+          child:
+              _controller.isLoading.value &&
+                  isGoogle // Only show loading on basic button or specific if drilled down. Simplified: disable all when loading.
+              ? const SizedBox(
+                  height: 20,
+                  width: 20,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2,
+                    color: kPrimaryColor,
+                  ),
+                )
+              : Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    if (isGoogle)
+                      // Simple text fallback if asset missing, or network image for logo to allow easy run
+                      SizedBox(
+                        width: 20,
+                        height: 20,
+                        child: Image.network(
+                          "https://lh3.googleusercontent.com/COxitqgJr1sJnIDe8-jiKhxDx1FrYbtRHKJ9z_hELisAlapwE9LUPh6fcXIfb5vwpbMl4xl9H9TRFPc5NOO8Sb3VSgIBrfRYvW6cUA",
+                          errorBuilder: (c, e, s) => const Icon(
+                            Icons.g_mobiledata,
+                            color: Colors.white,
+                          ),
+                        ),
+                      )
+                    else if (icon != null)
+                      Icon(icon, size: 22, color: Colors.white),
+
+                    const SizedBox(width: 12),
+                    Text(
+                      label,
+                      style: const TextStyle(
+                        fontWeight: FontWeight.w600,
+                        fontSize: 16,
+                      ),
+                    ),
+                  ],
+                ),
         ),
       ),
     );
