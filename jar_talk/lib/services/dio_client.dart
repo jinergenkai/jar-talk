@@ -10,7 +10,7 @@ class DioClient {
   // Android Emulator calls localhost via 10.0.2.2
   // For physical device, use your machine's IP
   // final String _baseUrl = "http://192.168.0.100:8000";
-  final String _baseUrl = "http://huynhhanh.com:8000";
+  final String _baseUrl = "http://huynhhanh.com:8888";
 
   DioClient._internal() {
     _dio = Dio(
