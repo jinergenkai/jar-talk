@@ -9,13 +9,13 @@ import 'package:jar_talk/screens/shelf/widgets/add_jar_options_sheet.dart';
 import 'package:jar_talk/screens/shelf/widgets/create_jar_dialog.dart';
 import 'package:jar_talk/screens/shelf/widgets/join_jar_dialog.dart';
 
-class ShelfScreen extends StatelessWidget {
+class ShelfScreen extends GetView<ShelfController> {
   const ShelfScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     // Inject the real controller
-    final controller = Get.put(ShelfController());
+    // final controller = Get.put(ShelfController());
     final theme = Theme.of(context);
     final appTheme = theme.extension<AppThemeExtension>()!;
 

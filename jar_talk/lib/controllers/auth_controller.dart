@@ -8,6 +8,9 @@ import 'package:jar_talk/models/backend_auth_models.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:jar_talk/controllers/app_controller.dart';
 import 'package:jar_talk/controllers/shelf_controller.dart';
+import 'package:jar_talk/controllers/main_wrapper_controller.dart';
+import 'package:jar_talk/controllers/setting_controller.dart';
+import 'package:jar_talk/controllers/slip_controller.dart';
 
 class AuthController extends GetxController {
   static AuthController get instance => Get.find();
@@ -36,6 +39,20 @@ class AuthController extends GetxController {
       // Sync with AppController
       try {
         Get.find<AppController>().logout();
+        // Remove ShelfController to force reload on next login
+        if (Get.isRegistered<ShelfController>()) {
+          Get.delete<ShelfController>(force: true);
+        }
+        if (Get.isRegistered<MainWrapperController>()) {
+          Get.delete<MainWrapperController>(force: true);
+        }
+        // ProfileController is defined in setting_controller.dart
+        if (Get.isRegistered<ProfileController>()) {
+          Get.delete<ProfileController>(force: true);
+        }
+        if (Get.isRegistered<SlipController>()) {
+          Get.delete<SlipController>(force: true);
+        }
       } catch (e) {
         print("Error syncing logout with AppController: $e");
       }

@@ -5,6 +5,7 @@ import 'package:jar_talk/screens/main_wrapper.dart';
 import 'package:jar_talk/screens/profile/user_profile_screen.dart';
 import 'package:jar_talk/screens/shelf/shelf_screen.dart';
 import 'package:jar_talk/screens/login/login_screen.dart';
+import 'package:jar_talk/bindings/shelf_binding.dart';
 
 class AppRouter {
   static final _rootNavigatorKey = GlobalKey<NavigatorState>();
@@ -37,8 +38,10 @@ class AppRouter {
             routes: [
               GoRoute(
                 path: '/shelf',
-                pageBuilder: (context, state) =>
-                    const NoTransitionPage(child: ShelfScreen()),
+                pageBuilder: (context, state) {
+                  ShelfBinding().dependencies();
+                  return const NoTransitionPage(child: ShelfScreen());
+                },
               ),
             ],
           ),
