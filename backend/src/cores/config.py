@@ -23,12 +23,14 @@ class Settings(BaseSettings):
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 60 * 24 * 7  # 7 days
 
     # Storage (MinIO/S3)
-    STORAGE_ENDPOINT: str = "192.168.0.101:9000"
+    STORAGE_ENDPOINT: str = "192.168.0.101:9000"  # Internal endpoint (backend -> MinIO)
+    STORAGE_PUBLIC_ENDPOINT: Optional[str] = None  # Public endpoint for presigned URLs (mobile -> MinIO)
     STORAGE_ACCESS_KEY: str = "admin"
     STORAGE_SECRET_KEY: str = "strongpassword123"
     STORAGE_BUCKET: str = "jar-talk"
     STORAGE_REGION: str = "us-east-1"
-    STORAGE_USE_SSL: bool = False
+    STORAGE_USE_SSL: bool = False  # For internal endpoint
+    STORAGE_PUBLIC_USE_SSL: bool = True  # For public endpoint (usually HTTPS)
     PRESIGNED_URL_EXPIRY: int = 3600  # 1 hour
 
     # CORS

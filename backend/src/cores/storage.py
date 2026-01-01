@@ -15,15 +15,41 @@ class StorageService:
     """MinIO/S3 storage service with presigned URLs"""
 
     def __init__(self):
-        # Initialize S3 client for MinIO
+        # Internal endpoint for backend operations
+        protocol = "https" if settings.STORAGE_USE_SSL else "http"
+        internal_endpoint = f"{protocol}://{settings.STORAGE_ENDPOINT}"
+
+        # Initialize S3 client for MinIO (internal endpoint)
         self.s3_client = boto3.client(
             's3',
-            endpoint_url=f"http://{settings.STORAGE_ENDPOINT}",
+            endpoint_url=internal_endpoint,
             aws_access_key_id=settings.STORAGE_ACCESS_KEY,
             aws_secret_access_key=settings.STORAGE_SECRET_KEY,
             region_name=settings.STORAGE_REGION,
             config=Config(signature_version='s3v4')
         )
+
+        # Public endpoint for presigned URLs (if configured)
+        self.public_endpoint = settings.STORAGE_PUBLIC_ENDPOINT
+        self.public_use_ssl = settings.STORAGE_PUBLIC_USE_SSL
+
+        # If public endpoint is set, create a separate client for presigned URLs
+        if self.public_endpoint:
+            public_protocol = "https" if self.public_use_ssl else "http"
+            public_endpoint_url = f"{public_protocol}://{self.public_endpoint}"
+
+            self.s3_public_client = boto3.client(
+                's3',
+                endpoint_url=public_endpoint_url,
+                aws_access_key_id=settings.STORAGE_ACCESS_KEY,
+                aws_secret_access_key=settings.STORAGE_SECRET_KEY,
+                region_name=settings.STORAGE_REGION,
+                config=Config(signature_version='s3v4')
+            )
+        else:
+            # Use same client if no public endpoint configured
+            self.s3_public_client = self.s3_client
+
         self.bucket_name = settings.STORAGE_BUCKET
         self._ensure_bucket_exists()
 
@@ -73,8 +99,8 @@ class StorageService:
         file_key = f"{file_type}/{uuid.uuid4()}{file_extension}"
 
         try:
-            # Generate presigned URL for PUT
-            upload_url = self.s3_client.generate_presigned_url(
+            # Generate presigned URL for PUT using public client
+            upload_url = self.s3_public_client.generate_presigned_url(
                 'put_object',
                 Params={
                     'Bucket': self.bucket_name,
@@ -113,7 +139,8 @@ class StorageService:
             expires_in = settings.PRESIGNED_URL_EXPIRY
 
         try:
-            download_url = self.s3_client.generate_presigned_url(
+            # Generate presigned URL for GET using public client
+            download_url = self.s3_public_client.generate_presigned_url(
                 'get_object',
                 Params={
                     'Bucket': self.bucket_name,
