@@ -43,10 +43,6 @@ jobs:
       - name: Build APK (Release)
         working-directory: jar_talk
         run: flutter build apk --release
-
-      - name: Build APK (Debug)
-        working-directory: jar_talk
-        run: flutter build apk --debug
         
       - name: Release APK
         if: github.event_name == 'push'
@@ -55,7 +51,6 @@ jobs:
           tag_name: android-latest
           files: |
             jar_talk/build/app/outputs/flutter-apk/app-release.apk
-            jar_talk/build/app/outputs/flutter-apk/app-debug.apk
           name: "Android Build ${{ github.sha }}"
           body: "Latest android build from commit ${{ github.sha }}"
           allow_updates: true
